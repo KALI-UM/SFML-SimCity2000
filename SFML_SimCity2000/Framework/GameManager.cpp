@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Scene_Test.h"
+#include "Scene_SimCityInGame.h"
 
 GameManager::GameManager()
 	:m_MainWindow(nullptr)
@@ -14,7 +14,7 @@ bool GameManager::Initialize(sf::RenderWindow* window)
 	success &= DATATABLE_MGR->Initialize();
 	success &= SCENE_MGR->Initialize();
 
-	Scene_Test* lobby = new Scene_Test();
+	Scene_SimCityInGame* lobby = new Scene_SimCityInGame();
 	SCENE_MGR->PushScene(lobby);
 	SCENE_MGR->SetCurrentScene(lobby->GetName());
 	lobby->RESET();

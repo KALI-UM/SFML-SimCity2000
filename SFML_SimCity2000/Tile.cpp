@@ -154,102 +154,48 @@ void Tile::ResetColorizedTile()
 
 void Tile::GetLineIntersectedTilesByTileIndex(const sf::Vector2i& startIndex, const sf::Vector2i& endIndex)
 {
+	sf::Vector2i slope = endIndex - startIndex;
+	int x0 = startIndex.x;
+	int y0 = startIndex.y;
+	int x1 = endIndex.x;
+	int y1 = endIndex.y;
 
-	sf::Vector2f startCenter = GetTileCoordinatedCenterPosByTileIndex(startIndex);
-	sf::Vector2f endCenter = GetTileCoordinatedCenterPosByTileIndex(endIndex);
-	line->SetPoint(GAME_MGR->GetViewToScreenPos(0, m_TileTransform.transformPoint(startCenter)).To<float>(), GAME_MGR->GetViewToScreenPos(0, m_TileTransform.transformPoint(endCenter)).To<float>());
+	//Bresenham's Line Algorithm
+	//선의 기울기는 1과 0사이
+	//x를 증가시킬 때마다 y 
 
-	sf::Vector2f slope = startCenter - endCenter;
-	if (slope.x == 0)
+
+	int dx = abs(slope.x);
+	int dy = abs(slope.y);
+	int sx = (x0 < x1) ? 1 : -1;
+	int sy = (y0 < y1) ? 1 : -1;
+
+	//slope err보정값
+	int err = dx - dy;
+
+	while (true)
 	{
-		for (int y = std::min(startIndex.y, endIndex.y); y <= std::max(startIndex.y, endIndex.y); y++)
+		// 현재 타일 색칠
+		ColorizeTile(ColorPalette::Gray, {x0, y0});
+
+		// 종료 조건: 시작점이 끝점에 도달하면 루프를 종료
+		if (x0 == x1 && y0 == y1)
+			break;
+
+		int e2 = 2 * err;
+
+		// x 방향으로 이동
+		if (e2 > -dy)
 		{
-			ColorizeTile(ColorPalette::Gray, { startIndex.x,y });
+			err -= dy;
+			x0 += sx;
 		}
-		return;
-	}
-	else if (slope.y == 0)
-	{
-		for (int x = std::min(startIndex.x, endIndex.x); x <= std::max(startIndex.x, endIndex.x); x++)
+
+		// y 방향으로 이동
+		if (e2 < dx)
 		{
-			ColorizeTile(ColorPalette::Gray, { x,startIndex.y });
-		}
-		return;
-	}
-
-	float threshold = 5;
-	sf::FloatRect grid(0, 0, m_CellSize.x, m_CellSize.y);
-	for (int y = std::min(startIndex.y, endIndex.y); y <= std::max(startIndex.y, endIndex.y); y++)
-	{
-		for (int x = std::min(startIndex.x, endIndex.x); x <= std::max(startIndex.x, endIndex.x); x++)
-		{
-			grid.left = x * m_CellSize.x;
-			grid.top = y * m_CellSize.y;
-
-			int test = 0;
-			// 타일의 네 경계 검사
-			sf::Vector2f tx = { Utils::LineEquationX(startCenter, endCenter, grid.top), grid.top };               // 상단
-			sf::Vector2f bx = { Utils::LineEquationX(startCenter, endCenter, grid.top + grid.height), grid.top + grid.height };  // 하단
-			sf::Vector2f ly = { grid.left, Utils::LineEquationY(startCenter, endCenter, grid.left) };             // 왼쪽
-			sf::Vector2f ry = { grid.left + grid.width, Utils::LineEquationY(startCenter, endCenter, grid.left + grid.width) };  // 오른쪽
-
-			bool intersects = false;
-
-			// 상단 경계와 교차
-			if (grid.contains(tx)) intersects = true;
-			// 하단 경계와 교차
-			if (grid.contains(bx)) intersects = true;
-			// 왼쪽 경계와 교차
-			if (grid.contains(ly)) intersects = true;
-			// 오른쪽 경계와 교차
-			if (grid.contains(ry)) intersects = true;
-
-			// 교차하는 타일이 있으면 색칠
-			if (intersects) {
-				ColorizeTile(sf::Color::Black, { x,y });
-
-				////float topx = Utils::LineEquationX(startCenter, endCenter, grid.top);
-				////if (topx >= grid.left && topx <= grid.left + grid.width)
-				////	test++;
-				////float bottomx = Utils::LineEquationX(startCenter, endCenter, grid.top + grid.height);
-				////if (bottomx >= grid.left && bottomx <= grid.left + grid.width)
-				////	test++;
-				////float lefty = Utils::LineEquationY(startCenter, endCenter, grid.left);
-				////if (lefty >= grid.top && lefty <= grid.top + grid.height)
-				////	test++;
-				////float righty = Utils::LineEquationY(startCenter, endCenter, grid.left + grid.width);
-				////if (righty >= grid.top && righty <= grid.top + grid.height)
-				////	test++;
-
-				//sf::Vector2f tx = { Utils::LineEquationX(startCenter, endCenter, grid.top),grid.top };
-				//sf::Vector2f bx = { Utils::LineEquationX(startCenter, endCenter, grid.top), grid.top + grid.height };
-				//sf::Vector2f ly = { grid.left, Utils::LineEquationY(startCenter, endCenter, grid.left) };
-				//sf::Vector2f ry = { grid.left + grid.width, Utils::LineEquationY(startCenter, endCenter, grid.left + grid.width) };
-
-				//if (grid.contains(tx) || grid.contains(bx) || grid.contains(ly) || grid.contains(ry))
-				//	test++;
-
-				////if (Utils::CircleContainPoint(tx, threshold, { grid.left,grid.top }))
-				////	test++;
-				////if (Utils::CircleContainPoint(tx, threshold, { grid.left + grid.width,grid.top }))
-				////	test++;
-
-				////if (Utils::CircleContainPoint(bx, threshold, { grid.left,grid.top }))
-				////	test++;
-
-				////if (grid.contains(Utils::LineEquationX(startCenter, endCenter, grid.top), grid.top))
-				////	test++;
-				////if (grid.contains(Utils::LineEquationX(startCenter, endCenter, grid.top), grid.top + grid.height))
-				////	test++;
-				////if (grid.contains(grid.left, Utils::LineEquationY(startCenter, endCenter, grid.left)))
-				////	test++;
-				////if (grid.contains(grid.left + grid.width, Utils::LineEquationY(startCenter, endCenter, grid.left + grid.width)))
-				////	test++;
-
-				//if (test != 0)
-				//	ColorizeTile(sf::Color::Black, { x,y });
-
-			}
+			err += dx;
+			y0 += sy;
 		}
 	}
 

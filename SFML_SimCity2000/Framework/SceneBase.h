@@ -22,6 +22,8 @@ public:
 	void EXIT();
 	void RELEASE();
 
+	virtual void ShowSceneImgui() {};
+
 	std::string GetName()const;
 
 	typedef std::pair<int, GameObject*> GameObjectInfo;

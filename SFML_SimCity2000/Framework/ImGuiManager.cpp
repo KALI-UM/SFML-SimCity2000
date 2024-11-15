@@ -43,7 +43,7 @@ void ImGuiManager::SetDocking(bool enabled)
 
 void ImGuiManager::SetShowDemo(bool enabled)
 {
-	s_EnabledShowDemo = enabled;
+	s_EnableSceneImgui = enabled;
 }
 
 void ImGuiManager::Begin(const sf::Time& dt)
@@ -55,7 +55,7 @@ void ImGuiManager::Begin(const sf::Time& dt)
 	{
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 	}
-	if (s_EnabledShowDemo)
+	if (s_EnableSceneImgui)
 	{
 		ImGuiManager::ShowDemo();
 	}
@@ -132,26 +132,10 @@ void ImGuiManager::ShowDemo()
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 	ImGui::End();
 
-	ShowTileMenu();
+	ShowSceneImGui();
 }
 
-void ImGuiManager::ShowTileMenu()
+void ImGuiManager::ShowSceneImGui()
 {
-	static std::string curr;
-	ImGui::Begin("Tile Menu");
-	std::string forCurrTile = "Current Tile : " + curr;
-	ImGui::Text(forCurrTile.c_str());
-	/*ImGui::Image()*/
-
-	if (ImGui::Button("Road"))
-	{
-		curr = "Road";
-	}
-	if (ImGui::Button("Zone"))
-	{
-		curr = "Zone";
-	}
-
-	//if(ImGui::ImageButton())
-	ImGui::End();
+	SCENE_MGR->GetCurrentScene()->ShowSceneImgui();
 }
