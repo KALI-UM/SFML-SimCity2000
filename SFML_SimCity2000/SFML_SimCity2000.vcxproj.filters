@@ -39,16 +39,16 @@
     <ClCompile Include="Background_Lobby.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Scene_Lobby.cpp">
+    <ClCompile Include="Scene\Scene_Lobby.cpp">
       <Filter>GameEngine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Scene_Loading.cpp">
+    <ClCompile Include="Scene\Scene_Loading.cpp">
       <Filter>GameEngine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="TileGrid.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Scene_Test.cpp">
+    <ClCompile Include="Scene\Scene_Test.cpp">
       <Filter>GameEngine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Tile.cpp">
@@ -156,7 +156,7 @@
     <ClCompile Include="GameObject\SimCityCursor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Scene_SimCityInGame.cpp">
+    <ClCompile Include="Scene\Scene_SimCityInGame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -170,16 +170,16 @@
     <ClInclude Include="Background_Lobby.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Scene_Lobby.h">
+    <ClInclude Include="Scene\Scene_Lobby.h">
       <Filter>GameEngine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Scene_Loading.h">
+    <ClInclude Include="Scene\Scene_Loading.h">
       <Filter>GameEngine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="TileGrid.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Scene_Test.h">
+    <ClInclude Include="Scene\Scene_Test.h">
       <Filter>GameEngine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
@@ -314,7 +314,7 @@
     <ClInclude Include="GameObject\SimCityCursor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Scene_SimCityInGame.h">
+    <ClInclude Include="Scene\Scene_SimCityInGame.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

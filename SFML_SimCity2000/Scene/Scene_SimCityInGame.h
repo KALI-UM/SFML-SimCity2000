@@ -25,6 +25,7 @@ protected:
 	//void Reset() override;
 	void Enter() override;
 	void Update(float dt) override;
+	void ShowSceneImgui() override;
 	//void LateUpdate(float dt) override;
 	//void FixedUpdate(float dt) override;
 	//void Release() override;

@@ -70,6 +70,42 @@ float Utils::Angle(const sf::Vector2f& vec)
 	return RadianToDegree(AngleRadian(vec));
 }
 
+float Utils::LineEquationX(float slope, float yIntercept, float y)
+{
+	return (y - yIntercept) / slope;
+}
+
+float Utils::LineEquationY(float slope, float yIntercept, float x)
+{
+	return slope * x + yIntercept;
+}
+
+float Utils::LineEquationX(const sf::Vector2f& p1, const sf::Vector2f& p2, float y)
+{
+	sf::Vector2f vec = p1 - p2;
+	//평범한 기울기값이 나온다고 가정함
+	float slope = vec.y / vec.x;
+	return LineEquationX(slope, p1.y - slope * p1.x, y);
+}
+
+float Utils::LineEquationY(const sf::Vector2f& p1, const sf::Vector2f& p2, float x)
+{
+	sf::Vector2f vec = p1 - p2;
+	//평범한 기울기값이 나온다고 가정함
+	float slope = vec.y / vec.x;
+	return LineEquationY(slope, p1.y - slope * p1.x, x);
+}
+
+bool Utils::CircleCollisionCheck(const sf::Vector2f& p1, float radius1, const sf::Vector2f& p2, float radius2)
+{
+	return SqrtMagnitude(p1 - p2) <= (radius1 + radius2) * (radius1 + radius2);
+}
+
+bool Utils::CircleContainPoint(const sf::Vector2f& center, float radius, const sf::Vector2f& pos)
+{
+	return SqrtMagnitude(center - pos) <= radius * radius;
+}
+
 
 
 //sf::Vector2f Utils::CLerp(const sf::Vector2f& left, const sf::Vector2f& right, float radius, float ratio, bool clamp)

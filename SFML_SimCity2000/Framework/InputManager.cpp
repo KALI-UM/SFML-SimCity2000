@@ -145,6 +145,11 @@ bool InputManager::GetMouse(sf::Mouse::Button btt) const
 	return m_HeldKey.test(sf::Keyboard::KeyCount + btt);
 }
 
+bool InputManager::GetMouseDrag(sf::Mouse::Button btt) const
+{
+	return (!GetMouseDown(btt))&&GetMouse(btt);
+}
+
 sf::Vector2i InputManager::GetPrevMouseDown(sf::Mouse::Button btt) const
 {
 	return m_MouseDownPosition[btt];

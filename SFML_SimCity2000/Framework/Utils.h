@@ -48,4 +48,12 @@ public:
 	static float DegreeToRadian(float degree);
 	static float AngleRadian(const sf::Vector2f& vec);
 	static float Angle(const sf::Vector2f& vec);
+
+	static float LineEquationX(float slope, float yIntercept, float y);
+	static float LineEquationY(float slope, float yIntercept, float x);
+	static float LineEquationX(const sf::Vector2f& p1, const sf::Vector2f& p2, float y);
+	static float LineEquationY(const sf::Vector2f& p1, const sf::Vector2f& p2, float x);
+
+	static bool CircleCollisionCheck(const sf::Vector2f& p1, float radius1, const sf::Vector2f& p2, float radius2);
+	static bool CircleContainPoint(const sf::Vector2f& center, float radius, const sf::Vector2f& pos);
 };

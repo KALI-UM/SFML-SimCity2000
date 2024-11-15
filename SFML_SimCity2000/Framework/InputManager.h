@@ -51,6 +51,7 @@ public:
 	bool GetMouseDown(sf::Mouse::Button btt) const;
 	bool GetMouseUp(sf::Mouse::Button btt) const;
 	bool GetMouse(sf::Mouse::Button btt) const;
+	bool GetMouseDrag(sf::Mouse::Button btt)const;
 
 	sf::Vector2i GetPrevMouseDown(sf::Mouse::Button btt) const;
 

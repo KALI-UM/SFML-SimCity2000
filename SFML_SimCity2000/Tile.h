@@ -36,9 +36,15 @@ public:
 	void SetCellSize(const sf::Vector2f& cell) { m_CellSize = cell; }
 
 	sf::Vector2f GetTileCoordinatedPos(const sf::Vector2f& pos) const;
-	sf::Vector2i GetTileCoordinatedIndex(const sf::Vector2f& pos) const;
+	sf::Vector2i GetTileCoordinatedIndex(const sf::Vector2f& pos, bool isTilepos = false) const;
+	sf::Vector2f GetTileCoordinatedCenterPosByTileIndex(const sf::Vector2i& tileIndex);
+
+	bool IsValidTileIndex(const sf::Vector2i& tileIndex) const;
+	bool IsValidTileIndex(int x, int y) const;
 
 protected:
+	DLine* line;
+
 	std::vector<std::vector<TileInfo>> m_TileInfos;
 
 	sf::Vector2f m_CellSize = { 100.f,100.f };
@@ -53,7 +59,9 @@ protected:
 	void ColorizeTile(const sf::Color& color, const sf::Vector2i& cellIndex);
 	void ResetColorizedTile();
 
-	//void GetLnieIntersectedTiles(const sf::Vector2f& start, const sf::Vector2f& end, std::queue);
+	sf::Vector2i clickindex;
+	void GetLineIntersectedTilesByTileIndex(const sf::Vector2i& startIndex, const sf::Vector2i& endIndex);
+	
 
 };
 
