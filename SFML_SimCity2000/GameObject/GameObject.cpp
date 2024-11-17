@@ -35,6 +35,10 @@ GameObject::~GameObject()
 bool GameObject::INITIALIZE()
 {
 	bool result = Initialize();
+	for (auto& child : m_ChildrenObjs)
+	{
+		result&=child->INITIALIZE();
+	}
 	return result;
 }
 
@@ -51,16 +55,51 @@ void GameObject::UPDATE(float dt)
 	{
 		drawable->Update(dt);
 	}
+
+	for (auto& child : m_ChildrenObjs)
+	{
+		child->UPDATE(dt);
+	}
 }
 
 void GameObject::LATEUPDATE(float dt)
 {
 	LateUpdate(dt);
+
+	for (auto& child : m_ChildrenObjs)
+	{
+		child->LATEUPDATE(dt);
+	}
 }
 
 void GameObject::FIXEDUPDATE(float dt)
 {
 	FixeUpdate(dt);
+
+	for (auto& child : m_ChildrenObjs)
+	{
+		child->FIXEDUPDATE(dt);
+	}
+}
+
+void GameObject::PRERENDER()
+{
+	PreRender();
+
+	for (auto& child : m_ChildrenObjs)
+	{
+		child->PRERENDER();
+	}
+}
+
+void GameObject::POSTRENDER()
+{
+	PostRender();
+
+	for (auto& child : m_ChildrenObjs)
+	{
+		child->POSTRENDER();
+	}
 }
 
 void GameObject::IMGUIUPDATE()
@@ -112,6 +151,14 @@ void GameObject::FixeUpdate(float dt)
 {
 }
 
+void GameObject::PreRender()
+{
+}
+
+void GameObject::PostRender()
+{
+}
+
 void GameObject::ImGuiUpdate()
 {
 }
@@ -120,34 +167,57 @@ void GameObject::Release()
 {
 }
 
-void GameObject::SetIsValid(bool value)
-{
-	m_IsValid = value;
-}
-
-bool GameObject::GetIsValid() const
-{
-	return m_IsValid;
-}
-
 bool GameObject::GetIsVisible() const
 {
-	return GetIsValid() && GetDrawbleCount() != 0;
+	return m_IsVisible && GetIsValid();
 }
 
 bool GameObject::GetIsVisible(size_t index) const
 {
 	//return GetIsValid() && GetDrawable(index) && GetDrawable(index)->GetIsVisible();
-	return GetIsValid() && GetDrawable(index) && GetDrawable(index)->GetIsValid();
+	return m_IsValid && m_IsVisible && GetDrawableObj(index) && GetDrawableObj(index)->GetIsValid();
 }
 
-DrawableObject* GameObject::GetDrawable(size_t index)const
+void GameObject::SetParentObj(GameObject* parent, bool isTransformParent)
+{
+	if (m_ParentObj)
+	{
+		m_ParentObj->RemoveChildObj(this);
+	}
+	m_ParentObj = parent;
+	if (m_ParentObj)
+		m_ParentObj->SetChildObj(this, isTransformParent);
+}
+
+void GameObject::SetChildObj(GameObject* child, bool isTransformChild)
+{
+	child->m_ParentObj = this;
+	m_ChildrenObjs.push_back(child);
+	if (isTransformChild)
+		this->Transform::SetChild(child);
+}
+
+void GameObject::RemoveChildObj(GameObject* child)
+{
+	for (auto gobj = m_ChildrenObjs.begin(); gobj != m_ChildrenObjs.end(); gobj++)
+	{
+		if (*gobj == child)
+		{
+			child->m_ParentObj = nullptr;
+			m_ChildrenObjs.erase(gobj);
+			Transform::RemoveChild(child);
+			break;
+		}
+	}
+}
+
+DrawableObject* GameObject::GetDrawableObj(size_t index)const
 {
 	if (index >= m_Drawable.size())return nullptr;
 	return m_Drawable[index];
 }
 
-DrawableObject* GameObject::GetDrawable(const std::string& name) const
+DrawableObject* GameObject::GetDrawableObj(const std::string& name) const
 {
 	for (auto& drawable : m_Drawable)
 	{
@@ -160,7 +230,7 @@ DrawableObject* GameObject::GetDrawable(const std::string& name) const
 void GameObject::SetDrawable(DrawableObject* dobj, bool isChild)
 {
 	if (isChild)
-		SetChild(dobj);
+		this->Transform::SetChild(dobj);
 	m_Drawable.push_back(dobj);
 }
 

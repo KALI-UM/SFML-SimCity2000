@@ -44,6 +44,7 @@ public:
 
 	void SetLot(const sf::Vector2u& lot);
 	void SetTexture(sf::Texture* tex, const sf::Vector2u& lot, TileShapeType type=TileShapeType::Convex);
+	void SetTexture(const std::string& filepath, const sf::Vector2u& lot, TileShapeType type=TileShapeType::Convex);
 
 	sf::FloatRect GetGlobalBounds()const;
 	sf::FloatRect GetLocalBounds()const;

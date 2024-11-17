@@ -3,6 +3,10 @@
 #include "SimCityCursor.h"
 #include "TileGrid.h"
 #include "Tile.h"
+#include "TileModel.h"
+#include "TileController.h"
+#include "TileView.h"
+#include "TileViewChild.h"
 
 Scene_SimCityInGame::Scene_SimCityInGame()
 	:SceneBase("InGame", 3, 3)
@@ -21,10 +25,16 @@ bool Scene_SimCityInGame::Initialize()
 
 	m_Cursor = AddGameObject(2, new SimCityCursor("background/1013.png", 2));
 
-	m_Tile = AddGameObject(0, new Tile());
-	m_Tile->SetCellSize({ 45,45 });
+	//m_Tile = AddGameObject(0, new Tile());
+	//m_Tile->SetCellSize({ 45,45 });
 	m_TileGrid = AddGameObject(1, new TileGrid());
 	m_TileGrid->SetCellSize({ 45,45 });
+
+	m_TileModel = AddGameObject(0, new TileModel({ 100,100 }, { 45,45 }));
+	m_TileView = AddGameObject(0, new TileView(m_TileModel));
+	m_TileView->SetDepthView(TileDepth::Terrain, AddGameObject(0, new TileViewChild(m_TileView)));
+	m_TileView->SetDepthView(TileDepth::OnGround, AddGameObject(1, new TileViewChild(m_TileView)));
+	m_TileController = AddGameObject(0, new TileController(m_TileModel, m_TileView, 0));
 
 	return true;
 }
@@ -38,8 +48,10 @@ void Scene_SimCityInGame::Enter()
 	tileTransform.scale(1.0f, 0.5f);
 	tileTransform.rotate(-45);
 
-	m_Tile->SetTileTransform({ 0,0 }, tileTransform);
+	//m_Tile->SetTileTransform({ 0,0 }, tileTransform);
 	m_TileGrid->SetTileTransform({ 0,0 }, tileTransform);
+
+	m_TileView->SetTileTransform({ 0,0 }, tileTransform);
 }
 
 void Scene_SimCityInGame::Update(float dt)
@@ -58,8 +70,8 @@ void Scene_SimCityInGame::Update(float dt)
 
 void Scene_SimCityInGame::ShowSceneImgui()
 {
-	sf::Vector2i tileIndex = m_Tile->GetTileCoordinatedIndex(INPUT_MGR->GetMouseViewPos(0));
-	sf::Vector2i clickedIndex = m_Tile->GetTileCoordinatedIndex(GAME_MGR->GetScreenToViewPos(0, INPUT_MGR->GetPrevMouseDown(sf::Mouse::Left)));
+	sf::Vector2i tileIndex = m_TileView->GetTileCoordinatedIndex(INPUT_MGR->GetMouseViewPos(0));
+	sf::Vector2i clickedIndex = m_TileView->GetTileCoordinatedIndex(GAME_MGR->GetScreenToViewPos(0, INPUT_MGR->GetPrevMouseDown(sf::Mouse::Left)));
 	ImGui::Begin("Tile Menu");
 	std::string forCurrIndex = "Current Index : {" + std::to_string(tileIndex.x) + ", " + std::to_string(tileIndex.y) + "}";
 	ImGui::Text(forCurrIndex.c_str());

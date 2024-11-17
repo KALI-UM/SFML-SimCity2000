@@ -1,9 +1,8 @@
 #pragma once
 
 class SceneBase;
-class SoundPlayer;
-class SceneManager :
-	public Singleton <SceneManager>
+class SceneManager
+	:public Singleton <SceneManager>
 {
 public:
 	bool Initialize();
@@ -28,7 +27,6 @@ private:
 	SceneBase* m_CurrScene;
 	SceneBase* m_WantsTo;
 	std::unordered_map<std::string, SceneBase*> m_Scenes;
-	SoundPlayer* m_CurrSoundPlayer;
 
 	SceneBase* m_EmptyScene;
 };

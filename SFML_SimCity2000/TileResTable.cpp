@@ -18,7 +18,7 @@ bool TileResTable::Load()
 		currRes.filename = m_TilePngPath + doc.GetCell<std::string>("filename", i);
 		currRes.name = doc.GetCell<std::string>("name", i);
 		currRes.lotSize = GetLotSizeFromNXM(doc.GetCell<std::string>("lot_size", i));
-
+		currRes.animated = (doc.GetCell<std::string>("animated", i) == "Y");
 		auto it = m_TileResDataByType.find(currRes.type);
 		if (it == m_TileResDataByType.end())
 		{
@@ -38,18 +38,25 @@ void TileResTable::Release()
 	m_TileResDataById.clear();
 }
 
-std::string TileResTable::GetTileFilePath(const TYPE& type, const NAME& name) 
+std::string TileResTable::GetTileFilePath(const TYPE& type, const NAME& name)
 {
-	return GetTileRes(type, name).filename;
+	if (type == "")return "";
+	auto& tileres = GetTileRes(type, name);
+	std::string filename = GetTileRes(type, name).filename;
+	if (tileres.animated)
+		filename.insert(filename.length() - 4, "-0");
+	return filename;
 }
 
-TileResData& TileResTable::GetTileRes(const TYPE& type, const NAME& name) 
+TileResData& TileResTable::GetTileRes(const TYPE& type, const NAME& name)
 {
 	auto byType = m_TileResDataByType.find(type);
-	if (byType == m_TileResDataByType.end())return m_Empty;
+	if (byType == m_TileResDataByType.end())
+		return m_Empty;
 
 	auto byName = byType->second.find(name);
-	if (byName == byType->second.end())return m_Empty;
+	if (byName == byType->second.end())
+		return m_Empty;
 
 	return m_TileResDataById[byName->second];
 }

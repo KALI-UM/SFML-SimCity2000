@@ -25,7 +25,8 @@ bool SceneBase::INITIALIZE()
 	for (auto& layer : m_GameObjects)
 		for (auto& gobj : layer.gameObjects)
 		{
-			result &= gobj->INITIALIZE();
+			if (!gobj->GetIsChildObj())
+				result &= gobj->INITIALIZE();
 		}
 	return result;
 }
@@ -52,7 +53,7 @@ void SceneBase::UPDATE(float dt)
 	for (auto& layer : m_GameObjects)
 		for (auto& gobj : layer.gameObjects)
 		{
-			if (gobj->GetIsValid())
+			if (gobj->GetIsValid() && !gobj->GetIsChildObj())
 				gobj->UPDATE(dt);
 		}
 	Update(dt);
@@ -60,12 +61,24 @@ void SceneBase::UPDATE(float dt)
 
 void SceneBase::LATEUPDATE(float dt)
 {
+	for (auto& layer : m_GameObjects)
+		for (auto& gobj : layer.gameObjects)
+		{
+			if (gobj->GetIsValid() && !gobj->GetIsChildObj())
+				gobj->LATEUPDATE(dt);
+		}
 	LateUpdate(dt);
 	RemoveGameObject();
 }
 
 void SceneBase::FIXEDUPDATE(float dt)
 {
+	for (auto& layer : m_GameObjects)
+		for (auto& gobj : layer.gameObjects)
+		{
+			if (gobj->GetIsValid() && !gobj->GetIsChildObj())
+				gobj->FIXEDUPDATE(dt);
+		}
 	FixedUpdate(dt);
 }
 
@@ -82,6 +95,12 @@ void SceneBase::IMGUIUPDATE()
 
 void SceneBase::PRERENDER()
 {
+	for (auto& layer : m_GameObjects)
+		for (auto& gobj : layer.gameObjects)
+		{
+			if (gobj->GetIsVisible() && !gobj->GetIsChildObj())
+				gobj->PRERENDER();
+		}
 	PreRender();
 	GAME_MGR->UpdateViewRect();
 	PushToDrawQue();
@@ -89,6 +108,12 @@ void SceneBase::PRERENDER()
 
 void SceneBase::POSTRENDER()
 {
+	for (auto& layer : m_GameObjects)
+		for (auto& gobj : layer.gameObjects)
+		{
+			if (gobj->GetIsVisible() && !gobj->GetIsChildObj())
+				gobj->POSTRENDER();
+		}
 	PostRender();
 }
 
@@ -198,21 +223,21 @@ void SceneBase::PushToDrawQue()
 				//else
 				//{
 					//게임오브젝트 내의 DrawableObject를 드로우큐에 넣는다
-					for (int i = 0; i < gobj->GetDrawbleCount(); i++)
+				for (int i = 0; i < gobj->GetDrawbleCount(); i++)
+				{
+					if (gobj->GetIsVisible(i))
 					{
-						if (gobj->GetIsVisible(i))
+						DrawableObject* dobj = gobj->GetDrawableObj(i);
+						if (GAME_MGR->GetViewRect(viewIndex).intersects(dobj->GetGlobalBounds()))
 						{
-							DrawableObject* dobj = gobj->GetDrawable(i);
-							if (GAME_MGR->GetViewRect(viewIndex).intersects(dobj->GetGlobalBounds()))
-							{
-								GAME_MGR->PushDrawableObject(viewIndex, dobj);
+							GAME_MGR->PushDrawableObject(viewIndex, dobj);
 #ifdef _DEBUG
-								if (dobj->GetDebugDraw())
-									GAME_MGR->PushDebugDrawObject(viewIndex, dobj->GetDebugDraw());
+							if (dobj->GetDebugDraw())
+								GAME_MGR->PushDebugDrawObject(viewIndex, dobj->GetDebugDraw());
 #endif // _DEBUG
-							}
 						}
 					}
+				}
 				//}
 			}
 		}

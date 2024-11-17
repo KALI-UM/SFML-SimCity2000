@@ -60,11 +60,14 @@ DTile::DTile(sf::Texture* tex)
 DTile::DTile(const std::string& filepath)
 	:DrawableObject(DataType::Shape, &m_Tile, &m_Tile)
 {
-	sf::Texture* tex = ResourceManager<sf::Texture>::GetInstance()->GetByFilepath(filepath);
-	if (tex)
+	if (filepath != "")
 	{
-		m_IsValid = true;
-		m_Tile.setTexture(*tex);
+		sf::Texture* tex = ResourceManager<sf::Texture>::GetInstance()->GetByFilepath(filepath);
+		if (tex)
+		{
+			m_IsValid = true;
+			m_Tile.setTexture(*tex);
+		}
 	}
 }
 
@@ -83,11 +86,14 @@ DTile::DTile(const sf::Vector2f& position, const std::string& filepath)
 	:DrawableObject(DataType::Shape, &m_Tile, &m_Tile)
 {
 	m_Tile.setPosition(position);
-	sf::Texture* tex = ResourceManager<sf::Texture>::GetInstance()->GetByFilepath(filepath);
-	if (tex)
+	if (filepath != "")
 	{
-		m_IsValid = true;
-		m_Tile.setTexture(*tex);
+		sf::Texture* tex = ResourceManager<sf::Texture>::GetInstance()->GetByFilepath(filepath);
+		if (tex)
+		{
+			m_IsValid = true;
+			m_Tile.setTexture(*tex);
+		}
 	}
 }
 
@@ -133,6 +139,12 @@ void DTile::SetTexture(sf::Texture* tex, const sf::Vector2u& lot, TileShapeType 
 		m_Tile.setTexture(*tex);
 		SetLot(lot);
 	}
+}
+
+void DTile::SetTexture(const std::string& filepath, const sf::Vector2u& lot, TileShapeType type)
+{
+	if (filepath == "")return;
+	SetTexture(ResourceManager<sf::Texture>::GetInstance()->GetByFilepath(filepath), lot, type);
 }
 
 sf::FloatRect DTile::GetGlobalBounds() const

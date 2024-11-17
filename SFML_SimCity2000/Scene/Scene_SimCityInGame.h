@@ -3,12 +3,14 @@
 class SimCityCursor;
 class TileGrid;
 class Tile;
+class TileModel;
+class TileController;
+class TileView;
 
 struct InGameInfo
 {
 	int rotation;		//0,1,2,3,
 	int currSelect;		//-1 none
-
 };
 
 
@@ -36,6 +38,10 @@ protected:
 	SimCityCursor*		m_Cursor;
 	TileGrid*			m_TileGrid;
 	Tile*				m_Tile;
+
+	TileModel*			m_TileModel;
+	TileController*		m_TileController;
+	TileView*			m_TileView;
 
 	sf::Vector2f		m_TilePosition;
 };

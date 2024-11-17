@@ -23,7 +23,7 @@ struct TileResData
 	std::string subtype;
 	std::string name;
 
-	sf::Vector2u lotSize;
-	//bool isAnimated;
+	sf::Vector2u	lotSize;
+	bool			animated;
 };
 

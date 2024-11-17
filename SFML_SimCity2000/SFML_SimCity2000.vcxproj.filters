@@ -45,13 +45,13 @@
     <ClCompile Include="Scene\Scene_Loading.cpp">
       <Filter>GameEngine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="TileGrid.cpp">
+    <ClCompile Include="Tile\TileGrid.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Scene_Test.cpp">
       <Filter>GameEngine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
+    <ClCompile Include="Tile\Tile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Drawable\ColorPalette.cpp">
@@ -159,6 +159,18 @@
     <ClCompile Include="Scene\Scene_SimCityInGame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Tile\TileModel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile\TileView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile\TileController.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TileViewChild.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -176,13 +188,13 @@
     <ClInclude Include="Scene\Scene_Loading.h">
       <Filter>GameEngine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="TileGrid.h">
+    <ClInclude Include="Tile\TileGrid.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Scene_Test.h">
       <Filter>GameEngine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
+    <ClInclude Include="Tile\Tile.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Drawable\ColorPalette.h">
@@ -315,6 +327,18 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Scene_SimCityInGame.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile\TileModel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile\TileView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile\TileController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TileViewChild.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
