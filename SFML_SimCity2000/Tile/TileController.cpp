@@ -68,18 +68,30 @@ void TileController::UpdateDrag(float dt)
 	m_MouseOverlaidTile = mcv_View->GetTileCoordinatedIndex(INPUT_MGR->GetMouseViewPos(m_ViewIndex));
 	if (INPUT_MGR->GetMouseUp(sf::Mouse::Left))
 	{
-		mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType);
-		m_CurrStatus = ControlStatus::Place;
+		mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName);
 		m_SelectingTiles.clear();
+		m_CurrStatus = ControlStatus::Place;
 		return;
 	}
-
 
 	if (INPUT_MGR->GetMouseDrag(sf::Mouse::Left) && m_DragStartTile != m_MouseOverlaidTile)
 	{
 		if (mcv_Model->IsValidTileIndex(m_DragStartTile) && mcv_Model->IsValidTileIndex(m_MouseOverlaidTile))
+		{
+			if(m_CurrTileType==TileType::Road|| m_CurrTileType == TileType::Rail|| m_CurrTileType == TileType::Powerline)
 			SetLineIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
+
+			else
+			SetRangeIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
+		}
 	}
+}
+
+void TileController::SetCurrTile(const TileType& type, const SUBTYPE& subtype, const std::string& name)
+{
+	m_CurrTileType = type;
+	m_CurrSubType = subtype;
+	m_CurrTileName = name;
 }
 
 void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex)
@@ -134,6 +146,21 @@ void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const 
 				//PushToSelectingTiles({ currIndex.x - sx, currIndex.y });
 				PushToSelectingTiles({ currIndex.x, currIndex.y - sy });
 			}
+		}
+	}
+}
+
+void TileController::SetRangeIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex)
+{
+	m_SelectingTiles.clear();
+
+	for (int j = std::min(startIndex.y, endIndex.y); j <= std::max(startIndex.y, endIndex.y); j++)
+	{
+		for (int i = std::min(startIndex.x, endIndex.x); i <= std::max(startIndex.x, endIndex.x); i++)
+		{
+			CellIndex currIndex = { i,j };
+			if (!mcv_Model->IsPossibleToBuild(currIndex, m_CurrTileType))continue;
+			PushToSelectingTiles(currIndex);
 		}
 	}
 }

@@ -80,14 +80,19 @@ void Scene_SimCityInGame::ShowSceneImgui()
 
 	/*ImGui::Image()*/
 
-	//if (ImGui::Button("Road"))
-	//{
-	//	curr = "Road";
-	//}
-	//if (ImGui::Button("Zone"))
-	//{
-	//	curr = "Zone";
-	//}
+	if (ImGui::Button("Road"))
+	{
+		m_TileController->SetCurrTile(TileType::Road, "road", "road");
+	}
+	if (ImGui::Button("Powerline"))
+	{
+		m_TileController->SetCurrTile(TileType::Powerline, "powerline", "powerline");
+	}
+	if (ImGui::Button("Zone"))
+	{
+		m_TileController->SetCurrTile(TileType::Zone, "", "zone_1");
+	}
+
 
 	//if(ImGui::ImageButton())
 	ImGui::End();

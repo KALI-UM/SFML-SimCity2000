@@ -98,7 +98,8 @@ void SceneBase::PRERENDER()
 	for (auto& layer : m_GameObjects)
 		for (auto& gobj : layer.gameObjects)
 		{
-			if (gobj->GetIsVisible() && !gobj->GetIsChildObj())
+			//if (gobj->GetIsVisible() && !gobj->GetIsChildObj())
+			if (!gobj->GetIsChildObj())
 				gobj->PRERENDER();
 		}
 	PreRender();
@@ -111,7 +112,8 @@ void SceneBase::POSTRENDER()
 	for (auto& layer : m_GameObjects)
 		for (auto& gobj : layer.gameObjects)
 		{
-			if (gobj->GetIsVisible() && !gobj->GetIsChildObj())
+			//if (gobj->GetIsVisible() && !gobj->GetIsChildObj())
+			if (!gobj->GetIsChildObj())
 				gobj->POSTRENDER();
 		}
 	PostRender();

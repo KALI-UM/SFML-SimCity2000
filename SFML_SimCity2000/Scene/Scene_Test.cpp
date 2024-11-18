@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Scene_Test.h"
 #include "TileGrid.h"
-#include "Tile.h"
 #include "MouseCursor.h"
 #include "DustEffect.h"
 
@@ -21,8 +20,6 @@ bool Scene_Test::Initialize()
 	SetLayerViewIndex(2, 2);
 	m_Cursor = AddGameObject(2, new MouseCursor("background/1013.png", 2));
 
-	m_Tile = AddGameObject(0, new Tile());
-	m_Tile->SetCellSize({ 45,45 });
 	m_TileGrid = AddGameObject(1, new TileGrid());
 	m_TileGrid->SetCellSize({ 45,45 });
 	m_ObjectPool.Initialize(this, 10, ExpandOption::MakeNew, 2);
@@ -38,7 +35,6 @@ void Scene_Test::Enter()
 	t.scale(1.0f, 0.5f);
 	t.rotate(-45);
 
-	m_Tile->SetTileTransform({ 0,0 }, t);
 	m_TileGrid->SetTileTransform({ 0,0 }, t);
 
 	void (SoundManager:: * func)(std::string, bool) = &SoundManager::PlaySfx;

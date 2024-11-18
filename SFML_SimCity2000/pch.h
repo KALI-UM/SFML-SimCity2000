@@ -11,6 +11,7 @@
 #include <map>
 #include <unordered_map>
 #include <set>
+#include <unordered_set>
 #include <queue>
 
 
@@ -20,6 +21,8 @@
 
 #include "Framework/Utils.h"
 #include "Framework/rapidcsv.h"
+#include <json.hpp>
+using json = nlohmann::json;
 
 #include "Framework/Framework.h"
 #include "Framework/Transform.h"

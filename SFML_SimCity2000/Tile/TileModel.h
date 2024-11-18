@@ -29,19 +29,17 @@ public:
 	bool IsValidTileIndex(const CellIndex& tileIndex) const;
 	const TileInfo& GetTileInfo(const TileDepth& depth, const CellIndex& tileIndex) const;
 
-	void SetTiles(std::list< CellIndex>& tiles, TileType type);
-	void SetTile(const CellIndex& tileIndex, TileType type);
+	void SetTiles(std::list< CellIndex>& tiles, TileType type, const std::string& subtype, const std::string& name);
 
-	TileDepth GetTileDepth(const TileType& type);
 	bool IsPossibleToBuild(const CellIndex& tileIndex, TileType type);
 
 protected:
-	std::vector<std::vector<std::vector<TileInfo>>> m_TileInfos;
+	std::vector<std::vector<std::vector<TileInfo>>>		m_TileInfos;
 
+	void SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec);
 
-	std::string GetTypeToString(TileType type) const;
-	TileType GetTypeToEnum(const std::string& type) const;
-	int GetConnectVaule(const TileDepth& depth, const CellIndex& tileIndex, TileType type);
+	void SetTile(const CellIndex& tileIndex, const TileDepth& depth, TileType type, const std::string& subtype, const std::string& name, bool isConnectable = false);
+	void SetConnection(const CellIndex& tileIndex, const TileDepth& depth, TileType type);
 	std::string GetConnectedTileName(int connection);
 
 	void RequestUpdateTile(const TileDepth& depth, const CellIndex& tileIndex);

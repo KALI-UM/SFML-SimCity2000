@@ -1,10 +1,25 @@
 #include "pch.h"
 #include "Framework.h"
+#include <windows.h>
+#include <uxtheme.h>
+#pragma comment(lib, "uxtheme.lib")
+#include "resource.h"
 
 
 void Framework::Initialize(int width, int height, const std::string& name)
 {
-	m_MainWindow.create(sf::VideoMode(width, height), name);
+	m_MainWindow.create(sf::VideoMode(width, height), name, sf::Style::None);
+	HWND hwnd = m_MainWindow.getSystemHandle();
+
+	LONG style = GetWindowLong(hwnd, GWL_STYLE);
+	style |= WS_OVERLAPPEDWINDOW;
+	SetWindowLong(hwnd, GWL_STYLE, style);
+
+	HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
+	SetMenu(hwnd, hMenu);
+	DrawMenuBar(hwnd);
+	SetWindowTheme(hwnd, L" ", L" ");
+
 	Utils::Initialize();
 
 	SOUND_MGR->Initialize();
@@ -30,6 +45,7 @@ void Framework::Do()
 		// 이벤트 루프
 		INPUT_MGR->Clear();
 		sf::Event event;
+
 		while (m_MainWindow.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)

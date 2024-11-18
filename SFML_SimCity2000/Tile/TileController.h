@@ -35,12 +35,16 @@ public:
 
 
 	CellIndex GetMouseOverlaidTile()const { return m_MouseOverlaidTile; }
+	void SetCurrTile(const TileType& type, const SUBTYPE& subtype, const std::string& name);
 
 	void SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex);
+	void SetRangeIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex);
 	void PushToSelectingTiles(const CellIndex& tileIndex);
 protected:
 	ControlStatus	m_CurrStatus = ControlStatus::Place;
 	TileType		m_CurrTileType = TileType::Road;
+	SUBTYPE			m_CurrSubType = "road";
+	std::string		m_CurrTileName = "road";
 	CellIndex		m_MouseOverlaidTile;
 	CellIndex		m_DragStartTile;
 	std::list<CellIndex> m_SelectingTiles;

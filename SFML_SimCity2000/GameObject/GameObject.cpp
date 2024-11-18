@@ -169,7 +169,7 @@ void GameObject::Release()
 
 bool GameObject::GetIsVisible() const
 {
-	return m_IsVisible && GetIsValid();
+	return m_IsVisible && GetIsValid()&&GetDrawbleCount()!=0;
 }
 
 bool GameObject::GetIsVisible(size_t index) const
