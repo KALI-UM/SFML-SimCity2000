@@ -20,6 +20,12 @@ void Framework::Initialize(int width, int height, const std::string& name)
 	DrawMenuBar(hwnd);
 	SetWindowTheme(hwnd, L" ", L" ");
 
+	HFONT hFont = CreateFont(
+		-11, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"MS Sans Serif");
+	SendMessage(hwnd, WM_SETFONT, (WPARAM)hFont, TRUE);
+
 	Utils::Initialize();
 
 	SOUND_MGR->Initialize();

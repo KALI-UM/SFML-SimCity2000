@@ -171,6 +171,9 @@
     <ClCompile Include="TileViewChild.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="TileAttTable.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -341,5 +344,13 @@
     <ClInclude Include="TileViewChild.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="TileAttTable.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SFML_SimCity2000.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
