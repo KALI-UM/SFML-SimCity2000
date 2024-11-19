@@ -64,3 +64,57 @@ TileType Tile::GetTypeToEnum(const std::string& type)
 
 	return TileType::None;
 }
+
+std::string Tile::GetZoneToString(ZoneType type)
+{
+	switch (type)
+	{
+	case ZoneType::Residential:
+		return "residential";
+		break;
+	case ZoneType::Commercial:
+		return "commercial";
+		break;
+	case ZoneType::Industrial:
+		return "industrial";
+		break;
+	case ZoneType::Military:
+		return "military";
+		break;
+	case ZoneType::Airport:
+		return "airport";
+		break;
+	case ZoneType::Seaport:
+		return "seaport";
+		break;
+	case ZoneType::None:
+		return "";
+		break;
+	}
+	return "";
+}
+
+ZoneType Tile::GetZoneToEnum(const std::string& type)
+{
+	if (type == "")
+		return ZoneType::None;
+	if (type == "residential")
+		return ZoneType::Residential;
+	if (type == "commercial")
+		return ZoneType::Commercial;
+	if (type == "industrial")
+		return ZoneType::Industrial;
+	if (type == "military")
+		return ZoneType::Military;
+	if (type == "airport")
+		return ZoneType::Airport;
+	if (type == "seaport")
+		return ZoneType::Seaport;
+
+	return ZoneType::None;
+}
+
+
+
+
+

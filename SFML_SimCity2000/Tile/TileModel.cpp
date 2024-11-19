@@ -26,7 +26,9 @@ bool TileModel::Initialize()
 		{
 			auto& currTileInfo = m_TileInfos[(int)TileDepth::Terrain][j][i];
 			currTileInfo.index = { i,j };
-			currTileInfo.type = TileType::None;
+			currTileInfo.type = TileType::Terrain;
+			currTileInfo.subtype = "terrain";
+			currTileInfo.name = "land";
 		}
 	}
 
@@ -43,6 +45,7 @@ bool TileModel::Initialize()
 				currTileInfo.type = Tile::GetTypeToEnum(strings[0]);
 				currTileInfo.subtype = strings[1];
 				currTileInfo.name = strings[2];
+				currTileInfo.lotSize = DATATABLE_TILERES->GetTileRes(currTileInfo.type, currTileInfo.subtype, currTileInfo.name).lotSize;
 				currTileInfo.filepath = DATATABLE_TILERES->GetTileFilePath(currTileInfo.type, currTileInfo.subtype, currTileInfo.name);
 			}
 		}
@@ -76,6 +79,7 @@ bool TileModel::Initialize()
 				currTileInfo.type = Tile::GetTypeToEnum(strings[0]);
 				currTileInfo.subtype = strings[1];
 				currTileInfo.name = strings[2];
+				currTileInfo.lotSize = DATATABLE_TILERES->GetTileRes(currTileInfo.type, currTileInfo.subtype, currTileInfo.name).lotSize;
 				currTileInfo.filepath = DATATABLE_TILERES->GetTileFilePath(currTileInfo.type, currTileInfo.subtype, currTileInfo.name);
 			}
 		}
@@ -97,12 +101,17 @@ const TileInfo& TileModel::GetTileInfo(const TileDepth& depth, const CellIndex& 
 	return m_TileInfos[(int)depth][tileIndex.y][tileIndex.x];
 }
 
+TileShapeType TileModel::GetTileShapeType(const TileDepth& depth, const CellIndex& tileIndex) const
+{
+	return (depth == TileDepth::Terrain ? TileShapeType::Diamond : TileShapeType::Convex);
+}
+
 bool TileModel::IsValidTileIndex(const CellIndex& tileIndex) const
 {
 	return tileIndex.x > 0 && tileIndex.x < m_CellCount.x - 1 && tileIndex.y > 0 && tileIndex.y < m_CellCount.y - 1;
 }
 
-void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::string& subtype, const std::string& name)
+void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::string& subtype, const std::string& name, bool isOne)
 {
 	TileDepth depth = (TileDepth)DATATABLE_TILEATT->GetTileAttribute(type).depth;
 	for (auto& currIndex : tiles)
@@ -154,32 +163,30 @@ void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::
 	}
 	else
 	{
-		for (auto& currIndex : tiles)
+		if (!isOne)
 		{
-			SetTile(currIndex, depth, type, subtype, name);
+			for (auto& currIndex : tiles)
+			{
+				SetTile(currIndex, depth, type, subtype, name);
+			}
+		}
+		else
+		{
+			auto truetile = CellIndex(m_CellCount.x, 0);
+			for (auto& currIndex : tiles)
+			{
+				truetile.x = std::min(truetile.x, currIndex.x);
+				truetile.y = std::max(truetile.y, currIndex.y);
+			}
+			for (auto& currIndex : tiles)
+			{
+				SetTile(currIndex, depth, type, subtype, name,false, currIndex==truetile);
+			}
 		}
 	}
 }
 
-void TileModel::SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec)
-{
-	vec.clear();
-	if (str == "")return;
-	int curr = 0;
-	while (true)
-	{
-		auto it = str.find(',', curr);
-		if (it == std::string::npos)
-		{
-			vec.push_back(str.substr(curr, str.length() - curr));
-			return;
-		}
-		vec.push_back(str.substr(curr, it - curr));
-		curr = it + 1;
-	}
-}
-
-void TileModel::SetTile(const CellIndex& tileIndex, const TileDepth& depth, TileType type, const std::string& subtype, const std::string& name, bool isConnectable)
+void TileModel::SetTile(const CellIndex& tileIndex, const TileDepth& depth, TileType type, const std::string& subtype, const std::string& name, bool isConnectable, bool truetile)
 {
 	auto& currTileInfo = m_TileInfos[(int)depth][tileIndex.y][tileIndex.x];
 	if (currTileInfo.prevtype != TileType::None && currTileInfo.prevtype != type &&
@@ -203,12 +210,15 @@ void TileModel::SetTile(const CellIndex& tileIndex, const TileDepth& depth, Tile
 		{
 			SetConnection(tileIndex, depth, currTileInfo.type);
 		}
-		currTileInfo.name += GetConnectedTileName(currTileInfo.connection);
+		currTileInfo.name += GetConnectedTileName(currTileInfo.name, currTileInfo.connection);
 	}
 	else
 	{
 		currTileInfo.connection = -1;
 	}
+
+	const auto& tileres = DATATABLE_TILERES->GetTileRes(currTileInfo.type, currTileInfo.subtype, currTileInfo.name);
+	currTileInfo.lotSize = (truetile? tileres.lotSize : sf::Vector2u(0,0));
 	currTileInfo.filepath = DATATABLE_TILERES->GetTileFilePath(currTileInfo.type, currTileInfo.subtype, currTileInfo.name);
 	RequestUpdateTile(depth, tileIndex);
 }
@@ -232,31 +242,13 @@ void TileModel::SetConnection(const CellIndex& tileIndex, const TileDepth& depth
 		currTileInfo.connection |= 1 << 3;
 }
 
-bool TileModel::IsPossibleToBuild(const CellIndex& tileIndex, TileType type)
+std::string TileModel::GetConnectedTileName(std::string& name, int connection)
 {
-	//수정보완 필
-	auto& currTileAtt = DATATABLE_TILEATT->GetTileAttribute(type);
-	auto& originTileInfo = m_TileInfos[currTileAtt.depth][tileIndex.y][tileIndex.x];
+	if (name[name.length() - 2] == '_')
+		name = name.substr(0, name.length() - 2);
+	if (name[name.length() - 3] == '_')
+		name = name.substr(0, name.length() - 3);
 
-	//같은 타일이면 가능
-	bool isSame = originTileInfo.type == type;
-	if (isSame)
-		return true;
-	//원래 타일이 none 타일이면 가능
-	bool isNone = originTileInfo.type == TileType::None|| originTileInfo.type == TileType::Terrain;
-	if (isNone)
-		return true;
-	//원래 타일이 overlay가능한 커넥션 값이고
-	//원래 타일과 현재 타일이 오버레이 가능하면 가능
-	bool isOverlayConnection = originTileInfo.connection == 0 || originTileInfo.connection == 1 || originTileInfo.connection == 2 || originTileInfo.connection == 3 || originTileInfo.connection == 4 || originTileInfo.connection == 8 || originTileInfo.connection == 12;
-	if (isOverlayConnection)
-		return DATATABLE_TILEATT->CanBeSub(originTileInfo.type, type) || DATATABLE_TILEATT->CanBeSub(type, originTileInfo.type);
-
-	return false;
-}
-
-std::string TileModel::GetConnectedTileName(int connection)
-{
 	if (connection == 3)return "_1";
 	if (connection == 12)return "_2";
 	if (connection == 72)return "_3";
@@ -278,8 +270,52 @@ std::string TileModel::GetConnectedTileName(int connection)
 	return "";
 }
 
+bool TileModel::IsPossibleToBuild(const CellIndex& tileIndex, const TileType& type, const SUBTYPE& subtype)
+{
+	//수정보완 필
+	auto& currTileAtt = DATATABLE_TILEATT->GetTileAttribute(type);
+	auto& originTileInfo = m_TileInfos[currTileAtt.depth][tileIndex.y][tileIndex.x];
+
+	//도로, 레일, 전선이고 같은 타일이면 가능
+	bool isSame = (originTileInfo.type == TileType::Road || originTileInfo.type == TileType::Rail || originTileInfo.type == TileType::Powerline)&&originTileInfo.type == type;
+	if (isSame)
+		return true;
+	//원래 타일이 none 타일이면 가능
+	bool isNone = originTileInfo.type == TileType::None || originTileInfo.type == TileType::Terrain;
+	bool isTree = originTileInfo.subtype == "trees";
+	if (isNone || isTree)
+		return true;
+
+
+	//원래 타일이 overlay가능한 커넥션 값이고
+	//원래 타일과 현재 타일이 오버레이 가능하면 가능
+	bool isOverlayConnection = originTileInfo.connection == 0 || originTileInfo.connection == 1 || originTileInfo.connection == 2 || originTileInfo.connection == 3 || originTileInfo.connection == 4 || originTileInfo.connection == 8 || originTileInfo.connection == 12;
+	if (isOverlayConnection)
+		return DATATABLE_TILEATT->CanBeSub(originTileInfo.type, type) || DATATABLE_TILEATT->CanBeSub(type, originTileInfo.type);
+
+	return false;
+}
+
 void TileModel::RequestUpdateTile(const TileDepth& depth, const CellIndex& tileIndex)
 {
 	if (m_WhenNeedsToUpdateTileFunc)
 		m_WhenNeedsToUpdateTileFunc(depth, tileIndex);
+}
+
+void TileModel::SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec)
+{
+	vec.clear();
+	if (str == "")return;
+	int curr = 0;
+	while (true)
+	{
+		auto it = str.find(',', curr);
+		if (it == std::string::npos)
+		{
+			vec.push_back(str.substr(curr, str.length() - curr));
+			return;
+		}
+		vec.push_back(str.substr(curr, it - curr));
+		curr = it + 1;
+	}
 }

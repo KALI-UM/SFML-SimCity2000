@@ -59,7 +59,7 @@ std::string TileResTable::GetTileFilePath(const TileType& type, const SUBTYPE& s
 	return GetTileFilePath(Tile::GetTypeToString(type), subtype, name);
 }
 
-TileResData& TileResTable::GetTileRes(const TYPE& type, const SUBTYPE& subtype, const NAME& name)
+const TileResData& TileResTable::GetTileRes(const TYPE& type, const SUBTYPE& subtype, const NAME& name) const
 {
 	auto byType = m_TileResDataByType.find({ type, subtype });
 	if (byType == m_TileResDataByType.end())
@@ -72,7 +72,7 @@ TileResData& TileResTable::GetTileRes(const TYPE& type, const SUBTYPE& subtype, 
 	return m_TileResDataById[byName->second];
 }
 
-TileResData& TileResTable::GetTileRes(const TileType& type, const SUBTYPE& subtype, const NAME& name)
+const TileResData& TileResTable::GetTileRes(const TileType& type, const SUBTYPE& subtype, const NAME& name) const
 {
 	if (type == TileType::None)
 		return m_Empty;

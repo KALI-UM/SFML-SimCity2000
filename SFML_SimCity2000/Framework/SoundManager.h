@@ -22,7 +22,7 @@ class SoundManager :
 	friend class Singleton<SoundManager>;
 
 protected:
-	bool m_IsSoundDeviceValid = false;					//사운드 장치가 유효한지 확인할 수있는 방법이 없다...ㅜ
+	bool m_IsSoundDeviceValid = true;					//사운드 장치가 유효한지 확인할 수있는 방법이 없다...ㅜ
 protected:
 	SoundManager()=default;
 	virtual ~SoundManager() = default;

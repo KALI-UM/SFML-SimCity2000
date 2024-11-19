@@ -151,6 +151,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Background_Lobby.cpp" />
+    <ClCompile Include="Building.cpp" />
+    <ClCompile Include="BuildingGenerator.cpp" />
     <ClCompile Include="Framework\DataTable.cpp" />
     <ClCompile Include="Framework\DataTableManager.cpp" />
     <ClCompile Include="Drawable\ColorPalette.cpp" />
@@ -187,12 +189,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PowerPlantBuilding.cpp" />
     <ClCompile Include="Scene\Scene_Loading.cpp" />
     <ClCompile Include="Scene\Scene_Lobby.cpp" />
     <ClCompile Include="Scene\Scene_SimCityInGame.cpp" />
     <ClCompile Include="Scene\Scene_Test.cpp" />
     <ClCompile Include="Framework\SoundManager.cpp" />
     <ClCompile Include="GameObject\SimCityCursor.cpp" />
+    <ClCompile Include="Scene_SimCityMain.cpp" />
+    <ClCompile Include="SimCityGameSystem.cpp" />
     <ClCompile Include="TileAttTable.cpp" />
     <ClCompile Include="TileViewChild.cpp" />
     <ClCompile Include="Tile\Tile.cpp" />
@@ -205,6 +210,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Background_Lobby.h" />
+    <ClInclude Include="Building.h" />
+    <ClInclude Include="BuildingGenerator.h" />
     <ClInclude Include="Framework\DataTable.h" />
     <ClInclude Include="Framework\DataTableManager.h" />
     <ClInclude Include="Drawable\ColorPalette.h" />
@@ -245,6 +252,7 @@
     <ClInclude Include="GameStart.h" />
     <ClInclude Include="Managers_header.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PowerPlantBuilding.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\Scene_Loading.h" />
     <ClInclude Include="Scene\Scene_Lobby.h" />
@@ -252,6 +260,8 @@
     <ClInclude Include="Scene\Scene_Test.h" />
     <ClInclude Include="Framework\SoundManager.h" />
     <ClInclude Include="GameObject\SimCityCursor.h" />
+    <ClInclude Include="Scene_SimCityMain.h" />
+    <ClInclude Include="SimCityGameSystem.h" />
     <ClInclude Include="TileAttTable.h" />
     <ClInclude Include="TileViewChild.h" />
     <ClInclude Include="Tile\Tile.h" />

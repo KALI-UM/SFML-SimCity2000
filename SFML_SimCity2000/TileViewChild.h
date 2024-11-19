@@ -25,6 +25,7 @@ public:
 private:
 	void SetTileTransform(const sf::Transform& trans);
 
+	
 
 protected:
 	std::vector<std::vector<DTile*>> m_TileDrawable;

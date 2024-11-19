@@ -1,11 +1,5 @@
 #pragma once
-
-enum class TileShapeType
-{
-	Convex,
-	Diamond,
-	Rectangle,
-};
+#include "Tile.h"
 
 class sfTile :public sf::Drawable, public sf::Transformable
 {
@@ -18,6 +12,7 @@ public:
 	sf::Vector2u m_LotSize;		//NxM ≈∏¿œ
 
 	void setTexture(const sf::Texture& tex);
+	const sf::Texture* getTexture() const;
 	void setColor(const sf::Color& color);
 	const sf::Color& getColor()const;
 	sf::FloatRect getGlobalBounds()const;
@@ -26,12 +21,9 @@ private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
-
 class DTile :
     public DrawableObject
 {
-protected:
-	static std::vector<sf::VertexArray> m_TileShapes;
 public:
 	DTile(sf::Texture* tex);
 	DTile(const std::string& filepath);
@@ -41,10 +33,12 @@ public:
 	DTile(DTile&& other);
 	virtual ~DTile();
 
+	void SetShapeLot(const TileShapeType& shape, const sf::Vector2u& lot);
+	void SetTexture(sf::Texture* tex, TileShapeType type = TileShapeType::Convex, const sf::Vector2u& lot = { 1,1 });
+	void SetTexture(const std::string& filepath, TileShapeType type = TileShapeType::Convex, const sf::Vector2u& lot = {1,1});
+	sf::Vector2u GetTextureSize()const;
+	void SetOrigin(OriginType type, const sf::Vector2f& detail);
 
-	void SetLot(const sf::Vector2u& lot);
-	void SetTexture(sf::Texture* tex, const sf::Vector2u& lot, TileShapeType type=TileShapeType::Convex);
-	void SetTexture(const std::string& filepath, const sf::Vector2u& lot, TileShapeType type=TileShapeType::Convex);
 
 	sf::FloatRect GetGlobalBounds()const;
 	sf::FloatRect GetLocalBounds()const;
@@ -61,5 +55,8 @@ private:
 	float			m_Unit = 64;
 	TileShapeType	m_ShapeType;
 	sfTile			m_Tile;
+
+protected:
+
 };
 

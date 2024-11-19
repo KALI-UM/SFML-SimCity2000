@@ -2,6 +2,7 @@
 #include "TileController.h"
 #include "TileModel.h"
 #include "TileView.h"
+#include "TileResTable.h"
 
 TileController::TileController(TileModel* model, TileView* view, int viewIndex)
 	:mcv_Model(model), mcv_View(view), m_ViewIndex(viewIndex)
@@ -52,14 +53,13 @@ void TileController::UpdatePlace(float dt)
 	if (INPUT_MGR->GetMouseDown(sf::Mouse::Left))
 	{
 		m_DragStartTile = m_MouseOverlaidTile;
-		if (mcv_Model->IsPossibleToBuild(m_DragStartTile, m_CurrTileType))
-			PushToSelectingTiles(m_DragStartTile);
 
+		SetCenterNXMTiles(m_CurrLotSize, m_DragStartTile);
 		m_CurrStatus = ControlStatus::Drag;
 	}
 	else
 	{
-		mcv_View->ColorizeTile(ColorPalette::Gray, m_MouseOverlaidTile);
+		mcv_View->ColorizeTile(ColorPalette::Gray, m_CurrLotSize, m_MouseOverlaidTile);
 	}
 }
 
@@ -68,7 +68,7 @@ void TileController::UpdateDrag(float dt)
 	m_MouseOverlaidTile = mcv_View->GetTileCoordinatedIndex(INPUT_MGR->GetMouseViewPos(m_ViewIndex));
 	if (INPUT_MGR->GetMouseUp(sf::Mouse::Left))
 	{
-		mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName);
+		mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName, m_CurrLotSize!=sf::Vector2u(1,1));
 		m_SelectingTiles.clear();
 		m_CurrStatus = ControlStatus::Place;
 		return;
@@ -78,11 +78,11 @@ void TileController::UpdateDrag(float dt)
 	{
 		if (mcv_Model->IsValidTileIndex(m_DragStartTile) && mcv_Model->IsValidTileIndex(m_MouseOverlaidTile))
 		{
-			if(m_CurrTileType==TileType::Road|| m_CurrTileType == TileType::Rail|| m_CurrTileType == TileType::Powerline)
-			SetLineIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
+			if (m_CurrTileType == TileType::Road || m_CurrTileType == TileType::Rail || m_CurrTileType == TileType::Powerline)
+				SetLineIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
 
-			else
-			SetRangeIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
+			else if (m_CurrTileType == TileType::Zone)
+				SetRangeIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
 		}
 	}
 }
@@ -92,6 +92,7 @@ void TileController::SetCurrTile(const TileType& type, const SUBTYPE& subtype, c
 	m_CurrTileType = type;
 	m_CurrSubType = subtype;
 	m_CurrTileName = name;
+	m_CurrLotSize = DATATABLE_TILERES->GetTileRes(m_CurrTileType, m_CurrSubType, m_CurrTileName).lotSize;
 }
 
 void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex)
@@ -119,7 +120,7 @@ void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const 
 
 	while (true)
 	{
-		if (!mcv_Model->IsPossibleToBuild(currIndex, m_CurrTileType))return;
+		if (!mcv_Model->IsPossibleToBuild(currIndex, m_CurrTileType, m_CurrSubType))return;
 
 		// 현재 타일 색칠
 		PushToSelectingTiles(currIndex);
@@ -159,7 +160,56 @@ void TileController::SetRangeIntersectedTiles(const CellIndex& startIndex, const
 		for (int i = std::min(startIndex.x, endIndex.x); i <= std::max(startIndex.x, endIndex.x); i++)
 		{
 			CellIndex currIndex = { i,j };
-			if (!mcv_Model->IsPossibleToBuild(currIndex, m_CurrTileType))continue;
+			if (!mcv_Model->IsPossibleToBuild(currIndex, m_CurrTileType, m_CurrSubType))continue;
+			PushToSelectingTiles(currIndex);
+		}
+	}
+}
+
+void TileController::SetCenterNXMTiles(const sf::Vector2u& lot, const CellIndex& centerIndex)
+{
+	m_SelectingTiles.clear();
+
+	CellIndex startIndex;
+	//CellIndex selectedIndex;
+	if (lot == sf::Vector2u(1, 1))
+	{
+		startIndex = centerIndex;
+		//selectedIndex = centerIndex;
+	}
+	else if (lot == sf::Vector2u(2, 2))
+	{
+		startIndex = centerIndex + sf::Vector2i(-1, 0);
+		//selectedIndex = centerIndex +sf::Vector2i(-1, -1);
+	}
+	else if (lot == sf::Vector2u(3, 3))
+	{
+		startIndex = centerIndex + sf::Vector2i(-1, -1);
+		//selectedIndex = centerIndex +sf::Vector2i(-1, +1);
+	}
+	else if (lot == sf::Vector2u(4, 4))
+	{
+		startIndex = centerIndex + sf::Vector2i(-2, -1);
+		//selectedIndex = centerIndex +sf::Vector2i(-2, +2);
+	}
+
+	for (int j = startIndex.y; j < startIndex.y + lot.y; j++)
+	{
+		for (int i = startIndex.x; i < startIndex.x + lot.x; i++)
+		{
+			CellIndex currIndex = { i,j };
+			if (!mcv_Model->IsPossibleToBuild(currIndex, m_CurrTileType, m_CurrSubType))
+			{
+				return;
+			}
+		}
+	}
+
+	for (int j = startIndex.y; j < startIndex.y + lot.y; j++)
+	{
+		for (int i = startIndex.x; i < startIndex.x + lot.x; i++)
+		{
+			CellIndex currIndex = { i,j };
 			PushToSelectingTiles(currIndex);
 		}
 	}

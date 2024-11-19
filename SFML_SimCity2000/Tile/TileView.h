@@ -12,6 +12,7 @@ protected:
 	std::vector<TileViewChild*> m_DepthViews;
 public:
 	const TileModel* const GetModel()const { return mcv_Model; }
+	const sf::Vector2f m_TileOffset = { -1,0 };
 public:
 	TileView(TileModel* model);
 	~TileView();
@@ -36,6 +37,7 @@ public:
 
 
 	void ColorizeTile(const sf::Color& color, const CellIndex& tileIndex);
+	void ColorizeTile(const sf::Color& color, const sf::Vector2u& lot, const CellIndex& centerIndex);
 
 
 protected:

@@ -26,9 +26,8 @@ public:
 
 	std::string GetTileFilePath(const TYPE& type, const SUBTYPE& subtype, const NAME& name );
 	std::string GetTileFilePath(const TileType& type, const SUBTYPE& subtype, const NAME& name);
-protected:
-	TileResData& GetTileRes(const TYPE& type, const SUBTYPE& subtype, const NAME& name);
-	TileResData& GetTileRes(const TileType& type, const SUBTYPE& subtype, const NAME& name);
+	const TileResData& GetTileRes(const TYPE& type, const SUBTYPE& subtype, const NAME& name) const;
+	const TileResData& GetTileRes(const TileType& type, const SUBTYPE& subtype, const NAME& name) const;
 protected:
 	std::unordered_map<std::pair<TYPE,SUBTYPE>, std::unordered_map<NAME, ID>> m_TileResDataByType;
 	std::vector<TileResData> m_TileResDataById;

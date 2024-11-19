@@ -28,9 +28,10 @@ bool Scene_SimCityInGame::Initialize()
 	//m_Tile = AddGameObject(0, new Tile());
 	//m_Tile->SetCellSize({ 45,45 });
 	m_TileGrid = AddGameObject(1, new TileGrid());
+	m_TileGrid->SetCellCount({ 128,128 });
 	m_TileGrid->SetCellSize({ 45,45 });
 
-	m_TileModel = AddGameObject(0, new TileModel({ 100,100 }, { 45,45 }));
+	m_TileModel = AddGameObject(0, new TileModel({ 128,128 }, { 45,45 }));
 	m_TileView = AddGameObject(0, new TileView(m_TileModel));
 	m_TileView->SetDepthView(TileDepth::Terrain, AddGameObject(0, new TileViewChild(m_TileView)));
 	m_TileView->SetDepthView(TileDepth::OnGround, AddGameObject(1, new TileViewChild(m_TileView)));
@@ -41,6 +42,7 @@ bool Scene_SimCityInGame::Initialize()
 
 void Scene_SimCityInGame::Enter()
 {
+	SOUND_MGR->PlayBgm("sound/BGM/bgm.mp3", true, true, 30, 10);
 	GAME_MGR->SetViewSize(0, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
 	GAME_MGR->SetViewSize(1, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
 
@@ -50,7 +52,6 @@ void Scene_SimCityInGame::Enter()
 
 	//m_Tile->SetTileTransform({ 0,0 }, tileTransform);
 	m_TileGrid->SetTileTransform({ 0,0 }, tileTransform);
-
 	m_TileView->SetTileTransform({ 0,0 }, tileTransform);
 }
 
@@ -82,17 +83,20 @@ void Scene_SimCityInGame::ShowSceneImgui()
 
 	if (ImGui::Button("Road"))
 	{
-		m_TileController->SetCurrTile(TileType::Road, "road", "road");
+		m_TileController->SetCurrTile(TileType::Road, "road", "road_1");
 	}
 	if (ImGui::Button("Powerline"))
 	{
-		m_TileController->SetCurrTile(TileType::Powerline, "powerline", "powerline");
+		m_TileController->SetCurrTile(TileType::Powerline, "powerline", "powerline_1");
 	}
 	if (ImGui::Button("Zone"))
 	{
 		m_TileController->SetCurrTile(TileType::Zone, "", "zone_1");
 	}
-
+	if (ImGui::Button("PowerPlace"))
+	{
+		m_TileController->SetCurrTile(TileType::Building, "power_plant", "coal");
+	}
 
 	//if(ImGui::ImageButton())
 	ImGui::End();

@@ -39,12 +39,16 @@ public:
 
 	void SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex);
 	void SetRangeIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex);
+	void SetCenterNXMTiles(const sf::Vector2u& lot, const CellIndex& centerIndex);
+
 	void PushToSelectingTiles(const CellIndex& tileIndex);
 protected:
 	ControlStatus	m_CurrStatus = ControlStatus::Place;
 	TileType		m_CurrTileType = TileType::Road;
 	SUBTYPE			m_CurrSubType = "road";
-	std::string		m_CurrTileName = "road";
+	std::string		m_CurrTileName = "road_1";
+	sf::Vector2u	m_CurrLotSize = { 1,1 };
+
 	CellIndex		m_MouseOverlaidTile;
 	CellIndex		m_DragStartTile;
 	std::list<CellIndex> m_SelectingTiles;
