@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Tile.h"
 
+const CellIndex Tile::d[4]= { {-1,0}, {1,0}, {0,-1},{0,1} };
+
 std::string Tile::GetTypeToString(TileType type)
 {
 	switch (type)

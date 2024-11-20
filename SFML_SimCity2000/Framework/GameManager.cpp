@@ -15,9 +15,8 @@ bool GameManager::Initialize(sf::RenderWindow* window)
 	success &= DATATABLE_MGR->Initialize();
 	success &= SCENE_MGR->Initialize();
 
-	Scene_SimCityMain* lobby = new Scene_SimCityMain();
+	Scene_SimCityInGame* lobby = new Scene_SimCityInGame();
 	SCENE_MGR->PushScene(lobby);
-	SCENE_MGR->PushScene(new Scene_SimCityInGame());
 	SCENE_MGR->SetCurrentScene(lobby->GetName());
 	lobby->RESET();
 	lobby->ENTER();

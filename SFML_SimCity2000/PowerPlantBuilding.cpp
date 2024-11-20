@@ -3,6 +3,7 @@
 
 PowerPlantBuilding::PowerPlantBuilding()
 {
+    m_BuildingInfo.buildingId = GameObject::m_Id;
 }
 
 PowerPlantBuilding::~PowerPlantBuilding()
@@ -19,7 +20,11 @@ bool PowerPlantBuilding::Initialize()
     return false;
 }
 
-void PowerPlantBuilding::GameSysSpeedUpdate(float dt)
+void PowerPlantBuilding::SupplyUpdate(float dt)
 {
-    m_ElecAmount = m_SupplyHour * dt;
+    m_ElecAmount = m_SupplyMonth * dt;
+}
+
+void PowerPlantBuilding::UsageUpdate(float dt)
+{
 }

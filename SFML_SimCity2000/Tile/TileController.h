@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.h"
 
+class SimCityGameSystem;
 class TileModel;
 class TileView;
 
@@ -8,6 +9,7 @@ enum class ControlStatus
 {
 	None,
 	Place,
+	Destroy,
 	Drag,
 };
 
@@ -16,10 +18,11 @@ class TileController
 {
 protected:
 	int			m_ViewIndex;
+	SimCityGameSystem* m_GameSystem;
 	TileModel*	mcv_Model;
 	TileView*	mcv_View;
 public:
-	TileController(TileModel* model, TileView* view, int viewIndex);
+	TileController(SimCityGameSystem* sys, TileModel* model, TileView* view, int viewIndex);
 	~TileController();
 
 	bool Initialize() override;
@@ -29,17 +32,25 @@ public:
 	//void FixeUpdate(float dt) override;
 	//void Release() override;
 
+	CellIndex GetMouseOverlaidTileIndex() const { return m_MouseOverlaidTile; }
+	CellIndex GetDragStartTileIndex() const { return m_DragStartTile; }
+	CellIndex GetMousePrevTileIndex() const { return m_MousePrevTile; }
+	CellIndex GetPrevTileIndex() const { return m_PrevTile; }
+
+
 	void UpdateNone(float dt);
 	void UpdatePlace(float dt);
+	void UpdateDestroy(float dt);
 	void UpdateDrag(float dt);
 
 
-	CellIndex GetMouseOverlaidTile()const { return m_MouseOverlaidTile; }
 	void SetCurrTile(const TileType& type, const SUBTYPE& subtype, const std::string& name);
+	void SetDestroyStatus();
 
+	void Set1x1Tile(const CellIndex& tileIndex);
 	void SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex);
 	void SetRangeIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex);
-	void SetCenterNXMTiles(const sf::Vector2u& lot, const CellIndex& centerIndex);
+	void SetNXMTiles(const sf::Vector2u& lot, const CellIndex& centerIndex);
 
 	void PushToSelectingTiles(const CellIndex& tileIndex);
 protected:
@@ -50,7 +61,9 @@ protected:
 	sf::Vector2u	m_CurrLotSize = { 1,1 };
 
 	CellIndex		m_MouseOverlaidTile;
+	CellIndex		m_MousePrevTile;
 	CellIndex		m_DragStartTile;
+	CellIndex		m_PrevTile;
 	std::list<CellIndex> m_SelectingTiles;
 
 };

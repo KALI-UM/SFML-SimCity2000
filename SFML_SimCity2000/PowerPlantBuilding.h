@@ -1,5 +1,7 @@
 #pragma once
 #include "Building.h"
+
+
 class PowerPlantBuilding :
 	public Building
 {
@@ -9,9 +11,10 @@ public:
 
 	bool Initialize() override;
 
-	void GameSysSpeedUpdate(float dt);
+	void SupplyUpdate(float dt);
+	void UsageUpdate(float dt);
 
-	float m_SupplyHour = 100;
+	float m_SupplyMonth = 100;
 	float m_ElecAmount;
 };
 

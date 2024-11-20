@@ -167,7 +167,7 @@ void DTile::SetShapeLot(const TileShapeType& shape, const sf::Vector2u& lot)
 
 void DTile::SetTexture(sf::Texture* tex, TileShapeType type, const sf::Vector2u& lot)
 {
-	if (lot == sf::Vector2u(0, 0))
+	if (lot == sf::Vector2u(0, 0) || !tex)
 	{
 		m_IsValid = false;
 		return;
@@ -183,8 +183,10 @@ void DTile::SetTexture(sf::Texture* tex, TileShapeType type, const sf::Vector2u&
 
 void DTile::SetTexture(const std::string& filepath, TileShapeType type, const sf::Vector2u& lot)
 {
-	if (filepath == "")return;
-	SetTexture(ResourceManager<sf::Texture>::GetInstance()->GetByFilepath(filepath), type, lot);
+	if (filepath == "")
+		SetTexture(nullptr, type, lot);
+	else
+		SetTexture(ResourceManager<sf::Texture>::GetInstance()->GetByFilepath(filepath), type, lot);
 }
 
 sf::Vector2u DTile::GetTextureSize() const

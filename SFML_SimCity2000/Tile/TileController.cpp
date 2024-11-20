@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "TileController.h"
+#include "SimCityGameSystem.h"
 #include "TileModel.h"
 #include "TileView.h"
 #include "TileResTable.h"
 
-TileController::TileController(TileModel* model, TileView* view, int viewIndex)
-	:mcv_Model(model), mcv_View(view), m_ViewIndex(viewIndex)
+TileController::TileController(SimCityGameSystem* sys, TileModel* model, TileView* view, int viewIndex)
+	:m_GameSystem(sys), mcv_Model(model), mcv_View(view), m_ViewIndex(viewIndex)
 {
 }
 
@@ -26,6 +27,11 @@ void TileController::Reset()
 
 void TileController::Update(float dt)
 {
+	m_MousePrevTile = m_MouseOverlaidTile;
+	m_MouseOverlaidTile = mcv_View->GetTileCoordinatedIndex(INPUT_MGR->GetMouseViewPos(m_ViewIndex));
+	if (m_MousePrevTile != m_MouseOverlaidTile)
+		m_PrevTile = m_MousePrevTile;
+
 	switch (m_CurrStatus)
 	{
 	case ControlStatus::None:
@@ -33,6 +39,9 @@ void TileController::Update(float dt)
 		break;
 	case ControlStatus::Place:
 		UpdatePlace(dt);
+		break;
+	case ControlStatus::Destroy:
+		UpdateDestroy(dt);
 		break;
 	case ControlStatus::Drag:
 		UpdateDrag(dt);
@@ -47,14 +56,13 @@ void TileController::UpdateNone(float dt)
 
 void TileController::UpdatePlace(float dt)
 {
-	m_MouseOverlaidTile = mcv_View->GetTileCoordinatedIndex(INPUT_MGR->GetMouseViewPos(m_ViewIndex));
 	if (!mcv_Model->IsValidTileIndex(m_MouseOverlaidTile))return;
 
 	if (INPUT_MGR->GetMouseDown(sf::Mouse::Left))
 	{
 		m_DragStartTile = m_MouseOverlaidTile;
+		SetNXMTiles(m_CurrLotSize, m_DragStartTile);
 
-		SetCenterNXMTiles(m_CurrLotSize, m_DragStartTile);
 		m_CurrStatus = ControlStatus::Drag;
 	}
 	else
@@ -63,12 +71,33 @@ void TileController::UpdatePlace(float dt)
 	}
 }
 
+void TileController::UpdateDestroy(float dt)
+{
+	if (!mcv_Model->IsValidTileIndex(m_MouseOverlaidTile))return;
+
+	if (INPUT_MGR->GetMouse(sf::Mouse::Left) && m_MousePrevTile != m_MouseOverlaidTile)
+	{
+		Set1x1Tile(m_MouseOverlaidTile);
+		mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName);
+		if (mcv_Model->GetTileInfo(TileDepth::OnGround, m_DragStartTile).type == TileType::Building ||
+			mcv_Model->GetTileInfo(TileDepth::OnGround, m_DragStartTile).type == TileType::Powerline)
+			m_GameSystem->DestroyPowerlink(m_SelectingTiles);
+	}
+
+	mcv_View->ColorizeTile(ColorPalette::Gray, m_CurrLotSize, m_MouseOverlaidTile);
+}
+
 void TileController::UpdateDrag(float dt)
 {
-	m_MouseOverlaidTile = mcv_View->GetTileCoordinatedIndex(INPUT_MGR->GetMouseViewPos(m_ViewIndex));
 	if (INPUT_MGR->GetMouseUp(sf::Mouse::Left))
 	{
-		mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName, m_CurrLotSize!=sf::Vector2u(1,1));
+		mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName, m_CurrLotSize != sf::Vector2u(1, 1));
+		if (m_CurrTileType == TileType::Powerline)
+			m_GameSystem->BuildPowerlink(m_SelectingTiles);
+
+		if (m_CurrTileType == TileType::Building && m_CurrSubType == "power_plant")
+			m_GameSystem->BuildPowerPlant(m_SelectingTiles);
+
 		m_SelectingTiles.clear();
 		m_CurrStatus = ControlStatus::Place;
 		return;
@@ -89,10 +118,24 @@ void TileController::UpdateDrag(float dt)
 
 void TileController::SetCurrTile(const TileType& type, const SUBTYPE& subtype, const std::string& name)
 {
+	m_CurrStatus = ControlStatus::Place;
 	m_CurrTileType = type;
 	m_CurrSubType = subtype;
 	m_CurrTileName = name;
 	m_CurrLotSize = DATATABLE_TILERES->GetTileRes(m_CurrTileType, m_CurrSubType, m_CurrTileName).lotSize;
+}
+
+void TileController::SetDestroyStatus()
+{
+	SetCurrTile(TileType::Building, "rubble", "rubble_4");
+	m_CurrStatus = ControlStatus::Destroy;
+}
+
+void TileController::Set1x1Tile(const CellIndex& tileIndex)
+{
+	m_SelectingTiles.clear();
+	if (!mcv_Model->IsPossibleToBuild(tileIndex, m_CurrTileType, m_CurrSubType))return;
+	PushToSelectingTiles(tileIndex);
 }
 
 void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex)
@@ -166,31 +209,27 @@ void TileController::SetRangeIntersectedTiles(const CellIndex& startIndex, const
 	}
 }
 
-void TileController::SetCenterNXMTiles(const sf::Vector2u& lot, const CellIndex& centerIndex)
+void TileController::SetNXMTiles(const sf::Vector2u& lot, const CellIndex& centerIndex)
 {
 	m_SelectingTiles.clear();
 
 	CellIndex startIndex;
-	//CellIndex selectedIndex;
 	if (lot == sf::Vector2u(1, 1))
 	{
-		startIndex = centerIndex;
-		//selectedIndex = centerIndex;
+		Set1x1Tile(centerIndex);
+		return;
 	}
 	else if (lot == sf::Vector2u(2, 2))
 	{
 		startIndex = centerIndex + sf::Vector2i(-1, 0);
-		//selectedIndex = centerIndex +sf::Vector2i(-1, -1);
 	}
 	else if (lot == sf::Vector2u(3, 3))
 	{
 		startIndex = centerIndex + sf::Vector2i(-1, -1);
-		//selectedIndex = centerIndex +sf::Vector2i(-1, +1);
 	}
 	else if (lot == sf::Vector2u(4, 4))
 	{
 		startIndex = centerIndex + sf::Vector2i(-2, -1);
-		//selectedIndex = centerIndex +sf::Vector2i(-2, +2);
 	}
 
 	for (int j = startIndex.y; j < startIndex.y + lot.y; j++)

@@ -44,7 +44,6 @@ protected:
 	sf::Transform	m_TileTransform;
 
 
-
 	void ResetColorizedTile();
 	std::queue<CellIndex> m_ColorizedTiles;
 

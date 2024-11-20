@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Scene_SimCityInGame.h"
+#include "SimCityGameSystem.h"
 #include "SimCityCursor.h"
 #include "TileGrid.h"
 #include "Tile.h"
@@ -9,7 +10,7 @@
 #include "TileViewChild.h"
 
 Scene_SimCityInGame::Scene_SimCityInGame()
-	:SceneBase("InGame", 3, 3)
+	:SceneBase("InGame", 4, 4)
 {
 }
 
@@ -35,7 +36,9 @@ bool Scene_SimCityInGame::Initialize()
 	m_TileView = AddGameObject(0, new TileView(m_TileModel));
 	m_TileView->SetDepthView(TileDepth::Terrain, AddGameObject(0, new TileViewChild(m_TileView)));
 	m_TileView->SetDepthView(TileDepth::OnGround, AddGameObject(1, new TileViewChild(m_TileView)));
-	m_TileController = AddGameObject(0, new TileController(m_TileModel, m_TileView, 0));
+	m_TileView->SetDepthView(TileDepth::Effect, AddGameObject(2, new TileViewChild(m_TileView)));
+	m_GameSystem = AddGameObject(3, new SimCityGameSystem(m_TileModel));
+	m_TileController = AddGameObject(0, new TileController(m_GameSystem, m_TileModel, m_TileView, 0));
 
 	return true;
 }
@@ -61,6 +64,7 @@ void Scene_SimCityInGame::Update(float dt)
 	sf::Vector2f moveoffset = { INPUT_MGR->GetAxisRaw(Axis::Horizontal) * dt * 100, -INPUT_MGR->GetAxisRaw(Axis::Vertical) * dt * 100 };
 	GAME_MGR->MoveView(0, moveoffset);
 	GAME_MGR->MoveView(1, moveoffset);
+	GAME_MGR->MoveView(2, moveoffset);
 
 
 	if (INPUT_MGR->GetKey(sf::Keyboard::Num1))
@@ -71,8 +75,9 @@ void Scene_SimCityInGame::Update(float dt)
 
 void Scene_SimCityInGame::ShowSceneImgui()
 {
-	sf::Vector2i tileIndex = m_TileView->GetTileCoordinatedIndex(INPUT_MGR->GetMouseViewPos(0));
-	sf::Vector2i clickedIndex = m_TileView->GetTileCoordinatedIndex(GAME_MGR->GetScreenToViewPos(0, INPUT_MGR->GetPrevMouseDown(sf::Mouse::Left)));
+	sf::Vector2i tileIndex = m_TileController->GetMouseOverlaidTileIndex();
+	sf::Vector2i clickedIndex = m_TileController->GetMousePrevTileIndex();
+	//sf::Vector2i clickedIndex = m_TileView->GetTileCoordinatedIndex(GAME_MGR->GetScreenToViewPos(0, INPUT_MGR->GetPrevMouseDown(sf::Mouse::Left)));
 	ImGui::Begin("Tile Menu");
 	std::string forCurrIndex = "Current Index : {" + std::to_string(tileIndex.x) + ", " + std::to_string(tileIndex.y) + "}";
 	ImGui::Text(forCurrIndex.c_str());
@@ -96,6 +101,10 @@ void Scene_SimCityInGame::ShowSceneImgui()
 	if (ImGui::Button("PowerPlace"))
 	{
 		m_TileController->SetCurrTile(TileType::Building, "power_plant", "coal");
+	}
+	if (ImGui::Button("Destroy"))
+	{
+		m_TileController->SetDestroyStatus();
 	}
 
 	//if(ImGui::ImageButton())

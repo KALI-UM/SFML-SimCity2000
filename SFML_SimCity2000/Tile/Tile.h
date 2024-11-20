@@ -65,6 +65,7 @@ enum class TileDepth
 	UnderGround,
 	Terrain,
 	OnGround,
+	Effect,
 };
 
 
@@ -92,4 +93,5 @@ public:
 	static std::string GetZoneToString(ZoneType type);
 	static ZoneType GetZoneToEnum(const std::string& type);
 
+	static const CellIndex d[4];
 };

@@ -3,7 +3,7 @@ id,sc2k_type,filename,image,animated,frames,type,subtype,name,description,random
 1,XBLD,1001.png,1001,N,0,building,rubble,rubble_1,Rubble,Y,,,1x1,1,1,1,1,N,N,,,
 2,XBLD,1002.png,1002,N,0,building,rubble,rubble_2,Rubble,Y,,,1x1,2,2,2,2,N,N,,,
 3,XBLD,1003.png,1003,N,0,building,rubble,rubble_3,Rubble,Y,,,1x1,3,3,3,3,N,N,,,
-4,XBLD,1004.png,1004,"road_rail,road_powerline",0,building,rubble,rubble_4,Rubble,Y,,,1x1,4,4,4,4,N,N,,,
+4,XBLD,1004.png,1004,N,0,building,rubble,rubble_4,Rubble,Y,,,1x1,4,4,4,4,N,N,,,
 5,XBLD,1005.png,1005,Y,24,building,fallout,radioactive,Radioactive waste,N,,,1x1,5,5,5,5,N,N,,,
 6,XBLD,1006.png,1006,N,0,building,trees,tree_1,Trees,N,,,1x1,6,6,6,6,N,N,,,
 7,XBLD,1007.png,1007,N,0,building,trees,tree_2,Trees,N,,,1x1,7,7,7,7,N,N,,,

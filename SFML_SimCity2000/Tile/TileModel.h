@@ -5,7 +5,6 @@
 //타일 데이터
 //타일 이미지가 변경되면 뷰에게 알려야한다.
 class TileController;
-class TileView;
 class TileModel
 	:public GameObject
 {
@@ -22,7 +21,7 @@ public:
 
 	const sf::Vector2f m_CellSize;
 	const sf::Vector2u m_CellCount;
-	const int m_MaxDepth = 3;
+	const int m_MaxDepth = 4;
 
 	void SetTileUpdateFunc(std::function<void(const TileDepth&, const CellIndex&)> func) { m_WhenNeedsToUpdateTileFunc = func; };
 
@@ -30,7 +29,7 @@ public:
 	const TileInfo& GetTileInfo(const TileDepth& depth, const CellIndex& tileIndex) const;
 	TileShapeType GetTileShapeType(const TileDepth& depth, const CellIndex& tileIndex) const;
 
-	void SetTiles(std::list<CellIndex>& tiles, TileType type, const std::string& subtype, const std::string& name, bool isOne = false);
+	void SetTiles(std::list<CellIndex>& tiles, TileType type, const std::string& subtype, const std::string& name, bool isNot1x1 = false);
 protected:
 	void SetTile(const CellIndex& tileIndex, const TileDepth& depth, TileType type, const std::string& subtype, const std::string& name, bool isConnectable = false, bool truetile = true);
 public:
@@ -42,6 +41,7 @@ protected:
 	void RequestUpdateTile(const TileDepth& depth, const CellIndex& tileIndex);
 
 	void SetConnection(const CellIndex& tileIndex, const TileDepth& depth, TileType type);
+	void SetConnectionPowerline(const CellIndex& tileIndex, const TileDepth& depth);
 	std::string GetConnectedTileName(std::string& name, int connection);
 
 	void SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec);
