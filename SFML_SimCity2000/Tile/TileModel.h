@@ -24,12 +24,14 @@ public:
 	const int m_MaxDepth = 4;
 
 	void SetTileUpdateFunc(std::function<void(const TileDepth&, const CellIndex&)> func) { m_WhenNeedsToUpdateTileFunc = func; };
+	void SetTempEffectTileUpdateFunc(std::function<void(const CellIndex&)> func) { m_WhenNeedsToUpdateTempEffectTileFunc = func; };
 
 	bool IsValidTileIndex(const CellIndex& tileIndex) const;
 	const TileInfo& GetTileInfo(const TileDepth& depth, const CellIndex& tileIndex) const;
 	TileShapeType GetTileShapeType(const TileDepth& depth, const CellIndex& tileIndex) const;
 
 	void SetTiles(std::list<CellIndex>& tiles, TileType type, const std::string& subtype, const std::string& name, bool isNot1x1 = false);
+	void SetTempEffectTiles(const CellIndex& tileIndex, TileType type, const std::string& subtype, const std::string& name);
 protected:
 	void SetTile(const CellIndex& tileIndex, const TileDepth& depth, TileType type, const std::string& subtype, const std::string& name, bool isConnectable = false, bool truetile = true);
 public:
@@ -39,6 +41,8 @@ protected:
 
 	std::function<void(const TileDepth&, const CellIndex&)> m_WhenNeedsToUpdateTileFunc;
 	void RequestUpdateTile(const TileDepth& depth, const CellIndex& tileIndex);
+	std::function<void(const CellIndex&)> m_WhenNeedsToUpdateTempEffectTileFunc;
+	void RequestTempEffectTile(const CellIndex& tileIndex);
 
 	void SetConnection(const CellIndex& tileIndex, const TileDepth& depth, TileType type);
 	void SetConnectionPowerline(const CellIndex& tileIndex, const TileDepth& depth);

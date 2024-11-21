@@ -22,7 +22,7 @@ bool SimCityGameSystem::Initialize()
 	}
 
 	m_ElecSupply = std::vector<std::vector<int>>(mcv_Model->m_CellCount.y, std::vector<int>(mcv_Model->m_CellCount.x, 0));
-	m_ElecGroupId = std::vector<std::vector<int>>(mcv_Model->m_CellCount.y, std::vector<int>(mcv_Model->m_CellCount.x, 0));
+	m_BuildingMap = std::vector<std::vector<Building*>>(mcv_Model->m_CellCount.y, std::vector<Building*>(mcv_Model->m_CellCount.x, nullptr));
 	m_ElecGroup.resize(1);
 	return false;
 }
@@ -49,35 +49,40 @@ void SimCityGameSystem::RemoveToEmptyZone(const CellIndex& tileIndex, ZoneType z
 	m_BuildingGenerator[(int)zone].RemoveToEmptyZone(tileIndex);
 }
 
-void SimCityGameSystem::BuildBuilding(std::list<CellIndex>& tiles, Building* building)
+void SimCityGameSystem::BuildBuilding(std::list<CellIndex>& tiles, BuildingType type)
 {
-	PowerPlantBuilding* isPowerPlant = dynamic_cast<PowerPlantBuilding*>(building);
-
-	building->BuildBuilding(tiles);
-	if (isPowerPlant != nullptr)
+	Building* building = nullptr;
+	switch (type)
 	{
-
+	case BuildingType::PowerPlant:
+		building = BuildPowerPlant(tiles);
+		break;
+	default:
+		break;
 	}
-	else
-	{
-		BuildPowerlink(tiles);
-	}
-}
+	if (!building)return;
 
-void SimCityGameSystem::BuildPowerPlant(std::list<CellIndex>& tiles)
-{
-	PowerPlantBuilding* building = new PowerPlantBuilding();
 	building->INITIALIZE();
 	building->RESET();
 	SCENE_MGR->GetCurrentScene()->AddGameObject(3, building);
-	m_PowerPlantBuilding.push_back(building);
-
 	building->BuildBuilding(tiles);
+	for (auto& currIndex : tiles)
+	{
+		m_BuildingMap[currIndex.y][currIndex.x] = building;
+	}
+	BuildPowerlink(tiles, type == BuildingType::PowerPlant ? building->GetBuildingInfo().buildingId : -1);
+}
+
+PowerPlantBuilding* SimCityGameSystem::BuildPowerPlant(std::list<CellIndex>& tiles)
+{
+	PowerPlantBuilding* building = new PowerPlantBuilding();
+
+	m_PowerPlantBuildings.push_back(building);
 	for (auto& currIndex : tiles)
 	{
 		m_ElecSupply[currIndex.y][currIndex.x] = building->GetBuildingInfo().buildingId;
 	}
-	BuildPowerlink(tiles, building->GetBuildingInfo().buildingId);
+	return building;
 }
 
 void SimCityGameSystem::BuildPowerlink(std::list<CellIndex>& tiles, int powerplantId)
@@ -124,17 +129,35 @@ void SimCityGameSystem::BuildPowerlink(std::list<CellIndex>& tiles, int powerpla
 		mcv_Model->SetTiles(tiles, TileType::Other, "", "power_outage_lightning");
 }
 
-void SimCityGameSystem::DestroyPowerlink(std::list<CellIndex>& tiles)
+void SimCityGameSystem::DestroyBuilding(const CellIndex& tileIndex)
 {
-	std::list<CellIndex> elecUpdate;
-	
-	for (auto& line : tiles)
+	Building* building = m_BuildingMap[tileIndex.y][tileIndex.x];
+	if (!building) return;
+	if (building->GetBuildingInfo().buildingType == BuildingType::PowerPlant)
 	{
-		m_ElecSupply[line.y][line.x] = 0;
+		m_PowerPlantBuildings.remove(dynamic_cast<PowerPlantBuilding*>(building));
 	}
 
+	std::list<CellIndex> destroy;
+	for (auto& currIndex : building->GetBuildingInfo().position)
+	{
+		destroy.push_back(currIndex);
+		m_BuildingMap[currIndex.y][currIndex.x] = nullptr;
+		DestroyPowerlink(currIndex);
+	}
+
+	SCENE_MGR->GetCurrentScene()->RemoveGameObject(3, building);
+}
+
+void SimCityGameSystem::DestroyPowerlink(const CellIndex& tileIndex)
+{
+	m_ElecSupply[tileIndex.y][tileIndex.x] = 0;
+	std::list<CellIndex> destroy;
+	destroy.push_back(tileIndex);
+	mcv_Model->SetTiles(destroy, TileType::Other, "", "");
+
 	ResetPowerlink();
-	for (auto& powerplant : m_PowerPlantBuilding)
+	for (auto& powerplant : m_PowerPlantBuildings)
 	{
 		std::queue<CellIndex> powerplantQue;
 		for (auto& currIndex : powerplant->GetBuildingInfo().position)

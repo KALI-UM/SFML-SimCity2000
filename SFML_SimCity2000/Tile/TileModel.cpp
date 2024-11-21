@@ -198,6 +198,17 @@ void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::
 	}
 }
 
+void TileModel::SetTempEffectTiles(const CellIndex& tileIndex, TileType type, const std::string& subtype, const std::string& name)
+{
+	auto& currTileInfo = m_TileInfos[(int)TileDepth::Effect][tileIndex.y][tileIndex.x];
+	currTileInfo.type = type;
+	currTileInfo.subtype = subtype;
+	currTileInfo.name = name;
+	currTileInfo.lotSize= DATATABLE_TILERES->GetTileRes(currTileInfo.type, currTileInfo.subtype, currTileInfo.name).lotSize;
+	currTileInfo.filepath = DATATABLE_TILERES->GetTileFilePath(currTileInfo.type, currTileInfo.subtype, currTileInfo.name);
+	RequestTempEffectTile(tileIndex);
+}
+
 void TileModel::SetTile(const CellIndex& tileIndex, const TileDepth& depth, TileType type, const std::string& subtype, const std::string& name, bool isConnectable, bool truetile)
 {
 	auto& currTileInfo = m_TileInfos[(int)depth][tileIndex.y][tileIndex.x];
@@ -328,7 +339,7 @@ bool TileModel::IsPossibleToBuild(const CellIndex& tileIndex, const TileType& ty
 	bool isNone = originTileInfo.type == TileType::None || originTileInfo.type == TileType::Terrain;
 	bool isTree = originTileInfo.subtype == "trees";
 	bool isRubble = subtype == "rubble";
-	if ((isNone && !isRubble) || isTree || originTileInfo.subtype == subtype && isRubble)
+	if ((isNone && !isRubble) || isTree || (!isNone && isRubble))
 		return true;
 
 
@@ -345,6 +356,12 @@ void TileModel::RequestUpdateTile(const TileDepth& depth, const CellIndex& tileI
 {
 	if (m_WhenNeedsToUpdateTileFunc)
 		m_WhenNeedsToUpdateTileFunc(depth, tileIndex);
+}
+
+void TileModel::RequestTempEffectTile(const CellIndex& tileIndex)
+{
+	if (m_WhenNeedsToUpdateTempEffectTileFunc)
+		m_WhenNeedsToUpdateTempEffectTileFunc(tileIndex);
 }
 
 void TileModel::SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec)

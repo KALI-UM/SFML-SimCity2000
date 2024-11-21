@@ -1,5 +1,6 @@
 #pragma once
 #include "Tile.h"
+#include "Building.h"
 
 enum class GameStatus
 {
@@ -16,10 +17,12 @@ struct CityInfo
 	int tax;				//¼¼±Ý
 };
 
-struct LinkedGroup
+enum class ButtonTileSet
 {
-	int groupId;
-	float ammount;
+	Destroy,
+	Road,
+	Powerlink,
+	Powerplant,
 };
 
 class Building;
@@ -47,12 +50,14 @@ public:
 	void PushToEmptyZone(const CellIndex& tileIndex, ZoneType zone);
 	void RemoveToEmptyZone(const CellIndex& tileIndex, ZoneType zone);
 
-	void BuildBuilding(std::list<CellIndex>& tiles, Building* building);
-	void BuildPowerPlant(std::list<CellIndex>& tiles);
+	void BuildBuilding(std::list<CellIndex>& tiles, BuildingType type);
+	PowerPlantBuilding* BuildPowerPlant(std::list<CellIndex>& tiles);
 	void BuildPowerlink(std::list<CellIndex>& tiles, int powerplantId = -1);
-	void DestroyPowerlink(std::list<CellIndex>& tiles);
+	
+	void DestroyBuilding(const CellIndex& tileIndex);
+	void DestroyPowerlink(const CellIndex& tileIndex);
 
-
+protected:
 	void UpdatePowerlink(std::list<CellIndex>& tiles, int powerplantId = -1);
 	void UpdatePowerlink();
 	void ResetPowerlink();
@@ -61,10 +66,15 @@ protected:
 	float		m_PlaySpeed = 1.0f;
 
 	std::vector<BuildingGenerator>		m_BuildingGenerator;
-	std::list<Building*>				m_Buildings;
-	std::list<PowerPlantBuilding*>		m_PowerPlantBuilding;
 
-	std::vector<std::vector<int>>		m_ElecSupply;
+	//std::unordered_map<TileInfo>
+	std::list<PowerPlantBuilding*>		m_PowerPlantBuildings;
+
+	std::vector<std::vector<Building*>>		m_BuildingMap;
+	std::vector<std::vector<int>>			m_ElecSupply;
+
+
+
 	std::vector<std::vector<int>>		m_ElecGroupId;
 
 

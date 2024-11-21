@@ -75,13 +75,19 @@ void TileController::UpdateDestroy(float dt)
 {
 	if (!mcv_Model->IsValidTileIndex(m_MouseOverlaidTile))return;
 
-	if (INPUT_MGR->GetMouse(sf::Mouse::Left) && m_MousePrevTile != m_MouseOverlaidTile)
+	if (INPUT_MGR->GetMouse(sf::Mouse::Left))
 	{
-		Set1x1Tile(m_MouseOverlaidTile);
-		mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName);
-		if (mcv_Model->GetTileInfo(TileDepth::OnGround, m_DragStartTile).type == TileType::Building ||
-			mcv_Model->GetTileInfo(TileDepth::OnGround, m_DragStartTile).type == TileType::Powerline)
-			m_GameSystem->DestroyPowerlink(m_SelectingTiles);
+		if (INPUT_MGR->GetMouseDrag(sf::Mouse::Left))
+			mcv_Model->SetTempEffectTiles(m_MousePrevTile, TileType::Other, "", "bulldozer_1");
+
+		if (m_MousePrevTile != m_MouseOverlaidTile)
+		{
+			Set1x1Tile(m_MouseOverlaidTile);
+			mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName);
+			if (mcv_Model->GetTileInfo(TileDepth::OnGround, m_DragStartTile).type == TileType::Building ||
+				mcv_Model->GetTileInfo(TileDepth::OnGround, m_DragStartTile).type == TileType::Powerline)
+				m_GameSystem->DestroyPowerlink(m_MouseOverlaidTile);
+		}
 	}
 
 	mcv_View->ColorizeTile(ColorPalette::Gray, m_CurrLotSize, m_MouseOverlaidTile);
@@ -96,7 +102,7 @@ void TileController::UpdateDrag(float dt)
 			m_GameSystem->BuildPowerlink(m_SelectingTiles);
 
 		if (m_CurrTileType == TileType::Building && m_CurrSubType == "power_plant")
-			m_GameSystem->BuildPowerPlant(m_SelectingTiles);
+			m_GameSystem->BuildBuilding(m_SelectingTiles, BuildingType::PowerPlant);
 
 		m_SelectingTiles.clear();
 		m_CurrStatus = ControlStatus::Place;

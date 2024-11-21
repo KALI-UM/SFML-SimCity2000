@@ -8,6 +8,7 @@ TileView::TileView(TileModel* model)
 	:mcv_Model(model)
 {
 	mcv_Model->SetTileUpdateFunc(std::bind(&TileView::PushToSpriteUpdateQue, this, std::placeholders::_1, std::placeholders::_2));
+	mcv_Model->SetTempEffectTileUpdateFunc(std::bind(&TileView::PushToTempEffectUpdateQue, this, std::placeholders::_1));
 	m_DepthViews.resize(mcv_Model->m_MaxDepth);
 }
 
@@ -39,6 +40,7 @@ void TileView::LateUpdate(float dt)
 void TileView::PostRender()
 {
 	ResetColorizedTile();
+	ResetTempEffectTile();
 }
 
 void TileView::Release()
@@ -126,9 +128,21 @@ void TileView::ResetColorizedTile()
 	}
 }
 
+void TileView::ResetTempEffectTile()
+{
+	mcv_Model->SetTiles(m_TempEffectTiles, TileType::Other, "", "");
+	m_TempEffectTiles.clear();
+}
+
 void TileView::PushToSpriteUpdateQue(const TileDepth& depth, const CellIndex& tileIndex)
 {
 	m_SpriteUpdateQueue.push({ depth, tileIndex });
+}
+
+void TileView::PushToTempEffectUpdateQue(const CellIndex& tileIndex)
+{
+	PushToSpriteUpdateQue(TileDepth::Effect, tileIndex);
+	m_TempEffectTiles.push_back(tileIndex);
 }
 
 void TileView::UpdateTileSprite()

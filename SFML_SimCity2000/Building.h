@@ -1,9 +1,17 @@
 #pragma once
 #include "Tile.h"
+
+enum class BuildingType
+{
+	None,
+	PowerPlant,
+};
+
 struct BuildingInfo
 {
 	std::string name;
 	std::vector<CellIndex> position;
+	BuildingType buildingType = BuildingType::None;
 
 	int		buildingId;
 	float	elecUsage;
