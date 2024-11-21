@@ -22,12 +22,14 @@ SceneBase::~SceneBase()
 bool SceneBase::INITIALIZE()
 {
 	bool result = Initialize();
+	RegisterGameObject();
 	for (auto& layer : m_GameObjects)
 		for (auto& gobj : layer.gameObjects)
 		{
 			if (!gobj->GetIsChildObj())
 				result &= gobj->INITIALIZE();
 		}
+
 	return result;
 }
 
@@ -50,6 +52,7 @@ void SceneBase::ENTER()
 
 void SceneBase::UPDATE(float dt)
 {
+	RegisterGameObject();
 	for (auto& layer : m_GameObjects)
 		for (auto& gobj : layer.gameObjects)
 		{
@@ -243,6 +246,17 @@ void SceneBase::PushToDrawQue()
 				//}
 			}
 		}
+	}
+}
+
+void SceneBase::RegisterGameObject()
+{
+	while (!m_WantsToAdd.empty())
+	{
+		int layerIndex = m_WantsToAdd.front().first;
+		GameObject* target = m_WantsToAdd.front().second;
+		GetGameObjectsLayerIter(layerIndex).push_back(target);
+		m_WantsToAdd.pop();
 	}
 }
 

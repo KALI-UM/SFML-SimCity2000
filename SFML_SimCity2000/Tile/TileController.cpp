@@ -61,13 +61,13 @@ void TileController::UpdatePlace(float dt)
 	if (INPUT_MGR->GetMouseDown(sf::Mouse::Left))
 	{
 		m_DragStartTile = m_MouseOverlaidTile;
-		SetNXMTiles(m_CurrLotSize, m_DragStartTile);
+		SetNXMTiles(m_GameSystem->GetCurrTileSet().lotSize, m_DragStartTile);
 
 		m_CurrStatus = ControlStatus::Drag;
 	}
 	else
 	{
-		mcv_View->ColorizeTile(ColorPalette::Gray, m_CurrLotSize, m_MouseOverlaidTile);
+		mcv_View->ColorizeTile(ColorPalette::Gray, m_GameSystem->GetCurrTileSet().lotSize, m_MouseOverlaidTile);
 	}
 }
 
@@ -83,27 +83,19 @@ void TileController::UpdateDestroy(float dt)
 		if (m_MousePrevTile != m_MouseOverlaidTile)
 		{
 			Set1x1Tile(m_MouseOverlaidTile);
-			mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName);
-			if (mcv_Model->GetTileInfo(TileDepth::OnGround, m_DragStartTile).type == TileType::Building ||
-				mcv_Model->GetTileInfo(TileDepth::OnGround, m_DragStartTile).type == TileType::Powerline)
-				m_GameSystem->DestroyPowerlink(m_MouseOverlaidTile);
+			if (!m_SelectingTiles.empty())
+				m_GameSystem->DestroySomething(m_SelectingTiles.front());
 		}
 	}
 
-	mcv_View->ColorizeTile(ColorPalette::Gray, m_CurrLotSize, m_MouseOverlaidTile);
+	mcv_View->ColorizeTile(ColorPalette::Gray, m_GameSystem->GetCurrTileSet().lotSize, m_MouseOverlaidTile);
 }
 
 void TileController::UpdateDrag(float dt)
 {
 	if (INPUT_MGR->GetMouseUp(sf::Mouse::Left))
 	{
-		mcv_Model->SetTiles(m_SelectingTiles, m_CurrTileType, m_CurrSubType, m_CurrTileName, m_CurrLotSize != sf::Vector2u(1, 1));
-		if (m_CurrTileType == TileType::Powerline)
-			m_GameSystem->BuildPowerlink(m_SelectingTiles);
-
-		if (m_CurrTileType == TileType::Building && m_CurrSubType == "power_plant")
-			m_GameSystem->BuildBuilding(m_SelectingTiles, BuildingType::PowerPlant);
-
+		m_GameSystem->BuildSomething(m_SelectingTiles);
 		m_SelectingTiles.clear();
 		m_CurrStatus = ControlStatus::Place;
 		return;
@@ -113,38 +105,34 @@ void TileController::UpdateDrag(float dt)
 	{
 		if (mcv_Model->IsValidTileIndex(m_DragStartTile) && mcv_Model->IsValidTileIndex(m_MouseOverlaidTile))
 		{
-			if (m_CurrTileType == TileType::Road || m_CurrTileType == TileType::Rail || m_CurrTileType == TileType::Powerline)
+			auto& currbttset = m_GameSystem->GetCurrButtonSet();
+			if (currbttset == ButtonSet::Road || currbttset == ButtonSet::Rail || currbttset == ButtonSet::Powerlink)
 				SetLineIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
 
-			else if (m_CurrTileType == TileType::Zone)
-				SetRangeIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
+			else if (currbttset == ButtonSet::Zone)
+				SetRangeIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile, false);
 		}
 	}
 }
 
-void TileController::SetCurrTile(const TileType& type, const SUBTYPE& subtype, const std::string& name)
+void TileController::SetCurrButton(ButtonSet btt)
 {
-	m_CurrStatus = ControlStatus::Place;
-	m_CurrTileType = type;
-	m_CurrSubType = subtype;
-	m_CurrTileName = name;
-	m_CurrLotSize = DATATABLE_TILERES->GetTileRes(m_CurrTileType, m_CurrSubType, m_CurrTileName).lotSize;
+	m_CurrStatus = btt != ButtonSet::Destroy ? ControlStatus::Place : ControlStatus::Destroy;
+	m_GameSystem->SetCurrTileSet(btt);
 }
 
-void TileController::SetDestroyStatus()
-{
-	SetCurrTile(TileType::Building, "rubble", "rubble_4");
-	m_CurrStatus = ControlStatus::Destroy;
-}
-
-void TileController::Set1x1Tile(const CellIndex& tileIndex)
+void TileController::Set1x1Tile(const CellIndex& tileIndex, bool checkPossible)
 {
 	m_SelectingTiles.clear();
-	if (!mcv_Model->IsPossibleToBuild(tileIndex, m_CurrTileType, m_CurrSubType))return;
+	if (checkPossible)
+	{
+		if (!mcv_Model->IsPossibleToBuild(tileIndex, m_GameSystem->GetCurrTileSet().type, m_GameSystem->GetCurrTileSet().subtype))
+			return;
+	}
 	PushToSelectingTiles(tileIndex);
 }
 
-void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex)
+void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex, bool checkPossible)
 {
 	m_SelectingTiles.clear();
 
@@ -169,7 +157,11 @@ void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const 
 
 	while (true)
 	{
-		if (!mcv_Model->IsPossibleToBuild(currIndex, m_CurrTileType, m_CurrSubType))return;
+		if (checkPossible)
+		{
+			if (!mcv_Model->IsPossibleToBuild(currIndex, m_GameSystem->GetCurrTileSet().type, m_GameSystem->GetCurrTileSet().subtype))
+				return;
+		}
 
 		// 현재 타일 색칠
 		PushToSelectingTiles(currIndex);
@@ -200,7 +192,7 @@ void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const 
 	}
 }
 
-void TileController::SetRangeIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex)
+void TileController::SetRangeIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex, bool checkPossible)
 {
 	m_SelectingTiles.clear();
 
@@ -209,20 +201,24 @@ void TileController::SetRangeIntersectedTiles(const CellIndex& startIndex, const
 		for (int i = std::min(startIndex.x, endIndex.x); i <= std::max(startIndex.x, endIndex.x); i++)
 		{
 			CellIndex currIndex = { i,j };
-			if (!mcv_Model->IsPossibleToBuild(currIndex, m_CurrTileType, m_CurrSubType))continue;
+			if (checkPossible)
+			{
+				if (!mcv_Model->IsPossibleToBuild(currIndex, m_GameSystem->GetCurrTileSet().type, m_GameSystem->GetCurrTileSet().subtype))
+					continue;
+			}
 			PushToSelectingTiles(currIndex);
 		}
 	}
 }
 
-void TileController::SetNXMTiles(const sf::Vector2u& lot, const CellIndex& centerIndex)
+void TileController::SetNXMTiles(const sf::Vector2u& lot, const CellIndex& centerIndex, bool checkPossible)
 {
 	m_SelectingTiles.clear();
 
 	CellIndex startIndex;
 	if (lot == sf::Vector2u(1, 1))
 	{
-		Set1x1Tile(centerIndex);
+		Set1x1Tile(centerIndex, checkPossible);
 		return;
 	}
 	else if (lot == sf::Vector2u(2, 2))
@@ -243,10 +239,12 @@ void TileController::SetNXMTiles(const sf::Vector2u& lot, const CellIndex& cente
 		for (int i = startIndex.x; i < startIndex.x + lot.x; i++)
 		{
 			CellIndex currIndex = { i,j };
-			if (!mcv_Model->IsPossibleToBuild(currIndex, m_CurrTileType, m_CurrSubType))
+			if (checkPossible)
 			{
-				return;
+				if (!mcv_Model->IsPossibleToBuild(currIndex, m_GameSystem->GetCurrTileSet().type, m_GameSystem->GetCurrTileSet().subtype))
+					return;
 			}
+
 		}
 	}
 

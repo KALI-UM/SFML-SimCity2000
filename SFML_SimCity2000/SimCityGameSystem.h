@@ -17,16 +17,25 @@ struct CityInfo
 	int tax;				//세금
 };
 
-enum class ButtonTileSet
+enum class ButtonSet
 {
-	Destroy,
 	Road,
+	Rail,
 	Powerlink,
 	Powerplant,
+	Zone,
+	Destroy,
 };
+
+namespace std {
+	template <> struct hash<ButtonSet> {
+		size_t operator() (const ButtonSet& t) const { return size_t(t); }
+	};
+}
 
 class Building;
 class PowerPlantBuilding;
+
 class TileModel;
 class BuildingGenerator;
 class SimCityGameSystem :
@@ -47,13 +56,25 @@ public:
 
 	float GetGameSysSpeed() const { return m_CurrStatus == GameStatus::Pause ? 0.0f : m_PlaySpeed; }
 
-	void PushToEmptyZone(const CellIndex& tileIndex, ZoneType zone);
-	void RemoveToEmptyZone(const CellIndex& tileIndex, ZoneType zone);
+protected:
+	std::unordered_map<ButtonSet, TileInfo> m_TileSet;
+	ButtonSet m_CurrTileSet = ButtonSet::Road;
+	void SetTileSet();
+public:
+	void SetCurrTileSet(ButtonSet set);
+	const ButtonSet& GetCurrButtonSet() const { return m_CurrTileSet; }
+	const TileInfo& GetCurrTileSet()const { return m_TileSet.find(m_CurrTileSet)->second; }
 
-	void BuildBuilding(std::list<CellIndex>& tiles, BuildingType type);
+	void BuildSomething(std::list<CellIndex>& tiles);
+	void BuildZone(std::list<CellIndex>& tiles);
+	void BuildBuilding(std::list<CellIndex>& tiles);
+	void BuildNoneBuilding(ZoneType zone, std::list<CellIndex>& tiles, const TileResData& info);
 	PowerPlantBuilding* BuildPowerPlant(std::list<CellIndex>& tiles);
 	void BuildPowerlink(std::list<CellIndex>& tiles, int powerplantId = -1);
-	
+
+	CellIndex GetBuildPossiblePos(ZoneType zone, std::list<CellIndex>& tiles, const TileResData& info) const;
+
+	void DestroySomething(const CellIndex& tileIndex);
 	void DestroyBuilding(const CellIndex& tileIndex);
 	void DestroyPowerlink(const CellIndex& tileIndex);
 
@@ -62,17 +83,17 @@ protected:
 	void UpdatePowerlink();
 	void ResetPowerlink();
 protected:
-	GameStatus	m_CurrStatus = GameStatus::Pause;
+	GameStatus	m_CurrStatus = GameStatus::Play;
 	float		m_PlaySpeed = 1.0f;
 
 	std::vector<BuildingGenerator>		m_BuildingGenerator;
 
-	//std::unordered_map<TileInfo>
+	
 	std::list<PowerPlantBuilding*>		m_PowerPlantBuildings;
 
 	std::vector<std::vector<Building*>>		m_BuildingMap;
 	std::vector<std::vector<int>>			m_ElecSupply;
-
+	std::vector<std::vector<ZoneType>>		m_ZoneInfos;
 
 
 	std::vector<std::vector<int>>		m_ElecGroupId;
@@ -83,6 +104,8 @@ private:
 	void Union(int groupId1, int groupId2);
 	//임시
 	std::vector<int> m_ElecGroup;
+
+
 };
 
 

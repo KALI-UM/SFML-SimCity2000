@@ -116,6 +116,55 @@ ZoneType Tile::GetZoneToEnum(const std::string& type)
 	return ZoneType::None;
 }
 
+std::string Tile::GetZoneToName(ZoneType type)
+{
+	switch (type)
+	{
+	case ZoneType::Residential:
+		return "zone_1";
+		break;
+	case ZoneType::Commercial:
+		return "zone_3";
+		break;
+	case ZoneType::Industrial:
+		return "zone_5";
+		break;
+	case ZoneType::Military:
+		return "zone_7";
+		break;
+	case ZoneType::Airport:
+		return "zone_8";
+		break;
+	case ZoneType::Seaport:
+		return "zone_9";
+		break;
+	case ZoneType::None:
+		return "";
+		break;
+	}
+	return "";
+}
+
+ZoneType Tile::GetNameToZone(const NAME& name)
+{
+	if (name == "")
+		return ZoneType::None;
+	if (name == "zone_1")
+		return ZoneType::Residential;
+	if (name == "zone_3")
+		return ZoneType::Commercial;
+	if (name == "zone_5")
+		return ZoneType::Industrial;
+	if (name == "zone_7")
+		return ZoneType::Military;
+	if (name == "zone_8")
+		return ZoneType::Airport;
+	if (name == "zone_9")
+		return ZoneType::Seaport;
+
+	return ZoneType::None;
+}
+
 
 
 

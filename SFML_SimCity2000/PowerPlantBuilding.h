@@ -15,6 +15,6 @@ public:
 	void UsageUpdate(float dt);
 
 	float m_SupplyMonth = 100;
-	float m_ElecAmount;
+	float m_ElecAmount = 0;
 };
 

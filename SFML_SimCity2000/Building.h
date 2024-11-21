@@ -28,7 +28,7 @@ class Building :
 	public GameObject
 {
 public:
-	Building() {};
+	Building() { m_BuildingInfo.buildingId = GameObject::m_Id; };
 	virtual ~Building();
 
 	void SetGameSystem(SimCityGameSystem* gameSys) { m_GameSystem = gameSys; }
@@ -43,7 +43,7 @@ protected:
 	virtual void UsageUpdate(float dt) = 0;
 
 protected:
-	const SimCityGameSystem*	m_GameSystem;
+	const SimCityGameSystem*	m_GameSystem = nullptr;
 	BuildingInfo				m_BuildingInfo;
 };
 

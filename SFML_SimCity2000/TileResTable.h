@@ -28,8 +28,17 @@ public:
 	std::string GetTileFilePath(const TileType& type, const SUBTYPE& subtype, const NAME& name);
 	const TileResData& GetTileRes(const TYPE& type, const SUBTYPE& subtype, const NAME& name) const;
 	const TileResData& GetTileRes(const TileType& type, const SUBTYPE& subtype, const NAME& name) const;
+	void SetTileInfo(TileInfo& info, const TileType& type, const SUBTYPE& subtype, const NAME& name);
+
+	const TileResData& GetTileRes(const ZONE& zone, const sf::Vector2u& lotSize, int index) const;
+	const TileResData& GetTileRes(const ZoneType& zone, const sf::Vector2u& lotSize, int index) const;
+
 protected:
-	std::unordered_map<std::pair<TYPE,SUBTYPE>, std::unordered_map<NAME, ID>> m_TileResDataByType;
+	std::string GetTileFilePath(const TileResData& data);
+	
+protected:
+	std::unordered_map<std::pair<TYPE,SUBTYPE>, std::unordered_map<NAME, ID>>		m_TileResDataByType;
+	std::unordered_map<ZONE, std::unordered_multimap<int, ID>>						m_TileResDataByZone;
 	std::vector<TileResData> m_TileResDataById;
 	std::string m_TilePngPath = "tiles/";
 private:

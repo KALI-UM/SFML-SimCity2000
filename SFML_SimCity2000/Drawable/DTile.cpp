@@ -119,12 +119,12 @@ DTile::~DTile()
 
 void DTile::SetShapeLot(const TileShapeType& shape, const sf::Vector2u& lot)
 {
-	if (m_ShapeType == shape && m_Tile.m_LotSize == lot)return;
+	//if (m_ShapeType == shape && m_Tile.m_LotSize == lot)return;
 	m_ShapeType = shape;
 	m_Tile.m_LotSize = lot;
 
 	auto lot_float = m_Tile.m_LotSize.To<float>();
-
+	lot_float.y = (float)GetTextureSize().y / m_Unit;
 	switch (m_ShapeType)
 	{
 	case TileShapeType::Convex:
@@ -134,7 +134,7 @@ void DTile::SetShapeLot(const TileShapeType& shape, const sf::Vector2u& lot)
 		m_Tile.m_Vertices[1].position = { 0 , lot_float.y - lot_float.x * 0.25f };
 		m_Tile.m_Vertices[2].position = { lot_float.x ,0 };
 		m_Tile.m_Vertices[3].position = { lot_float.x * 0.5f , lot_float.y };
-		m_Tile.m_Vertices[4].position = { lot_float.x , lot_float.y - lot_float.x * 0.25f };
+		m_Tile.m_Vertices[4].position = { lot_float.x ,lot_float.y - lot_float.x * 0.25f };
 	}
 	break;
 	case TileShapeType::Diamond:
@@ -159,9 +159,8 @@ void DTile::SetShapeLot(const TileShapeType& shape, const sf::Vector2u& lot)
 
 	for (int i = 0; i < m_Tile.m_Vertices.getVertexCount(); i++)
 	{
-		m_Tile.m_Vertices[i].texCoords = m_Tile.m_Vertices[i].position;
 		m_Tile.m_Vertices[i].position *= m_Unit;
-		m_Tile.m_Vertices[i].texCoords *= m_Unit;
+		m_Tile.m_Vertices[i].texCoords = m_Tile.m_Vertices[i].position;
 	}
 }
 

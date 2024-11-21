@@ -4,6 +4,7 @@ typedef sf::Vector2i CellIndex;
 typedef std::string TYPE;
 typedef std::string SUBTYPE;
 typedef std::string NAME;
+typedef std::string ZONE;
 typedef int ID;
 
 struct TileResData
@@ -13,7 +14,7 @@ struct TileResData
 	TYPE type;
 	SUBTYPE subtype;
 	NAME name;
-
+	ZONE zone;
 	sf::Vector2u	lotSize;
 	bool			animated;
 };
@@ -92,6 +93,8 @@ public:
 
 	static std::string GetZoneToString(ZoneType type);
 	static ZoneType GetZoneToEnum(const std::string& type);
+	static std::string GetZoneToName(ZoneType type);
+	static ZoneType GetNameToZone(const NAME& name);
 
 	static const CellIndex d[4];
 };

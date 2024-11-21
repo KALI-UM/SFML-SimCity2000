@@ -130,7 +130,8 @@ void TileView::ResetColorizedTile()
 
 void TileView::ResetTempEffectTile()
 {
-	mcv_Model->SetTiles(m_TempEffectTiles, TileType::Other, "", "");
+	if (!m_TempEffectTiles.empty())
+		mcv_Model->SetTiles(m_TempEffectTiles, TileType::Other, "", "");
 	m_TempEffectTiles.clear();
 }
 

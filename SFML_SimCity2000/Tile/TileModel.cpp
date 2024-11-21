@@ -131,6 +131,16 @@ void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::
 		auto& currTileInfo = m_TileInfos[(int)depth][currIndex.y][currIndex.x];
 		currTileInfo.prevtype = currTileInfo.type;
 		currTileInfo.type = type;
+		currTileInfo.zone = ZoneType::None;
+	}
+
+	if (type == TileType::Zone)
+	{
+		for (auto& currIndex : tiles)
+		{
+			auto& currTileInfo = m_TileInfos[(int)depth][currIndex.y][currIndex.x];
+			currTileInfo.zone = Tile::GetNameToZone(name);
+		}
 	}
 
 	if (DATATABLE_TILEATT->GetTileAttribute(type).connectable)
@@ -181,6 +191,7 @@ void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::
 			{
 				SetTile(currIndex, depth, type, subtype, name);
 			}
+
 		}
 		else
 		{
@@ -204,7 +215,7 @@ void TileModel::SetTempEffectTiles(const CellIndex& tileIndex, TileType type, co
 	currTileInfo.type = type;
 	currTileInfo.subtype = subtype;
 	currTileInfo.name = name;
-	currTileInfo.lotSize= DATATABLE_TILERES->GetTileRes(currTileInfo.type, currTileInfo.subtype, currTileInfo.name).lotSize;
+	currTileInfo.lotSize = DATATABLE_TILERES->GetTileRes(currTileInfo.type, currTileInfo.subtype, currTileInfo.name).lotSize;
 	currTileInfo.filepath = DATATABLE_TILERES->GetTileFilePath(currTileInfo.type, currTileInfo.subtype, currTileInfo.name);
 	RequestTempEffectTile(tileIndex);
 }
@@ -223,8 +234,8 @@ void TileModel::SetTile(const CellIndex& tileIndex, const TileDepth& depth, Tile
 	else if (currTileInfo.subtype == subtype && subtype == "rubble")
 	{
 		int rubble = std::atoi(&currTileInfo.name[currTileInfo.name.length() - 1]);
-		rubble--;
-		if (rubble == 0)
+		rubble++;
+		if (rubble == 5)
 		{
 			currTileInfo.type = TileType::None;
 			currTileInfo.subtype = "";
@@ -332,24 +343,31 @@ bool TileModel::IsPossibleToBuild(const CellIndex& tileIndex, const TileType& ty
 	auto& originTileInfo = m_TileInfos[currTileAtt.depth][tileIndex.y][tileIndex.x];
 
 	//도로, 레일, 전선이고 같은 타일이면 가능
-	bool isSame = (originTileInfo.type == TileType::Road || originTileInfo.type == TileType::Rail || originTileInfo.type == TileType::Powerline) && originTileInfo.type == type;
+	bool isSame = (originTileInfo.type == TileType::Road || originTileInfo.type == TileType::Rail || originTileInfo.type == TileType::Powerline)
+		&& ((type == TileType::Road || type == TileType::Rail || type == TileType::Powerline));
 	if (isSame)
+	{
+		////원래 타일이 overlay가능한 커넥션 값이고
+		////원래 타일과 현재 타일이 오버레이 가능(canBeSub)하면 가능
+		//bool isOverlayConnection = originTileInfo.connection == 0 || originTileInfo.connection == 1 || originTileInfo.connection == 2 || originTileInfo.connection == 3 || originTileInfo.connection == 4 || originTileInfo.connection == 8 || originTileInfo.connection == 12;
+		//if (isOverlayConnection)
+		//	return DATATABLE_TILEATT->CanBeSub(originTileInfo.type, type) || DATATABLE_TILEATT->CanBeSub(type, originTileInfo.type);
 		return true;
-	//원래 타일이 none 타일이면 가능
-	bool isNone = originTileInfo.type == TileType::None || originTileInfo.type == TileType::Terrain;
-	bool isTree = originTileInfo.subtype == "trees";
+	}
+	//원래 타일이 나무거나 none 타일이면 가능
+	bool isNone = originTileInfo.type == TileType::None || originTileInfo.subtype == "trees" || originTileInfo.type == TileType::Zone;
+	//철거 타일이면
 	bool isRubble = subtype == "rubble";
-	if ((isNone && !isRubble) || isTree || (!isNone && isRubble))
-		return true;
+	if (isRubble)
+	{
+		return !isNone;
+	}
+	else
+	{
+		return isNone;
+	}
 
-
-	//원래 타일이 overlay가능한 커넥션 값이고
-	//원래 타일과 현재 타일이 오버레이 가능(canBeSub)하면 가능
-	bool isOverlayConnection = originTileInfo.connection == 0 || originTileInfo.connection == 1 || originTileInfo.connection == 2 || originTileInfo.connection == 3 || originTileInfo.connection == 4 || originTileInfo.connection == 8 || originTileInfo.connection == 12;
-	if (isOverlayConnection)
-		return DATATABLE_TILEATT->CanBeSub(originTileInfo.type, type) || DATATABLE_TILEATT->CanBeSub(type, originTileInfo.type);
-
-	return false;
+	return originTileInfo.type!=TileType::Building;
 }
 
 void TileModel::RequestUpdateTile(const TileDepth& depth, const CellIndex& tileIndex)

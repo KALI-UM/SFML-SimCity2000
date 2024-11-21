@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.h"
 
+class Building;
 class BuildingGenerator
 {
 public:
@@ -11,12 +12,17 @@ public:
 	void Reset();
 	void Update();
 
-	void PushToEmptyZone(const CellIndex& tileIndex);
-	void RemoveToEmptyZone(const CellIndex& tileIndex);
-
+	void SetGetBuildPosFunc(std::function<sf::Vector2i(std::list<CellIndex>&, const TileResData&)> func) { m_GetCanBuildPosFunc = func; };
+	void SetBuildFunc(std::function<void(std::list<CellIndex>&, const TileResData&)> func) { m_GenerateBuildingFunc = func; };
 protected:
 	int m_RandomValue = 0;
 	const ZoneType			m_Zone;
-	std::list<CellIndex>	m_EmptyZones;
+
+	std::function<sf::Vector2i(std::list<CellIndex>&, const TileResData&)> m_GetCanBuildPosFunc;
+	std::function<void(std::list<CellIndex>&, const TileResData&)> m_GenerateBuildingFunc;
+
+private:
+	static void SetLotSet();
+	static std::vector<std::list<CellIndex>> m_lotSet;
 };
 

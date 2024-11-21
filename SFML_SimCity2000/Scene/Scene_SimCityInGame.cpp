@@ -29,6 +29,7 @@ bool Scene_SimCityInGame::Initialize()
 	//m_Tile = AddGameObject(0, new Tile());
 	//m_Tile->SetCellSize({ 45,45 });
 	m_TileGrid = AddGameObject(1, new TileGrid());
+	m_TileGrid->SetIsVisible(false);
 	m_TileGrid->SetCellCount({ 128,128 });
 	m_TileGrid->SetCellSize({ 45,45 });
 
@@ -88,23 +89,23 @@ void Scene_SimCityInGame::ShowSceneImgui()
 
 	if (ImGui::Button("Road"))
 	{
-		m_TileController->SetCurrTile(TileType::Road, "road", "road_1");
+		m_TileController->SetCurrButton(ButtonSet::Road);
 	}
 	if (ImGui::Button("Powerline"))
 	{
-		m_TileController->SetCurrTile(TileType::Powerline, "powerline", "powerline_1");
+		m_TileController->SetCurrButton(ButtonSet::Powerlink);
 	}
 	if (ImGui::Button("Zone"))
 	{
-		m_TileController->SetCurrTile(TileType::Zone, "", "zone_1");
+		m_TileController->SetCurrButton(ButtonSet::Zone);
 	}
 	if (ImGui::Button("PowerPlace"))
 	{
-		m_TileController->SetCurrTile(TileType::Building, "power_plant", "coal");
+		m_TileController->SetCurrButton(ButtonSet::Powerplant);
 	}
 	if (ImGui::Button("Destroy"))
 	{
-		m_TileController->SetDestroyStatus();
+		m_TileController->SetCurrButton(ButtonSet::Destroy);
 	}
 
 	//if(ImGui::ImageButton())

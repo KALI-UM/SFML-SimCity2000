@@ -3,7 +3,7 @@
 
 PowerPlantBuilding::PowerPlantBuilding()
 {
-    m_BuildingInfo.buildingId = GameObject::m_Id;
+    m_BuildingInfo.buildingType = BuildingType::PowerPlant;
 }
 
 PowerPlantBuilding::~PowerPlantBuilding()

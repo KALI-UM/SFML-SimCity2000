@@ -19,14 +19,22 @@ bool TileResTable::Load()
 		currRes.name = doc.GetCell<std::string>("name", i);
 		currRes.lotSize = GetLotSizeFromNXM(doc.GetCell<std::string>("lot_size", i));
 		currRes.animated = GetBooleanFromNY(doc.GetCell<std::string>("animated", i));
+		currRes.zone = doc.GetCell<std::string>("zone", i);
 		auto it = m_TileResDataByType.find({ currRes.type,currRes.subtype });
 		if (it == m_TileResDataByType.end())
 		{
 			m_TileResDataByType.insert({ { currRes.type,currRes.subtype }, std::unordered_map<NAME, ID>() });
 			it = m_TileResDataByType.find({ currRes.type,currRes.subtype });
 		}
-
 		it->second.insert({ currRes.name, currRes.id });
+
+		auto it2 = m_TileResDataByZone.find(currRes.zone);
+		if (it2 == m_TileResDataByZone.end())
+		{
+			m_TileResDataByZone.insert({ currRes.zone, std::unordered_multimap<int, ID>() });
+			it2 = m_TileResDataByZone.find(currRes.zone);
+		}
+		it2->second.insert({ currRes.lotSize.x, currRes.id });
 	}
 
 	return true;
@@ -59,6 +67,14 @@ std::string TileResTable::GetTileFilePath(const TileType& type, const SUBTYPE& s
 	return GetTileFilePath(Tile::GetTypeToString(type), subtype, name);
 }
 
+std::string TileResTable::GetTileFilePath(const TileResData& data)
+{
+	std::string filename = data.filename;
+	if (data.animated)
+		filename.insert(filename.length() - 4, "-0");
+	return filename;
+}
+
 const TileResData& TileResTable::GetTileRes(const TYPE& type, const SUBTYPE& subtype, const NAME& name) const
 {
 	auto byType = m_TileResDataByType.find({ type, subtype });
@@ -77,6 +93,40 @@ const TileResData& TileResTable::GetTileRes(const TileType& type, const SUBTYPE&
 	if (type == TileType::None)
 		return m_Empty;
 	return GetTileRes(Tile::GetTypeToString(type), subtype, name);
+}
+
+void TileResTable::SetTileInfo(TileInfo& info, const TileType& type, const SUBTYPE& subtype, const NAME& name)
+{
+	auto tileres = GetTileRes(type, subtype, name);
+	info.lotSize = tileres.lotSize;
+	info.filepath = GetTileFilePath(tileres);
+}
+
+const TileResData& TileResTable::GetTileRes(const ZONE& zone, const sf::Vector2u& lotSize, int index) const
+{
+	auto range = m_TileResDataByZone.find(zone)->second.equal_range(lotSize.x);
+
+	int curr = 0;
+	for (auto it = range.first; it != range.second; ++it)
+	{
+		curr++;
+		if (curr == index)return m_TileResDataById[it->second];
+	}
+	if (curr == 0)return m_Empty;
+
+	index %= curr;
+	curr = 0;
+	for (auto it = range.first; it != range.second; ++it)
+	{
+		curr++;
+		if (curr == index)return m_TileResDataById[it->second];
+	}
+	return m_TileResDataById[range.first->second];
+}
+
+const TileResData& TileResTable::GetTileRes(const ZoneType& zone, const sf::Vector2u& lotSize, int index) const
+{
+	return GetTileRes(Tile::GetZoneToString(zone), lotSize, index);
 }
 
 sf::Vector2u TileResTable::GetLotSizeFromNXM(const std::string& NxM)
