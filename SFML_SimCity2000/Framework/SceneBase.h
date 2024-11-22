@@ -52,7 +52,7 @@ public:
 	template <typename T>
 	T* AddGameObject(int layerIndex, T* gameObject)
 	{
-		GetGameObjectsLayerIter(layerIndex).push_back(gameObject);
+		m_WantsToAdd.push({ layerIndex , gameObject });
 		return gameObject;
 	}
 
@@ -68,12 +68,14 @@ private:
 	};
 
 	std::list<LayerInfo>						m_GameObjects;
+	std::queue<GameObjectInfo>					m_WantsToAdd;
 	std::queue<GameObjectInfo>					m_WantsToRemove;
 
 	std::vector<GameObject*>& GetGameObjectsLayerIter(int index);
 	std::vector<std::list<LayerInfo>::iterator> m_LayerIndex;
 
 	void PushToDrawQue();
+	void RegisterGameObject();
 	void RemoveGameObject();
 
 };

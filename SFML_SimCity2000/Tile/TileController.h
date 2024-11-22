@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.h"
 
+class SimCityGameSystem;
 class TileModel;
 class TileView;
 
@@ -8,18 +9,21 @@ enum class ControlStatus
 {
 	None,
 	Place,
+	Destroy,
 	Drag,
 };
 
+enum class ButtonSet;
 class TileController
 	:public GameObject
 {
 protected:
 	int			m_ViewIndex;
-	TileModel*	mcv_Model;
-	TileView*	mcv_View;
+	SimCityGameSystem* m_GameSystem;
+	TileModel* mcv_Model;
+	TileView* mcv_View;
 public:
-	TileController(TileModel* model, TileView* view, int viewIndex);
+	TileController(SimCityGameSystem* sys, TileModel* model, TileView* view, int viewIndex);
 	~TileController();
 
 	bool Initialize() override;
@@ -29,21 +33,36 @@ public:
 	//void FixeUpdate(float dt) override;
 	//void Release() override;
 
+	CellIndex GetMouseOverlaidTileIndex() const { return m_MouseOverlaidTile; }
+	CellIndex GetDragStartTileIndex() const { return m_DragStartTile; }
+	CellIndex GetMousePrevTileIndex() const { return m_MousePrevTile; }
+	CellIndex GetPrevTileIndex() const { return m_PrevTile; }
+
+
 	void UpdateNone(float dt);
 	void UpdatePlace(float dt);
+	void UpdateDestroy(float dt);
 	void UpdateDrag(float dt);
 
 
-	CellIndex GetMouseOverlaidTile()const { return m_MouseOverlaidTile; }
+	void SetCurrButton(ButtonSet btt);
 
-	void SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex);
+	void Set1x1Tile(const CellIndex& tileIndex, bool checkPossible = true);
+	void SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex, bool checkPossible = true);
+	void SetRangeIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex, bool checkPossible = true);
+	void SetNXMTiles(const sf::Vector2u& lot, const CellIndex& centerIndex, bool checkPossible = true);
+
 	void PushToSelectingTiles(const CellIndex& tileIndex);
 protected:
 	ControlStatus	m_CurrStatus = ControlStatus::Place;
-	TileType		m_CurrTileType = TileType::Road;
+
 	CellIndex		m_MouseOverlaidTile;
+	CellIndex		m_MousePrevTile;
 	CellIndex		m_DragStartTile;
+	CellIndex		m_PrevTile;
 	std::list<CellIndex> m_SelectingTiles;
+
+
 
 };
 

@@ -8,6 +8,7 @@ TileView::TileView(TileModel* model)
 	:mcv_Model(model)
 {
 	mcv_Model->SetTileUpdateFunc(std::bind(&TileView::PushToSpriteUpdateQue, this, std::placeholders::_1, std::placeholders::_2));
+	mcv_Model->SetTempEffectTileUpdateFunc(std::bind(&TileView::PushToTempEffectUpdateQue, this, std::placeholders::_1));
 	m_DepthViews.resize(mcv_Model->m_MaxDepth);
 }
 
@@ -18,7 +19,7 @@ TileView::~TileView()
 bool TileView::Initialize()
 {
 	if (!mcv_Model)return false;
-	
+
 	return true;
 }
 
@@ -39,6 +40,7 @@ void TileView::LateUpdate(float dt)
 void TileView::PostRender()
 {
 	ResetColorizedTile();
+	ResetTempEffectTile();
 }
 
 void TileView::Release()
@@ -51,8 +53,8 @@ void TileView::SetTileTransform(const sf::Vector2f& zero, const sf::Transform& t
 	setPosition(zero);
 	for (auto& depth : m_DepthViews)
 	{
-		if(depth)
-		depth->SetTileTransform(trans);
+		if (depth)
+			depth->SetTileTransform(trans);
 	}
 }
 
@@ -86,9 +88,34 @@ int TileView::GetDrawableIndexByTileIndex(const CellIndex& tileIndex) const
 
 void TileView::ColorizeTile(const sf::Color& color, const CellIndex& tileIndex)
 {
+	if (!mcv_Model->IsValidTileIndex(tileIndex))
+		return;
+
 	auto tile = m_DepthViews[(int)TileDepth::Terrain]->m_TileDrawable[tileIndex.y][tileIndex.x];
 	tile->SetFillColor(color);
 	m_ColorizedTiles.push(tileIndex);
+}
+
+void TileView::ColorizeTile(const sf::Color& color, const sf::Vector2u& lot, const CellIndex& centerIndex)
+{
+	CellIndex startIndex;
+	if (lot == sf::Vector2u(1, 1))
+		startIndex = centerIndex;
+	else if (lot == sf::Vector2u(2, 2))
+		startIndex = centerIndex + sf::Vector2i(-1, 0);
+	else if (lot == sf::Vector2u(3, 3))
+		startIndex = centerIndex + sf::Vector2i(-1, -1);
+	else if (lot == sf::Vector2u(4, 4))
+		startIndex = centerIndex + sf::Vector2i(-2, -1);
+
+	for (int j = startIndex.y; j < startIndex.y + lot.y; j++)
+	{
+		for (int i = startIndex.x; i < startIndex.x + lot.x; i++)
+		{
+			CellIndex currIndex = { i,j };
+			ColorizeTile(color, currIndex);
+		}
+	}
 }
 
 void TileView::ResetColorizedTile()
@@ -101,9 +128,22 @@ void TileView::ResetColorizedTile()
 	}
 }
 
+void TileView::ResetTempEffectTile()
+{
+	if (!m_TempEffectTiles.empty())
+		mcv_Model->SetTiles(m_TempEffectTiles, TileType::Other, "", "");
+	m_TempEffectTiles.clear();
+}
+
 void TileView::PushToSpriteUpdateQue(const TileDepth& depth, const CellIndex& tileIndex)
 {
 	m_SpriteUpdateQueue.push({ depth, tileIndex });
+}
+
+void TileView::PushToTempEffectUpdateQue(const CellIndex& tileIndex)
+{
+	PushToSpriteUpdateQue(TileDepth::Effect, tileIndex);
+	m_TempEffectTiles.push_back(tileIndex);
 }
 
 void TileView::UpdateTileSprite()
@@ -113,7 +153,9 @@ void TileView::UpdateTileSprite()
 		TileDepth& currdepth = m_SpriteUpdateQueue.front().first;
 		sf::Vector2i& currIndex = m_SpriteUpdateQueue.front().second;
 		auto& currTile = m_DepthViews[(int)currdepth]->m_TileDrawable[currIndex.y][currIndex.x];
-		currTile->SetTexture(mcv_Model->GetTileInfo(currdepth, currIndex).filepath, { 1,1 });
+		auto& currTileInfo = mcv_Model->GetTileInfo(currdepth, currIndex);
+		currTile->SetTexture(currTileInfo.filepath, mcv_Model->GetTileShapeType(currdepth, currIndex), currTileInfo.lotSize);
+		currTile->SetOrigin(OriginType::BC, m_TileOffset);
 		m_SpriteUpdateQueue.pop();
 	}
 }

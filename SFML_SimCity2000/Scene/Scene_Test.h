@@ -24,7 +24,6 @@ protected:
 
 	MouseCursor* m_Cursor;
 	TileGrid* m_TileGrid;
-	Tile* m_Tile;
 
 	sf::Vector2f tilepos;
 

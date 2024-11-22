@@ -25,10 +25,11 @@ bool TileViewChild::Initialize()
 	{
 		for (int i = 0; i < cellCount.x; i++)
 		{
-			DTile* tileSprite = new DTile(mcv_View->GetModel()->GetTileInfo(m_Depth, { i,j }).filepath);
-			tileSprite->SetLot({ 1, 1 });
+			auto& tileInfo = mcv_View->GetModel()->GetTileInfo(m_Depth, { i,j });
+			DTile* tileSprite = new DTile(tileInfo.filepath);
+			tileSprite->SetShapeLot(mcv_View->GetModel()->GetTileShapeType(m_Depth, { i,j }), tileInfo.lotSize);
 			tileSprite->SetDebugDraw(false);
-			tileSprite->SetOrigin(OriginType::BC, { -1.0f,-3.0f });
+			tileSprite->SetOrigin(OriginType::BC, mcv_View->m_TileOffset);
 			tileSprite->setLocalPosition({ (i)*cellSize.x, (j + 1) * cellSize.y });
 			SetDrawable(tileSprite);
 			m_TileDrawable[j][i] = tileSprite;
@@ -47,10 +48,11 @@ void TileViewChild::Reset()
 		for (int i = 0; i < cellCount.x; i++)
 		{
 			auto& tileSprite = m_TileDrawable[j][i];
-			tileSprite->SetLot({ 1, 1 });
+			auto& tileInfo = mcv_View->GetModel()->GetTileInfo(m_Depth, { i,j });
+			tileSprite->SetShapeLot(mcv_View->GetModel()->GetTileShapeType(m_Depth, { i,j }), tileInfo.lotSize);
 			tileSprite->SetDebugDraw(false);
-			tileSprite->SetOrigin(OriginType::BC, { -1.0f,-3.0f });
 			tileSprite->setLocalPosition({ (i)*cellSize.x, (j + 1) * cellSize.y });
+			tileSprite->SetOrigin(OriginType::BC, mcv_View->m_TileOffset);
 		}
 	}
 }

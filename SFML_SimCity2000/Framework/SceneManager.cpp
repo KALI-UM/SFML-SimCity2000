@@ -22,8 +22,8 @@ void SceneManager::Update(float dt)
 		m_CurrScene->EXIT();
 		SetCurrentScene(m_WantsTo);
 		m_WantsTo = nullptr;
-		m_CurrScene->ENTER();
 		m_CurrScene->RESET();
+		m_CurrScene->ENTER();
 	}
 	else
 	{

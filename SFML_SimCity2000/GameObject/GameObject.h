@@ -12,7 +12,7 @@ public:
 	GameObject(const GameObject& other);
 	GameObject(GameObject&& other) noexcept;
 	virtual ~GameObject();
-	bool operator==(const GameObject& rhs);
+	//bool operator==(const GameObject& rhs);
 
 	bool INITIALIZE();
 	void RESET();

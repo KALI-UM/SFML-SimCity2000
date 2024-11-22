@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Scene_SimCityMain.h"
 #include "Scene_SimCityInGame.h"
 
 GameManager::GameManager()
@@ -108,11 +109,15 @@ const sf::FloatRect& GameManager::GetViewRect(int index)
 void GameManager::ResizeViews(unsigned int cnt)
 {
 	m_Views.resize(cnt);
-	m_Views[0].view.reset(sf::FloatRect(0, 0, (float)m_MainWindow->getSize().x, (float)m_MainWindow->getSize().y));
 #ifdef _DEBUG
 	m_DebugViews.resize(cnt);
-	m_DebugViews[0].view.reset(sf::FloatRect(0, 0, (float)m_MainWindow->getSize().x, (float)m_MainWindow->getSize().y));
 #endif // _DEBUG
+
+	for (int i=0; i<m_Views.size(); i++)
+	{
+		GAME_MGR->SetViewSize(i, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
+	}
+
 }
 
 int GameManager::GetViewCount()const

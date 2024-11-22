@@ -1,5 +1,6 @@
 #pragma once
 
+class SimCityGameSystem;
 class SimCityCursor;
 class TileGrid;
 class Tile;
@@ -34,7 +35,7 @@ protected:
 
 
 
-
+	SimCityGameSystem*	m_GameSystem;
 	SimCityCursor*		m_Cursor;
 	TileGrid*			m_TileGrid;
 	Tile*				m_Tile;
