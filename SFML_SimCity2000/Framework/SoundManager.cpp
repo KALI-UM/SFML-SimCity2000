@@ -8,8 +8,12 @@ void SoundManager::Initialize(int totalChannels)
 	m_Listener.setGlobalVolume(m_GlobalVolume);
 	for (int i = 0; i < totalChannels; ++i)
 	{
-		m_WaitingSfx.push_back(new sf::Sound());
+		auto sound = new sf::Sound();
+		sound->setRelativeToListener(true);
+		m_WaitingSfx.push_back(sound);
 	}
+
+	m_Bgm.setRelativeToListener(true);
 }
 
 void SoundManager::Release()
@@ -82,23 +86,32 @@ void SoundManager::SetGlobalVolume(float volume)
 	m_Listener.setGlobalVolume(volume);
 }
 
-void SoundManager::PlayBgm(std::string id, bool loop, bool fadeIn, float fadeTime, float startvolume)
+void SoundManager::PlayBgm(std::string id, bool loop, bool fadeIn, float fadeTime, float startvolume , bool startRandomPos)
 {
 	if (!m_IsSoundDeviceValid)return;
+
 
 	PlayBgm(*ResourceManager<sf::SoundBuffer>::GetInstance()->GetByFilepath(id),
 		loop,
 		fadeIn,
 		fadeTime,
-		startvolume);
+		startvolume,
+		startRandomPos);
+
 }
 
-void SoundManager::PlayBgm(sf::SoundBuffer& buffer, bool loop, bool fadeIn, float fadeTime, float startvolume)
+void SoundManager::PlayBgm(sf::SoundBuffer& buffer, bool loop, bool fadeIn, float fadeTime, float startvolume, bool startRandomPos)
 {
 	if (!m_IsSoundDeviceValid)return;
 
 	m_Bgm.stop();
 	m_BgmData.duration = buffer.getDuration().asSeconds();
+
+	if (startRandomPos)
+	{
+		m_Bgm.setPlayingOffset(sf::seconds(Utils::RandomRange(0.0f, m_BgmData.duration - 10)));
+	}
+
 
 	if (fadeIn)
 	{

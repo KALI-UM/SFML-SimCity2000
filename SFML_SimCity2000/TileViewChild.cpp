@@ -35,6 +35,10 @@ bool TileViewChild::Initialize()
 			m_TileDrawable[j][i] = tileSprite;
 		}
 	}
+
+	//타일은 매 프레임마다 순위경쟁을 하지 않고 벡터에서 순서가 정해진다.
+	std::sort(m_Drawables.begin(), m_Drawables.end(), 
+		[&](const DrawableObject* d1, const DrawableObject* d2) { return TileViewChild::SortTile(d1, d2); });
 	return true;
 }
 
@@ -71,9 +75,16 @@ void TileViewChild::Release()
 
 void TileViewChild::SetTileTransform(const sf::Transform& trans)
 {
-	for (auto& tile : m_Drawable)
+	for (auto& tile : m_Drawables)
 	{
 		tile->setLocalPosition(trans.transformPoint(tile->getLocalPosition()));
 	}
+}
+
+bool TileViewChild::SortTile(const DrawableObject* dobj1, const DrawableObject* dobj2) const
+{
+	return dobj1->getPosition().y < dobj2->getPosition().y ?
+		true : dobj1->getPosition().y == dobj2->getPosition().y ?
+		dobj1->getPosition().x > dobj2->getPosition().x : false;
 }
 

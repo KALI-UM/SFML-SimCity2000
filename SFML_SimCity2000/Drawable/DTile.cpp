@@ -160,7 +160,7 @@ void DTile::SetShapeLot(const TileShapeType& shape, const sf::Vector2u& lot)
 	for (int i = 0; i < m_Tile.m_Vertices.getVertexCount(); i++)
 	{
 		m_Tile.m_Vertices[i].position *= m_Unit;
-		m_Tile.m_Vertices[i].texCoords = m_Tile.m_Vertices[i].position;
+		m_Tile.m_Vertices[i].texCoords = m_Tile.m_Vertices[i].position += sf::Vector2f(-1, -1);
 	}
 }
 

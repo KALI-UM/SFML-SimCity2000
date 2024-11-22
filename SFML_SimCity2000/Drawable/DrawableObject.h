@@ -77,5 +77,4 @@ protected:
 	sf::Transformable* m_Transform;
 
 	DebugInfo* m_DebugInfo;
-
 };

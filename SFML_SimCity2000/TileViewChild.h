@@ -25,10 +25,8 @@ public:
 private:
 	void SetTileTransform(const sf::Transform& trans);
 
-	
 
 protected:
 	std::vector<std::vector<DTile*>> m_TileDrawable;
-	
+	bool SortTile(const DrawableObject* dobj1, const DrawableObject* dobj2) const;
 };
-

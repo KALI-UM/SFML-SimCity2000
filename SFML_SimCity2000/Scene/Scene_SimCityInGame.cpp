@@ -10,7 +10,7 @@
 #include "TileViewChild.h"
 
 Scene_SimCityInGame::Scene_SimCityInGame()
-	:SceneBase("InGame", 4, 4)
+	:SceneBase("InGame", 3, 2)
 {
 }
 
@@ -21,8 +21,9 @@ Scene_SimCityInGame::~Scene_SimCityInGame()
 bool Scene_SimCityInGame::Initialize()
 {
 	SetLayerViewIndex(0, 0);
-	SetLayerViewIndex(1, 1);
-	SetLayerViewIndex(2, 2);
+	SetLayerViewIndex(1, 0);
+	SetLayerViewIndex(2, 0);
+	SetViewNeedPriority(0, false);
 
 	m_Cursor = AddGameObject(2, new SimCityCursor("background/1013.png", 2));
 
@@ -38,15 +39,15 @@ bool Scene_SimCityInGame::Initialize()
 	m_TileView->SetDepthView(TileDepth::Terrain, AddGameObject(0, new TileViewChild(m_TileView)));
 	m_TileView->SetDepthView(TileDepth::OnGround, AddGameObject(1, new TileViewChild(m_TileView)));
 	m_TileView->SetDepthView(TileDepth::Effect, AddGameObject(2, new TileViewChild(m_TileView)));
-	m_GameSystem = AddGameObject(3, new SimCityGameSystem(m_TileModel));
-	m_TileController = AddGameObject(0, new TileController(m_GameSystem, m_TileModel, m_TileView, 0));
+	m_GameSystem = AddGameObject(m_UILayerIndex, new SimCityGameSystem(m_TileModel));
+	m_TileController = AddGameObject(m_UILayerIndex, new TileController(m_GameSystem, m_TileModel, m_TileView, 0));
 
 	return true;
 }
 
 void Scene_SimCityInGame::Enter()
 {
-	SOUND_MGR->PlayBgm("sound/BGM/bgm.mp3", true, true, 30, 10);
+	SOUND_MGR->PlayBgm("sound/BGM/bgm.mp3", true, true, 30, 10, true);
 	GAME_MGR->SetViewSize(0, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
 	GAME_MGR->SetViewSize(1, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
 
@@ -61,15 +62,19 @@ void Scene_SimCityInGame::Enter()
 
 void Scene_SimCityInGame::Update(float dt)
 {
-
 	sf::Vector2f moveoffset = { INPUT_MGR->GetAxisRaw(Axis::Horizontal) * dt * 100, -INPUT_MGR->GetAxisRaw(Axis::Vertical) * dt * 100 };
 	GAME_MGR->MoveView(0, moveoffset);
-	GAME_MGR->MoveView(1, moveoffset);
-	GAME_MGR->MoveView(2, moveoffset);
 
 
-	if (INPUT_MGR->GetKey(sf::Keyboard::Num1))
+
+	if (INPUT_MGR->GetKeyDown(sf::Keyboard::LBracket))
 	{
+		GAME_MGR->SetViewZoom(0, 0.5f);
+
+	}
+	else if (INPUT_MGR->GetKeyDown(sf::Keyboard::RBracket))
+	{
+		GAME_MGR->SetViewZoom(0, 2.0f);
 
 	}
 }
@@ -107,7 +112,10 @@ void Scene_SimCityInGame::ShowSceneImgui()
 	{
 		m_TileController->SetCurrButton(ButtonSet::Destroy);
 	}
-
+	if (ImGui::Button("Save"))
+	{
+		m_GameSystem->SaveTileDepthFile();
+	}
 	//if(ImGui::ImageButton())
 	ImGui::End();
 }

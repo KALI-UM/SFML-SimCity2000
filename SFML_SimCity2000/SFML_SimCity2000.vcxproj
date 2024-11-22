@@ -153,6 +153,7 @@
     <ClCompile Include="Background_Lobby.cpp" />
     <ClCompile Include="Building.cpp" />
     <ClCompile Include="BuildingGenerator.cpp" />
+    <ClCompile Include="DGameObject.cpp" />
     <ClCompile Include="Framework\DataTable.cpp" />
     <ClCompile Include="Framework\DataTableManager.cpp" />
     <ClCompile Include="Drawable\ColorPalette.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="Background_Lobby.h" />
     <ClInclude Include="Building.h" />
     <ClInclude Include="BuildingGenerator.h" />
+    <ClInclude Include="DGameObject.h" />
     <ClInclude Include="Framework\DataTable.h" />
     <ClInclude Include="Framework\DataTableManager.h" />
     <ClInclude Include="Drawable\ColorPalette.h" />

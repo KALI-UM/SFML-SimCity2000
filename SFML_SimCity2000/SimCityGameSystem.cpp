@@ -10,6 +10,7 @@
 SimCityGameSystem::SimCityGameSystem(TileModel* model)
 	:mcv_Model(model)
 {
+	Tile::Initialize();
 }
 
 SimCityGameSystem::~SimCityGameSystem()
@@ -34,6 +35,8 @@ bool SimCityGameSystem::Initialize()
 	m_ZoneInfos = std::vector<std::vector<ZoneType>>(mcv_Model->m_CellCount.y, std::vector<ZoneType>(mcv_Model->m_CellCount.x, ZoneType::None));
 
 	m_ElecGroup.resize(1);
+
+	LoadTileDepthFile();
 	return false;
 }
 
@@ -54,14 +57,184 @@ void SimCityGameSystem::Update(float dt)
 			m_BuildingGenerator[zone].Update();
 		}
 
-
 		m_LastUpdate = nowTime;
 	}
+}
+
+void SimCityGameSystem::LoadTileDepthFile()
+{
+	LoadTerrainDepth();
+	LoadOnGroundDepth();
+}
+
+void SimCityGameSystem::LoadTerrainDepth()
+{
+	rapidcsv::Document doc("datatables/tileInfo_depth1.csv", rapidcsv::LabelParams(-1, -1));
+	int row = doc.GetRowCount();
+	int col = doc.GetColumnCount();
+
+	std::list<CellIndex> zones;
+	for (int j = 0; j < row; j++)
+	{
+		for (int i = 0; i < col; i++)
+		{
+			std::string celldata = doc.GetCell<std::string>(i, j);
+			std::vector<std::string> strings;
+			SetStringToVectorElements(celldata, strings);
+			if (!strings.empty())
+			{
+				if (TileType::Zone == Tile::GetTypeToEnum(strings[0]))
+				{
+					zones.push_back({ i,j });
+				}
+				else
+				{
+					if (strings[0] == "")continue;
+					BuildRawThing({ i,j }, DATATABLE_TILERES->GetTileRes(strings[0], strings[1], strings[2]));
+				}
+			}
+		}
+	}
+	BuildZone(zones);
+}
+
+void SimCityGameSystem::LoadOnGroundDepth()
+{
+	rapidcsv::Document doc("datatables/tileInfo_depth2.csv", rapidcsv::LabelParams(-1, -1));
+	int row = doc.GetRowCount();
+	int col = doc.GetColumnCount();
+
+	std::list<CellIndex> roads;
+	std::list<CellIndex> powerlines;
+	std::list<CellIndex> rails;
+	std::list<CellIndex> highways;
+
+	for (int j = 0; j < row; j++)
+	{
+		for (int i = 0; i < col; i++)
+		{
+			std::string celldata = doc.GetCell<std::string>(i, j);
+			std::vector<std::string> strings;
+			SetStringToVectorElements(celldata, strings);
+			if (!strings.empty())
+			{
+				auto currType = Tile::GetTypeToEnum(strings[0]);
+				if (TileType::Road == currType)
+				{
+					roads.push_back({ i,j });
+				}
+				else if (TileType::Powerline == currType)
+				{
+					powerlines.push_back({ i,j });
+				}
+				else if (TileType::Rail == currType)
+				{
+					rails.push_back({ i,j });
+				}
+				else if (TileType::Highway == currType)
+				{
+					highways.push_back({ i,j });
+				}
+				else if (TileType::Building == currType)
+				{
+					std::list<CellIndex> temp;
+					const TileResData& data = DATATABLE_TILERES->GetTileRes(strings[0], strings[1], strings[2]);
+					for (auto& currIndex : Tile::lotSet[data.lotSize.x])
+					{
+						temp.push_back(currIndex + sf::Vector2i(i, j));
+					}
+					if (strings[1] == "power_plant")
+					{
+						SetCurrTileSet(ButtonSet::Powerplant);
+						BuildBuilding(temp);
+					}
+					else if (strings[1] == "")
+					{
+						//BuildNoneBuilding()
+					}
+				}
+				else
+				{
+					if (strings[0] == "")
+					{
+						/*if (strings[3] == "" && strings[4] == "")
+							continue;*/
+						//CellIndex owner = { std::stoi(strings[3]), std::stoi(strings[4]) };
+					}
+					else
+					{
+						BuildRawThing({ i,j }, DATATABLE_TILERES->GetTileRes(strings[0], strings[1], strings[2]));
+					}
+				}
+			}
+		}
+	}
+
+	BuildRoad(roads);
+	const auto& roadset = m_TileSet.find(ButtonSet::Road)->second;
+	mcv_Model->SetTiles(roads,
+		roadset.type, roadset.subtype, roadset.name, roadset.lotSize != sf::Vector2u(1, 1));
+	BuildPowerlink(powerlines, -1);
+	const auto& powerlineset = m_TileSet.find(ButtonSet::Powerlink)->second;
+	mcv_Model->SetTiles(powerlines,
+		powerlineset.type, powerlineset.subtype, powerlineset.name, powerlineset.lotSize != sf::Vector2u(1, 1));
+}
+
+void SimCityGameSystem::SaveTileDepthFile()
+{
+	SaveTerrainDepth();
+	SaveOnGroundDepth();
+}
+
+void SimCityGameSystem::SaveTerrainDepth()
+{
+	rapidcsv::Document doc("", rapidcsv::LabelParams(-1, -1));
+	for (int j = 0; j < mcv_Model->m_CellCount.x; j++)
+	{
+		for (int i = 0; i < mcv_Model->m_CellCount.x; i++)
+		{
+			const TileInfo& currInfo = mcv_Model->GetTileInfo(TileDepth::Terrain, { i,j });
+			std::string strings;
+			if (currInfo.ower != currInfo.index)
+				strings = ",,," + std::to_string(currInfo.ower.x) + "," + std::to_string(currInfo.ower.y);
+			else
+				strings = Tile::GetTypeToString(currInfo.type) + "," + currInfo.subtype + "," + currInfo.name + ",,";
+
+			doc.SetCell(i, j, strings);
+		}
+	}
+	doc.Save("datatables/tileInfo_depth1.csv");
+}
+
+void SimCityGameSystem::SaveOnGroundDepth()
+{
+	rapidcsv::Document doc("", rapidcsv::LabelParams(-1, -1));
+	for (int j = 0; j < mcv_Model->m_CellCount.x; j++)
+	{
+		for (int i = 0; i < mcv_Model->m_CellCount.x; i++)
+		{
+			const TileInfo& currInfo = mcv_Model->GetTileInfo(TileDepth::OnGround, { i,j });
+			std::string strings;
+			if (currInfo.ower != currInfo.index)
+				strings = ",,," + std::to_string(currInfo.ower.x) + "," + std::to_string(currInfo.ower.y);
+			else
+				strings = Tile::GetTypeToString(currInfo.type) + "," + currInfo.subtype + "," + currInfo.name + ",,";
+			doc.SetCell(i, j, strings);
+		}
+	}
+	doc.Save("datatables/tileInfo_depth2.csv");
 }
 
 void SimCityGameSystem::SetCurrTileSet(ButtonSet set)
 {
 	m_CurrTileSet = set;
+}
+
+void SimCityGameSystem::BuildRawThing(const CellIndex& tileIndex, const TileResData& data)
+{
+	std::list<CellIndex> temp;
+	temp.push_back(tileIndex);
+	mcv_Model->SetTiles(temp, Tile::GetTypeToEnum(data.type), data.subtype, data.name);
 }
 
 void SimCityGameSystem::BuildSomething(std::list<CellIndex>& tiles)
@@ -104,11 +277,13 @@ void SimCityGameSystem::BuildZone(std::list<CellIndex>& tiles)
 	{
 		auto& currTileInfo = mcv_Model->GetTileInfo(TileDepth::OnGround, currIndex);
 		//if (currTileInfo.zone != ZoneType::None || currTileInfo.type != TileType::None || currTileInfo.subtype == "powerline")
-		if (currTileInfo.zone != ZoneType::None || currTileInfo.type != TileType::None)
-			continue;
-
-		m_ZoneInfos[currIndex.y][currIndex.x] = ZoneType::Residential;
-		possibleTiles.push_back(currIndex);
+		if (currTileInfo.type == TileType::None
+			|| (currTileInfo.type == TileType::Building && currTileInfo.subtype == "trees")
+			|| currTileInfo.type == TileType::Powerline)
+		{
+			m_ZoneInfos[currIndex.y][currIndex.x] = ZoneType::Residential;
+			possibleTiles.push_back(currIndex);
+		}
 	}
 	mcv_Model->SetTiles(possibleTiles, TileType::Zone, "", Tile::GetZoneToName(ZoneType::Residential));
 }
@@ -129,7 +304,7 @@ void SimCityGameSystem::BuildBuilding(std::list<CellIndex>& tiles)
 
 	building->INITIALIZE();
 	building->RESET();
-	SCENE_MGR->GetCurrentScene()->AddGameObject(3, building);
+	SCENE_MGR->GetCurrentScene()->AddGameObject(2, building);
 	building->BuildBuilding(tiles);
 	for (auto& currIndex : tiles)
 	{
@@ -316,7 +491,6 @@ bool SimCityGameSystem::CheckRoadSupply(const CellIndex& tileIndex) const
 {
 	return m_RoadSupply[tileIndex.y][tileIndex.x] > 0;
 }
-
 
 void SimCityGameSystem::DestroySomething(const CellIndex& tileIndex)
 {
@@ -579,4 +753,22 @@ void SimCityGameSystem::SetTileSet()
 	destroy.lotSize = DATATABLE_TILERES->GetTileRes(destroy.type, destroy.subtype, destroy.name).lotSize;
 	m_TileSet.insert({ ButtonSet::Destroy, destroy });
 
+}
+
+void SimCityGameSystem::SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec)
+{
+	vec.clear();
+	if (str == "")return;
+	int curr = 0;
+	while (true)
+	{
+		auto it = str.find(',', curr);
+		if (it == std::string::npos)
+		{
+			vec.push_back(str.substr(curr, str.length() - curr));
+			return;
+		}
+		vec.push_back(str.substr(curr, it - curr));
+		curr = it + 1;
+	}
 }

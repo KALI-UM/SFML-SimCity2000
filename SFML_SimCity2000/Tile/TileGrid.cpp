@@ -47,7 +47,7 @@ void TileGrid::SetTileTransform(const sf::Vector2f& zero, const sf::Transform& t
 {
 	m_TileTransform = trans;
 	setPosition(zero);
-	for (auto& tile : m_Drawable)
+	for (auto& tile : m_Drawables)
 	{
 		DLine* line = dynamic_cast<DLine*>(tile);
 		for (int index = 0; index < line->GetPointsSize(); index++)

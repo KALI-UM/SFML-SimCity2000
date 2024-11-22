@@ -56,11 +56,24 @@ void GameManager::Render()
 	for (int i = 0; i < m_Views.size(); i++)
 	{
 		m_MainWindow->setView(m_Views[i].view);
-		auto& currDrawQue = m_Views[i].drawQue;
-		while (!currDrawQue.empty())
+
+		if (m_Views[i].needPriority)
 		{
-			m_MainWindow->draw(*currDrawQue.top()->GetDrawable());
-			currDrawQue.pop();
+			auto& currDrawQue = m_Views[i].drawQue_PQ;
+			while (!currDrawQue.empty())
+			{
+				m_MainWindow->draw(*currDrawQue.top()->GetDrawable());
+				currDrawQue.pop();
+			}
+		}
+		else
+		{
+			auto& currDrawQue = m_Views[i].drawQue_Q;
+			while (!currDrawQue.empty())
+			{
+				m_MainWindow->draw(*currDrawQue.front()->GetDrawable());
+				currDrawQue.pop();
+			}
 		}
 #ifdef _DEBUG
 		m_MainWindow->setView(m_DebugViews[i].view);
@@ -113,11 +126,15 @@ void GameManager::ResizeViews(unsigned int cnt)
 	m_DebugViews.resize(cnt);
 #endif // _DEBUG
 
-	for (int i=0; i<m_Views.size(); i++)
+	for (int i = 0; i < m_Views.size(); i++)
 	{
 		GAME_MGR->SetViewSize(i, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
 	}
+}
 
+void GameManager::SetViewNeedPriority(int index, bool need)
+{
+	m_Views[index].needPriority = need;
 }
 
 int GameManager::GetViewCount()const
@@ -140,6 +157,14 @@ void GameManager::SetViewSize(int index, const sf::FloatRect& rect)
 	m_Views[index].view.reset(rect);
 #ifdef _DEBUG
 	m_DebugViews[index].view.reset(rect);
+#endif // _DEBUG
+}
+
+void GameManager::SetViewZoom(int index, float zoom)
+{
+	m_Views[index].view.zoom(zoom);
+#ifdef _DEBUG
+	m_DebugViews[index].view.zoom(zoom);
 #endif // _DEBUG
 }
 
@@ -191,9 +216,14 @@ void GameManager::UpdateViewRect()
 	}
 }
 
-void GameManager::PushDrawableObject(int viewindex, DrawableObject* dobj)
+void GameManager::PushDrawableObject_PQ(int viewindex, DrawableObject* dobj)
 {
-	m_Views[viewindex].drawQue.push(dobj);
+	m_Views[viewindex].drawQue_PQ.push(dobj);
+}
+
+void GameManager::PushDrawableObject_Q(int viewindex, DrawableObject* dobj)
+{
+	m_Views[viewindex].drawQue_Q.push(dobj);
 }
 
 void GameManager::PushDebugDrawObject(int viewindex, DebugInfo* dobj)

@@ -57,6 +57,14 @@ public:
 	float GetGameSysSpeed() const { return m_CurrStatus == GameStatus::Pause ? 0.0f : m_PlaySpeed; }
 
 protected:
+	void LoadTileDepthFile();
+	void LoadTerrainDepth();
+	void LoadOnGroundDepth();
+
+	void SaveTileDepthFile();
+	void SaveTerrainDepth();
+	void SaveOnGroundDepth();
+
 	std::unordered_map<ButtonSet, TileInfo> m_TileSet;
 	ButtonSet m_CurrTileSet = ButtonSet::Road;
 	void SetTileSet();
@@ -65,6 +73,7 @@ public:
 	const ButtonSet& GetCurrButtonSet() const { return m_CurrTileSet; }
 	const TileInfo& GetCurrTileSet()const { return m_TileSet.find(m_CurrTileSet)->second; }
 
+	void BuildRawThing(const CellIndex& tileIndex, const TileResData& data);
 	void BuildSomething(std::list<CellIndex>& tiles);
 	void BuildZone(std::list<CellIndex>& tiles);
 	void BuildBuilding(std::list<CellIndex>& tiles);
@@ -76,7 +85,6 @@ public:
 	CellIndex GetBuildPossiblePos(ZoneType zone, std::list<CellIndex>& tiles) const;
 	bool CheckElecSupply(const CellIndex& tileIndex)const;
 	bool CheckRoadSupply(const CellIndex& tileIndex)const;
-
 
 	void DestroySomething(const CellIndex& tileIndex);
 	void DestroyBuilding(const CellIndex& tileIndex);
@@ -114,7 +122,7 @@ private:
 	//юс╫ц
 	std::vector<int> m_ElecGroup;
 
-
+	static void SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec);
 };
 
 

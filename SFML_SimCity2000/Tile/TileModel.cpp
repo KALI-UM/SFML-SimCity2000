@@ -16,88 +16,11 @@ TileModel::~TileModel()
 
 bool TileModel::Initialize()
 {
-	m_TileInfos[(int)TileDepth::Terrain] = std::vector<std::vector<TileInfo>>(m_CellCount.y, std::vector<TileInfo>(m_CellCount.x));
+	InitializeTerrainDepth();
+	InitializeOnGroundDepth();
+	InitilaizeEffectDepth();
 
-	rapidcsv::Document doc_d0("datatables/tileInfo_depth0.csv", rapidcsv::LabelParams(-1, -1));
-	int row = doc_d0.GetRowCount();
-	int col = doc_d0.GetColumnCount();
-	for (int j = 0; j < m_CellCount.y; j++)
-	{
-		for (int i = 0; i < m_CellCount.x; i++)
-		{
-			auto& currTileInfo = m_TileInfos[(int)TileDepth::Terrain][j][i];
-			currTileInfo.index = { i,j };
-			currTileInfo.type = TileType::Terrain;
-			currTileInfo.subtype = "terrain";
-			currTileInfo.name = "land";
-		}
-	}
-
-	for (int j = 0; j < row; j++)
-	{
-		for (int i = 0; i < col; i++)
-		{
-			auto& currTileInfo = m_TileInfos[(int)TileDepth::Terrain][j][i];
-			std::string celldata = doc_d0.GetCell<std::string>(i, j);
-			std::vector<std::string> strings;
-			SetStringToVectorElements(celldata, strings);
-			if (!strings.empty())
-			{
-				currTileInfo.type = Tile::GetTypeToEnum(strings[0]);
-				currTileInfo.subtype = strings[1];
-				currTileInfo.name = strings[2];
-				currTileInfo.lotSize = DATATABLE_TILERES->GetTileRes(currTileInfo.type, currTileInfo.subtype, currTileInfo.name).lotSize;
-				currTileInfo.filepath = DATATABLE_TILERES->GetTileFilePath(currTileInfo.type, currTileInfo.subtype, currTileInfo.name);
-			}
-		}
-	}
-
-
-	m_TileInfos[(int)TileDepth::OnGround] = std::vector<std::vector<TileInfo>>(m_CellCount.y, std::vector<TileInfo>(m_CellCount.x));
-	rapidcsv::Document doc_d1("datatables/tileInfo_depth1.csv", rapidcsv::LabelParams(-1, -1));
-	row = doc_d1.GetRowCount();
-	col = doc_d1.GetColumnCount();
-	for (int j = 0; j < m_CellCount.y; j++)
-	{
-		for (int i = 0; i < m_CellCount.x; i++)
-		{
-			auto& currTileInfo = m_TileInfos[(int)TileDepth::OnGround][j][i];
-			currTileInfo.index = { i,j };
-			currTileInfo.type = TileType::None;
-		}
-	}
-
-	for (int j = 0; j < row; j++)
-	{
-		for (int i = 0; i < col; i++)
-		{
-			auto& currTileInfo = m_TileInfos[(int)TileDepth::OnGround][j][i];
-			std::string celldata = doc_d1.GetCell<std::string>(i, j);
-			std::vector<std::string> strings;
-			SetStringToVectorElements(celldata, strings);
-			if (!strings.empty())
-			{
-				currTileInfo.type = Tile::GetTypeToEnum(strings[0]);
-				currTileInfo.subtype = strings[1];
-				currTileInfo.name = strings[2];
-				currTileInfo.lotSize = DATATABLE_TILERES->GetTileRes(currTileInfo.type, currTileInfo.subtype, currTileInfo.name).lotSize;
-				currTileInfo.filepath = DATATABLE_TILERES->GetTileFilePath(currTileInfo.type, currTileInfo.subtype, currTileInfo.name);
-			}
-		}
-	}
-
-	m_TileInfos[(int)TileDepth::Effect] = std::vector<std::vector<TileInfo>>(m_CellCount.y, std::vector<TileInfo>(m_CellCount.x));
-	for (int j = 0; j < m_CellCount.y; j++)
-	{
-		for (int i = 0; i < m_CellCount.x; i++)
-		{
-			auto& currTileInfo = m_TileInfos[(int)TileDepth::Effect][j][i];
-			currTileInfo.index = { i,j };
-			currTileInfo.type = TileType::None;
-		}
-	}
-
-	return row && col;
+	return true;
 }
 
 void TileModel::Reset()
@@ -123,6 +46,53 @@ bool TileModel::IsValidTileIndex(const CellIndex& tileIndex) const
 	return tileIndex.x > 0 && tileIndex.x < m_CellCount.x - 1 && tileIndex.y > 0 && tileIndex.y < m_CellCount.y - 1;
 }
 
+void TileModel::InitializeTerrainDepth()
+{
+	m_TileInfos[(int)TileDepth::Terrain] = std::vector<std::vector<TileInfo>>(m_CellCount.y, std::vector<TileInfo>(m_CellCount.x));
+	for (int j = 0; j < m_CellCount.y; j++)
+	{
+		for (int i = 0; i < m_CellCount.x; i++)
+		{
+			auto& currTileInfo = m_TileInfos[(int)TileDepth::Terrain][j][i];
+			currTileInfo.index = { i,j };
+			currTileInfo.type = TileType::Terrain;
+			currTileInfo.subtype = "terrain";
+			currTileInfo.name = "land";
+			currTileInfo.ower = currTileInfo.index;
+		}
+	}
+}
+
+void TileModel::InitializeOnGroundDepth()
+{
+	m_TileInfos[(int)TileDepth::OnGround] = std::vector<std::vector<TileInfo>>(m_CellCount.y, std::vector<TileInfo>(m_CellCount.x));
+	for (int j = 0; j < m_CellCount.y; j++)
+	{
+		for (int i = 0; i < m_CellCount.x; i++)
+		{
+			auto& currTileInfo = m_TileInfos[(int)TileDepth::OnGround][j][i];
+			currTileInfo.index = { i,j };
+			currTileInfo.type = TileType::None;
+			currTileInfo.ower = currTileInfo.index;
+		}
+	}
+}
+
+void TileModel::InitilaizeEffectDepth()
+{
+	m_TileInfos[(int)TileDepth::Effect] = std::vector<std::vector<TileInfo>>(m_CellCount.y, std::vector<TileInfo>(m_CellCount.x));
+	for (int j = 0; j < m_CellCount.y; j++)
+	{
+		for (int i = 0; i < m_CellCount.x; i++)
+		{
+			auto& currTileInfo = m_TileInfos[(int)TileDepth::Effect][j][i];
+			currTileInfo.index = { i,j };
+			currTileInfo.type = TileType::None;
+			currTileInfo.ower = currTileInfo.index;
+		}
+	}
+}
+
 void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::string& subtype, const std::string& name, bool isNot1x1)
 {
 	TileDepth depth = (TileDepth)DATATABLE_TILEATT->GetTileAttribute(type).depth;
@@ -131,16 +101,6 @@ void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::
 		auto& currTileInfo = m_TileInfos[(int)depth][currIndex.y][currIndex.x];
 		currTileInfo.prevtype = currTileInfo.type;
 		currTileInfo.type = type;
-		currTileInfo.zone = ZoneType::None;
-	}
-
-	if (type == TileType::Zone)
-	{
-		for (auto& currIndex : tiles)
-		{
-			auto& currTileInfo = m_TileInfos[(int)depth][currIndex.y][currIndex.x];
-			currTileInfo.zone = Tile::GetNameToZone(name);
-		}
 	}
 
 	if (DATATABLE_TILEATT->GetTileAttribute(type).connectable)
@@ -204,6 +164,7 @@ void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::
 			for (auto& currIndex : tiles)
 			{
 				SetTile(currIndex, depth, type, subtype, name, false, currIndex == truetile);
+				m_TileInfos[(int)depth][currIndex.y][currIndex.x].ower = truetile;
 			}
 		}
 	}
@@ -223,6 +184,7 @@ void TileModel::SetTempEffectTiles(const CellIndex& tileIndex, TileType type, co
 void TileModel::SetTile(const CellIndex& tileIndex, const TileDepth& depth, TileType type, const std::string& subtype, const std::string& name, bool isConnectable, bool truetile)
 {
 	auto& currTileInfo = m_TileInfos[(int)depth][tileIndex.y][tileIndex.x];
+
 	if (currTileInfo.prevtype != TileType::None && currTileInfo.prevtype != type &&
 		(DATATABLE_TILEATT->CanBeSub(currTileInfo.prevtype, type) || DATATABLE_TILEATT->CanBeSub(type, currTileInfo.prevtype)))
 	{
@@ -354,6 +316,7 @@ bool TileModel::IsPossibleToBuild(const CellIndex& tileIndex, const TileType& ty
 		//	return DATATABLE_TILEATT->CanBeSub(originTileInfo.type, type) || DATATABLE_TILEATT->CanBeSub(type, originTileInfo.type);
 		return true;
 	}
+
 	//원래 타일이 나무거나 none 타일이면 가능
 	bool isNone = originTileInfo.type == TileType::None || originTileInfo.subtype == "trees" || originTileInfo.type == TileType::Zone;
 	//철거 타일이면
@@ -367,7 +330,7 @@ bool TileModel::IsPossibleToBuild(const CellIndex& tileIndex, const TileType& ty
 		return isNone;
 	}
 
-	return originTileInfo.type!=TileType::Building;
+	return originTileInfo.type != TileType::Building;
 }
 
 void TileModel::RequestUpdateTile(const TileDepth& depth, const CellIndex& tileIndex)
@@ -380,22 +343,4 @@ void TileModel::RequestTempEffectTile(const CellIndex& tileIndex)
 {
 	if (m_WhenNeedsToUpdateTempEffectTileFunc)
 		m_WhenNeedsToUpdateTempEffectTileFunc(tileIndex);
-}
-
-void TileModel::SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec)
-{
-	vec.clear();
-	if (str == "")return;
-	int curr = 0;
-	while (true)
-	{
-		auto it = str.find(',', curr);
-		if (it == std::string::npos)
-		{
-			vec.push_back(str.substr(curr, str.length() - curr));
-			return;
-		}
-		vec.push_back(str.substr(curr, it - curr));
-		curr = it + 1;
-	}
 }

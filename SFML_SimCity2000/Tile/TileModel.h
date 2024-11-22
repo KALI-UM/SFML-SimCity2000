@@ -23,6 +23,10 @@ public:
 	const sf::Vector2u m_CellCount;
 	const int m_MaxDepth = 4;
 
+	void InitializeTerrainDepth();
+	void InitializeOnGroundDepth();
+	void InitilaizeEffectDepth();
+
 	void SetTileUpdateFunc(std::function<void(const TileDepth&, const CellIndex&)> func) { m_WhenNeedsToUpdateTileFunc = func; };
 	void SetTempEffectTileUpdateFunc(std::function<void(const CellIndex&)> func) { m_WhenNeedsToUpdateTempEffectTileFunc = func; };
 
@@ -48,6 +52,5 @@ protected:
 	void SetConnectionPowerline(const CellIndex& tileIndex, const TileDepth& depth);
 	std::string GetConnectedTileName(std::string& name, int connection);
 
-	void SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec);
 };
 
