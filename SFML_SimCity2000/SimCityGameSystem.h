@@ -71,28 +71,37 @@ public:
 	void BuildNoneBuilding(ZoneType zone, std::list<CellIndex>& tiles, const TileResData& info);
 	PowerPlantBuilding* BuildPowerPlant(std::list<CellIndex>& tiles);
 	void BuildPowerlink(std::list<CellIndex>& tiles, int powerplantId = -1);
+	void BuildRoad(std::list<CellIndex>& tiles);
 
-	CellIndex GetBuildPossiblePos(ZoneType zone, std::list<CellIndex>& tiles, const TileResData& info) const;
+	CellIndex GetBuildPossiblePos(ZoneType zone, std::list<CellIndex>& tiles) const;
+	bool CheckElecSupply(const CellIndex& tileIndex)const;
+	bool CheckRoadSupply(const CellIndex& tileIndex)const;
+
 
 	void DestroySomething(const CellIndex& tileIndex);
 	void DestroyBuilding(const CellIndex& tileIndex);
 	void DestroyPowerlink(const CellIndex& tileIndex);
+	void DestroyRoad(const CellIndex& tileIndex);
 
 protected:
 	void UpdatePowerlink(std::list<CellIndex>& tiles, int powerplantId = -1);
 	void UpdatePowerlink();
 	void ResetPowerlink();
+	void UpdateRoadlink();
 protected:
 	GameStatus	m_CurrStatus = GameStatus::Play;
 	float		m_PlaySpeed = 1.0f;
+	float		m_LastUpdate;
+	float		m_UpdateCycle = 24 * 30;			//1초가 1시간, 기본 업데이트 사이클은 1달에 한번
 
 	std::vector<BuildingGenerator>		m_BuildingGenerator;
 
-	
+
 	std::list<PowerPlantBuilding*>		m_PowerPlantBuildings;
 
 	std::vector<std::vector<Building*>>		m_BuildingMap;
 	std::vector<std::vector<int>>			m_ElecSupply;
+	std::vector<std::vector<int>>			m_RoadSupply;
 	std::vector<std::vector<ZoneType>>		m_ZoneInfos;
 
 

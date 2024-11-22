@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Tile.h"
 
-const CellIndex Tile::d[4]= { {-1,0}, {1,0}, {0,-1},{0,1} };
+const CellIndex Tile::d[8] = { {-1,0}, {1,0}, {0,-1},{0,1} ,{ -1,-1 },{1,-1},{-1,1},{1,1} };
 
 std::string Tile::GetTypeToString(TileType type)
 {

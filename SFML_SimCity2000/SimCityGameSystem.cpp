@@ -23,12 +23,13 @@ bool SimCityGameSystem::Initialize()
 	for (int zone = 0; zone < (int)ZoneType::None; zone++)
 	{
 		m_BuildingGenerator.push_back(BuildingGenerator((ZoneType)zone));
-		m_BuildingGenerator[zone].SetGetBuildPosFunc(std::bind(&SimCityGameSystem::GetBuildPossiblePos, this, (ZoneType)zone, std::placeholders::_1, std::placeholders::_2));
+		m_BuildingGenerator[zone].SetGetBuildPosFunc(std::bind(&SimCityGameSystem::GetBuildPossiblePos, this, (ZoneType)zone, std::placeholders::_1));
 		m_BuildingGenerator[zone].SetBuildFunc(std::bind(&SimCityGameSystem::BuildNoneBuilding, this, (ZoneType)zone, std::placeholders::_1, std::placeholders::_2));
 		m_BuildingGenerator[zone].Initialize();
 	}
 
 	m_ElecSupply = std::vector<std::vector<int>>(mcv_Model->m_CellCount.y, std::vector<int>(mcv_Model->m_CellCount.x, 0));
+	m_RoadSupply = std::vector<std::vector<int>>(mcv_Model->m_CellCount.y, std::vector<int>(mcv_Model->m_CellCount.x, 0));
 	m_BuildingMap = std::vector<std::vector<Building*>>(mcv_Model->m_CellCount.y, std::vector<Building*>(mcv_Model->m_CellCount.x, nullptr));
 	m_ZoneInfos = std::vector<std::vector<ZoneType>>(mcv_Model->m_CellCount.y, std::vector<ZoneType>(mcv_Model->m_CellCount.x, ZoneType::None));
 
@@ -45,9 +46,16 @@ void SimCityGameSystem::Update(float dt)
 	if (m_CurrStatus == GameStatus::Pause)
 		return;
 
-	for (int zone = 0; zone < (int)ZoneType::None; zone++)
+	auto nowTime = FRAMEWORK->GetRealTime();
+	if (m_LastUpdate + (m_UpdateCycle / m_PlaySpeed) > nowTime)
 	{
-		m_BuildingGenerator[zone].Update();
+		for (int zone = 0; zone < (int)ZoneType::None; zone++)
+		{
+			m_BuildingGenerator[zone].Update();
+		}
+
+
+		m_LastUpdate = nowTime;
 	}
 }
 
@@ -74,6 +82,10 @@ void SimCityGameSystem::BuildSomething(std::list<CellIndex>& tiles)
 		else if (type == TileType::Powerline)
 		{
 			BuildPowerlink(tiles);
+		}
+		else if (type == TileType::Road)
+		{
+			BuildRoad(tiles);
 		}
 
 		for (auto& currIndex : tiles)
@@ -182,7 +194,7 @@ void SimCityGameSystem::BuildPowerlink(std::list<CellIndex>& tiles, int powerpla
 				}
 				else if (!visited[temp.y][temp.x] && m_ElecSupply[temp.y][temp.x] > 0)
 				{
-					UpdatePowerlink(tiles, powerplantId);
+					UpdatePowerlink(tiles, m_ElecSupply[temp.y][temp.x]);
 					return;
 				}
 			}
@@ -192,7 +204,43 @@ void SimCityGameSystem::BuildPowerlink(std::list<CellIndex>& tiles, int powerpla
 		mcv_Model->SetTiles(tiles, TileType::Other, "", "power_outage_lightning");
 }
 
-CellIndex SimCityGameSystem::GetBuildPossiblePos(ZoneType zone, std::list<CellIndex>& tiles, const TileResData& info) const
+void SimCityGameSystem::BuildRoad(std::list<CellIndex>& tiles)
+{
+	std::queue<CellIndex> q;
+	for (auto& line : tiles)
+	{
+		if (m_RoadSupply[line.y][line.x] != 4)
+		{
+			m_RoadSupply[line.y][line.x] = 4;
+			q.push(line);
+		}
+	}
+
+	std::vector<std::vector<bool>> visited = std::vector<std::vector<bool>>
+		(mcv_Model->m_CellCount.y, std::vector<bool>(mcv_Model->m_CellCount.x, false));
+
+	while (!q.empty())
+	{
+		CellIndex currIndex = q.front();
+		q.pop();
+		int nextDepth = m_RoadSupply[currIndex.y][currIndex.x] - 1;
+
+		if (visited[currIndex.y][currIndex.x] || nextDepth == 0)
+			continue;
+		visited[currIndex.y][currIndex.x] = true;
+		for (int i = 0; i < 4; i++)
+		{
+			CellIndex currIndex_currIndex = currIndex + Tile::d[i];
+			if (mcv_Model->IsValidTileIndex(currIndex_currIndex) && m_RoadSupply[currIndex_currIndex.y][currIndex_currIndex.x] < nextDepth)
+			{
+				m_RoadSupply[currIndex_currIndex.y][currIndex_currIndex.x] = nextDepth;
+				q.push(currIndex_currIndex);
+			}
+		}
+	}
+}
+
+CellIndex SimCityGameSystem::GetBuildPossiblePos(ZoneType zone, std::list<CellIndex>& tiles) const
 {
 	std::vector<CellIndex> possiblePos;
 	for (int j = 0; j < m_ZoneInfos.size(); ++j)
@@ -203,15 +251,47 @@ CellIndex SimCityGameSystem::GetBuildPossiblePos(ZoneType zone, std::list<CellIn
 			for (auto& currIndex : tiles)
 			{
 				auto currIndex_curIndex = currIndex + sf::Vector2i(i, j);
+				if (!mcv_Model->IsValidTileIndex(currIndex_curIndex))
+				{
+					canBuild = false;
+					break;
+				}
+
 				if (m_ZoneInfos[currIndex_curIndex.y][currIndex_curIndex.x] != zone ||
-					!mcv_Model->IsPossibleToBuild(currIndex_curIndex, Tile::GetTypeToEnum(info.type), info.subtype))
+					!mcv_Model->IsPossibleToBuild(currIndex_curIndex, TileType::Building, ""))
 				{
 					canBuild = false;
 					break;
 				}
 			}
+
 			if (canBuild)
-				possiblePos.push_back({ i,j });
+			{
+				bool elecSupply = false;
+				bool roadSupply = false;
+				for (auto& currIndex : tiles)
+				{
+					auto currIndex_curIndex = currIndex + sf::Vector2i(i, j);
+					if (mcv_Model->IsValidTileIndex(currIndex_curIndex) && CheckElecSupply(currIndex_curIndex))
+					{
+						elecSupply = true;
+						break;
+					}
+				}
+
+				for (auto& currIndex : tiles)
+				{
+					auto currIndex_curIndex = currIndex + sf::Vector2i(i, j);
+					if (mcv_Model->IsValidTileIndex(currIndex_curIndex) && CheckRoadSupply(currIndex_curIndex))
+					{
+						roadSupply = true;
+						break;
+					}
+				}
+
+				if (elecSupply && roadSupply)
+					possiblePos.push_back({ i,j });
+			}
 		}
 	}
 
@@ -220,6 +300,23 @@ CellIndex SimCityGameSystem::GetBuildPossiblePos(ZoneType zone, std::list<CellIn
 	else
 		return possiblePos[Utils::RandomRange(0, possiblePos.size() - 1)];
 }
+
+bool SimCityGameSystem::CheckElecSupply(const CellIndex& tileIndex) const
+{
+	for (int i = 0; i < 4; i++)
+	{
+		CellIndex currIndex = tileIndex + Tile::d[i];
+		if (mcv_Model->IsValidTileIndex(currIndex) && m_ElecSupply[currIndex.y][currIndex.x] > 0)
+			return true;
+	}
+	return false;
+}
+
+bool SimCityGameSystem::CheckRoadSupply(const CellIndex& tileIndex) const
+{
+	return m_RoadSupply[tileIndex.y][tileIndex.x] > 0;
+}
+
 
 void SimCityGameSystem::DestroySomething(const CellIndex& tileIndex)
 {
@@ -237,6 +334,8 @@ void SimCityGameSystem::DestroySomething(const CellIndex& tileIndex)
 
 	if (originTile.type == TileType::Powerline)
 		DestroyPowerlink(tileIndex);
+	else if (originTile.type == TileType::Road)
+		DestroyRoad(tileIndex);
 }
 
 void SimCityGameSystem::DestroyBuilding(const CellIndex& tileIndex)
@@ -308,6 +407,12 @@ void SimCityGameSystem::DestroyPowerlink(const CellIndex& tileIndex)
 	UpdatePowerlink();
 }
 
+void SimCityGameSystem::DestroyRoad(const CellIndex& tileIndex)
+{
+	m_RoadSupply[tileIndex.y][tileIndex.x] = 0;
+	UpdateRoadlink();
+}
+
 void SimCityGameSystem::UpdatePowerlink(std::list<CellIndex>& tiles, int powerplantId)
 {
 	std::list<CellIndex> elecUpdate;
@@ -329,8 +434,10 @@ void SimCityGameSystem::UpdatePowerlink(std::list<CellIndex>& tiles, int powerpl
 				continue;
 			visited[currIndex_currIndex.y][currIndex_currIndex.x] = true;
 			if (m_ElecSupply[currIndex_currIndex.y][currIndex_currIndex.x] == -1)
+			{
 				elecUpdate.push_back(currIndex_currIndex);
-			m_ElecSupply[currIndex_currIndex.y][currIndex_currIndex.x] = powerplantId;
+				m_ElecSupply[currIndex_currIndex.y][currIndex_currIndex.x] = powerplantId;
+			}
 			for (int i = 0; i < 4; i++)
 			{
 				CellIndex temp = currIndex_currIndex + Tile::d[i];
@@ -366,6 +473,47 @@ void SimCityGameSystem::ResetPowerlink()
 		{
 			if (tile > 0)
 				tile = -1;
+		}
+	}
+}
+
+void SimCityGameSystem::UpdateRoadlink()
+{
+	std::queue<CellIndex> q;
+	for (int j = 0; j < mcv_Model->m_CellCount.y; j++)
+	{
+		for (int i = 0; i < mcv_Model->m_CellCount.x; i++)
+		{
+			if (m_RoadSupply[j][i] != 4)
+			{
+				m_RoadSupply[j][i] = 0;
+			}
+			else
+			{
+				q.push({ i,j });
+			}
+		}
+	}
+
+	std::vector<std::vector<bool>> visited = std::vector<std::vector<bool>>
+		(mcv_Model->m_CellCount.y, std::vector<bool>(mcv_Model->m_CellCount.x, false));
+
+	while (!q.empty())
+	{
+		CellIndex currIndex = q.front();
+		q.pop();
+		int nextDepth = m_RoadSupply[currIndex.y][currIndex.y] - 1;
+
+		if (visited[currIndex.y][currIndex.x] || nextDepth == 0)
+			continue;
+		visited[currIndex.y][currIndex.x] = true;
+		for (int i = 0; i < 4; i++)
+		{
+			CellIndex currIndex_currIndex = currIndex + Tile::d[i];
+			if (mcv_Model->IsValidTileIndex(currIndex_currIndex) && m_RoadSupply[currIndex_currIndex.y][currIndex_currIndex.x] < nextDepth)
+			{
+				q.push(currIndex_currIndex);
+			}
 		}
 	}
 }

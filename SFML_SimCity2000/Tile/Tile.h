@@ -96,5 +96,5 @@ public:
 	static std::string GetZoneToName(ZoneType type);
 	static ZoneType GetNameToZone(const NAME& name);
 
-	static const CellIndex d[4];
+	static const CellIndex d[8];
 };

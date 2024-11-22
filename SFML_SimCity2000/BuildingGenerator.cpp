@@ -30,13 +30,14 @@ void BuildingGenerator::Update()
 	if (m_RandomValue > 100)
 	{
 		int lotSize = Utils::RandomRange(1, 4);
+
+		//GetBuildPossiblePos
+		sf::Vector2i offset = m_GetCanBuildPosFunc(m_lotSet[lotSize]);
+		if (offset == sf::Vector2i(-1, -1))
+			return;
+
 		const auto& res = DATATABLE_TILERES->GetTileRes(m_Zone, sf::Vector2u(lotSize, lotSize), m_RandomValue);
 		if (res.name == "")
-			return;
-		
-		//GetBuildPossiblePos
-		sf::Vector2i offset = m_GetCanBuildPosFunc(m_lotSet[lotSize], res);
-		if (offset == sf::Vector2i(-1, -1))
 			return;
 
 		std::list<CellIndex> tiles;
