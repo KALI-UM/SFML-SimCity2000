@@ -4,6 +4,8 @@
 #include "TileModel.h"
 #include "TileView.h"
 #include "TileResTable.h"
+#include "SimCityButtonBar.h"
+#include "SimCityCursor.h"
 
 TileController::TileController(SimCityGameSystem* sys, TileModel* model, TileView* view, int viewIndex)
 	:m_GameSystem(sys), mcv_Model(model), mcv_View(view), m_ViewIndex(viewIndex)
@@ -23,6 +25,10 @@ bool TileController::Initialize()
 
 void TileController::Reset()
 {
+	m_ButtonBar->SetButtonFunc(std::bind(&TileController::SetCurrButton, this, std::placeholders::_1));
+	m_ButtonBar->SetCursor(m_Cursor);
+
+	SetCurrButton(ButtonName::Move);
 }
 
 void TileController::Update(float dt)
@@ -47,6 +53,18 @@ void TileController::Update(float dt)
 		UpdateDrag(dt);
 		break;
 	}
+}
+
+void TileController::SetButtonBar(SimCityButtonBar* bar)
+{
+	m_ButtonBar = bar;
+	SetChildObj(bar, false);
+}
+
+void TileController::SetCusor(SimCityCursor* cursor)
+{
+	m_Cursor = cursor;
+	SetChildObj(cursor, false);
 }
 
 void TileController::UpdateNone(float dt)
@@ -84,7 +102,10 @@ void TileController::UpdateDestroy(float dt)
 		{
 			Set1x1Tile(m_MouseOverlaidTile);
 			if (!m_SelectingTiles.empty())
+			{
 				m_GameSystem->DestroySomething(m_SelectingTiles.front());
+				SOUND_MGR->PlaySfx("sound/SFX/Bulldozer-WithLoop.wav");
+			}
 		}
 	}
 
@@ -95,7 +116,7 @@ void TileController::UpdateDrag(float dt)
 {
 	if (INPUT_MGR->GetMouseUp(sf::Mouse::Left))
 	{
-		m_GameSystem->BuildSomething(m_SelectingTiles);
+		m_GameSystem->BuildSomething(m_SelectingTiles, m_GameSystem->GetCurrButtonSet());
 		m_SelectingTiles.clear();
 		m_CurrStatus = ControlStatus::Place;
 		return;
@@ -106,18 +127,67 @@ void TileController::UpdateDrag(float dt)
 		if (mcv_Model->IsValidTileIndex(m_DragStartTile) && mcv_Model->IsValidTileIndex(m_MouseOverlaidTile))
 		{
 			auto& currbttset = m_GameSystem->GetCurrButtonSet();
-			if (currbttset == ButtonSet::Road || currbttset == ButtonSet::Rail || currbttset == ButtonSet::Powerlink)
+			if (currbttset == ButtonName::Road || currbttset == ButtonName::Rail || currbttset == ButtonName::PowerLine)
 				SetLineIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
 
-			else if (currbttset == ButtonSet::Zone)
+			else if (currbttset == ButtonName::ZoneResidential|| currbttset == ButtonName::ZoneCommercial || currbttset == ButtonName::ZoneIndustrial)
 				SetRangeIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile, false);
 		}
 	}
 }
 
-void TileController::SetCurrButton(ButtonSet btt)
+void TileController::SetCurrButton(ButtonName btt)
 {
-	m_CurrStatus = btt != ButtonSet::Destroy ? ControlStatus::Place : ControlStatus::Destroy;
+	switch (btt)
+	{
+	case ButtonName::Destroy:
+		m_CurrStatus = ControlStatus::Destroy;
+		break;
+	case ButtonName::Tree:
+	case ButtonName::Alram:
+		m_CurrStatus = ControlStatus::None;
+		break;
+	case ButtonName::Elec:
+		m_CurrStatus = ControlStatus::None;
+		break;
+	case ButtonName::Water:
+	case ButtonName::Religion:
+		m_CurrStatus = ControlStatus::None;
+		break;
+	case ButtonName::Road:
+	case ButtonName::Rail:
+		m_CurrStatus = ControlStatus::Place;
+		break;
+	case ButtonName::Port:
+	case ButtonName::ZoneResidential:
+	case ButtonName::ZoneCommercial:
+	case ButtonName::ZoneIndustrial:
+		m_CurrStatus = ControlStatus::Place;
+		break;
+	case ButtonName::Education:
+	case ButtonName::PoliceStation:
+	case ButtonName::Park:
+		m_CurrStatus = ControlStatus::None;
+		break;
+	case ButtonName::ZoomIn:
+	case ButtonName::ZoomOut:
+	case ButtonName::Move:
+	case ButtonName::NotUse18:
+	case ButtonName::NotUse19:
+	case ButtonName::NotUse20:
+	case ButtonName::NotUse21:
+	case ButtonName::NotUse22:
+	case ButtonName::NotUse23:
+	case ButtonName::NotUse24:
+	case ButtonName::NotUse25:
+		m_CurrStatus = ControlStatus::None;
+		break;
+	case ButtonName::PowerLine:
+	case ButtonName::PowerPlant:
+		m_CurrStatus = ControlStatus::Place;
+		break;
+	}
+
 	m_GameSystem->SetCurrTileSet(btt);
 }
 

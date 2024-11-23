@@ -138,7 +138,7 @@
     <ClCompile Include="Framework\SoundManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Drawable\DTile.cpp">
+    <ClCompile Include="Tile\DTile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Framework\DataTableManager.cpp">
@@ -190,6 +190,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="NormalBuilding.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DGameObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SimCityButtonBar.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="sfAtlasSprite.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DAtlasSprite.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -329,7 +341,7 @@
     <ClInclude Include="resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Drawable\DTile.h">
+    <ClInclude Include="Tile\DTile.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Framework\DataTableManager.h">
@@ -381,6 +393,18 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="NormalBuilding.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DGameObject.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SimCityButtonBar.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="sfAtlasSprite.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DAtlasSprite.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

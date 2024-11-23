@@ -12,9 +12,10 @@ MouseCursor::~MouseCursor()
 
 bool MouseCursor::Initialize()
 {
-	m_WhenDownFunc.resize(sf::Mouse::ButtonCount);
-	m_WhenUpFunc.resize(sf::Mouse::ButtonCount);
-	m_WhenFunc.resize(sf::Mouse::ButtonCount);
+
+	m_WhenDownFunc.resize((int)sf::Mouse::ButtonCount);
+	m_WhenUpFunc.resize((int)sf::Mouse::ButtonCount);
+	m_WhenFunc.resize((int)sf::Mouse::ButtonCount);
 
 	m_CursorSprite = new DSprite(m_TextureId);
 	SetDrawable(m_CursorSprite);
@@ -23,6 +24,7 @@ bool MouseCursor::Initialize()
 
 void MouseCursor::Reset()
 {
+	GAME_MGR->GetWindow()->setMouseCursorVisible(false);
 	m_CursorSprite->SetTexture(m_TextureId);
 }
 
@@ -47,6 +49,11 @@ void MouseCursor::Update(float dt)
 			m_WhenFunc[mbtt]();
 		}
 	}
+}
+
+void MouseCursor::Release()
+{
+	GAME_MGR->GetWindow()->setMouseCursorVisible(true);
 }
 
 void MouseCursor::SetMouseDownFunc(sf::Mouse::Button btt, const std::function<void()>& func)

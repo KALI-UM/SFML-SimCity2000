@@ -2,6 +2,7 @@
 
 class SimCityGameSystem;
 class SimCityCursor;
+class SimCityButtonBar;
 class TileGrid;
 class Tile;
 class TileModel;
@@ -37,6 +38,7 @@ protected:
 
 	SimCityGameSystem*	m_GameSystem;
 	SimCityCursor*		m_Cursor;
+	SimCityButtonBar*	m_ButtonBar;
 	TileGrid*			m_TileGrid;
 	Tile*				m_Tile;
 

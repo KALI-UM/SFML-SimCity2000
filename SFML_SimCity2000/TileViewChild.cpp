@@ -52,7 +52,7 @@ void TileViewChild::Reset()
 		for (int i = 0; i < cellCount.x; i++)
 		{
 			auto& tileSprite = m_TileDrawable[j][i];
-			auto& tileInfo = mcv_View->GetModel()->GetTileInfo(m_Depth, { i,j });
+			const auto& tileInfo = mcv_View->GetModel()->GetTileInfo(m_Depth, { i,j });
 			tileSprite->SetShapeLot(mcv_View->GetModel()->GetTileShapeType(m_Depth, { i,j }), tileInfo.lotSize);
 			tileSprite->SetDebugDraw(false);
 			tileSprite->setLocalPosition({ (i)*cellSize.x, (j + 1) * cellSize.y });

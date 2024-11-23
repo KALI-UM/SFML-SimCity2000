@@ -29,6 +29,8 @@ void TileModel::Reset()
 
 void TileModel::Update(float dt)
 {
+	TileInfo& info = m_TileInfos[(int)TileDepth::OnGround][2][2];
+	i = info.connection;
 }
 
 const TileInfo& TileModel::GetTileInfo(const TileDepth& depth, const CellIndex& tileIndex) const
@@ -43,7 +45,7 @@ TileShapeType TileModel::GetTileShapeType(const TileDepth& depth, const CellInde
 
 bool TileModel::IsValidTileIndex(const CellIndex& tileIndex) const
 {
-	return tileIndex.x > 0 && tileIndex.x < m_CellCount.x - 1 && tileIndex.y > 0 && tileIndex.y < m_CellCount.y - 1;
+	return tileIndex.x > 0 && tileIndex.x < (int)m_CellCount.x - 1 && tileIndex.y > 0 && tileIndex.y < (int)m_CellCount.y - 1;
 }
 
 void TileModel::InitializeTerrainDepth()
@@ -151,7 +153,6 @@ void TileModel::SetTiles(std::list<CellIndex>& tiles, TileType type, const std::
 			{
 				SetTile(currIndex, depth, type, subtype, name);
 			}
-
 		}
 		else
 		{

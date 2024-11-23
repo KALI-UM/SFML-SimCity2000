@@ -73,7 +73,7 @@ sf::Vector2f TileView::GetTileCoordinatedPos(const sf::Vector2f& pos) const
 CellIndex TileView::GetTileCoordinatedIndex(const sf::Vector2f& pos, bool isTilepos) const
 {
 	sf::Vector2f tilepos = isTilepos ? pos : GetTileCoordinatedPos(pos);
-	return sf::Vector2i(tilepos.x / mcv_Model->m_CellSize.x, tilepos.y / mcv_Model->m_CellSize.y);
+	return sf::Vector2f(tilepos.x / mcv_Model->m_CellSize.x, tilepos.y / mcv_Model->m_CellSize.y).To<int>();
 }
 
 sf::Vector2f TileView::GetTileCoordinatedCenterPosByTileIndex(const CellIndex& tileIndex)

@@ -65,16 +65,16 @@ public:
 		if (it == m_Resources.end())
 		{
 			T* newRes = new T();
-			std::cout << "RESOURCE LOADING::\"" << filepath << "\"		...	";
+			//std::cout << "RESOURCE LOADING::\"" << filepath << "\"		...	";
 			if (newRes->loadFromFile(filepath))
 			{
-				std::cout << "Success\n";
+				//std::cout << "Success\n";
 				m_Resources[filepath] = newRes;
 				return newRes;
 			}
 			else
 			{
-				std::cout << "Fail\n";
+				//std::cout << "Fail\n";
 				delete newRes;
 				return nullptr;
 			}
@@ -89,7 +89,7 @@ public:
 	{
 		if (filepath.compare("") == 0)
 		{
-			std::cout << "RESOURCE Filepath::\"" << filepath << "\"is not vaild\n";
+			//std::cout << "RESOURCE Filepath::\"" << filepath << "\"is not vaild\n";
 			return false;
 		}
 		return true;

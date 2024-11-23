@@ -2,6 +2,7 @@
 #include "Scene_SimCityInGame.h"
 #include "SimCityGameSystem.h"
 #include "SimCityCursor.h"
+#include "SimCityButtonBar.h"
 #include "TileGrid.h"
 #include "Tile.h"
 #include "TileModel.h"
@@ -25,7 +26,6 @@ bool Scene_SimCityInGame::Initialize()
 	SetLayerViewIndex(2, 0);
 	SetViewNeedPriority(0, false);
 
-	m_Cursor = AddGameObject(2, new SimCityCursor("background/1013.png", 2));
 
 	//m_Tile = AddGameObject(0, new Tile());
 	//m_Tile->SetCellSize({ 45,45 });
@@ -42,11 +42,17 @@ bool Scene_SimCityInGame::Initialize()
 	m_GameSystem = AddGameObject(m_UILayerIndex, new SimCityGameSystem(m_TileModel));
 	m_TileController = AddGameObject(m_UILayerIndex, new TileController(m_GameSystem, m_TileModel, m_TileView, 0));
 
+	m_Cursor = AddGameObject(m_UILayerIndex, new SimCityCursor("ui/cursor.png", m_UIViewIndex));
+	m_ButtonBar = AddGameObject(m_UILayerIndex, new SimCityButtonBar(m_UIViewIndex));
+
+	m_TileController->SetButtonBar(m_ButtonBar);
+	m_TileController->SetCusor(m_Cursor);
 	return true;
 }
 
 void Scene_SimCityInGame::Enter()
 {
+
 	SOUND_MGR->PlayBgm("sound/BGM/bgm.mp3", true, true, 30, 10, true);
 	GAME_MGR->SetViewSize(0, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
 	GAME_MGR->SetViewSize(1, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
@@ -58,6 +64,7 @@ void Scene_SimCityInGame::Enter()
 	//m_Tile->SetTileTransform({ 0,0 }, tileTransform);
 	m_TileGrid->SetTileTransform({ 0,0 }, tileTransform);
 	m_TileView->SetTileTransform({ 0,0 }, tileTransform);
+
 }
 
 void Scene_SimCityInGame::Update(float dt)
@@ -75,7 +82,6 @@ void Scene_SimCityInGame::Update(float dt)
 	else if (INPUT_MGR->GetKeyDown(sf::Keyboard::RBracket))
 	{
 		GAME_MGR->SetViewZoom(0, 2.0f);
-
 	}
 }
 
@@ -92,26 +98,26 @@ void Scene_SimCityInGame::ShowSceneImgui()
 
 	/*ImGui::Image()*/
 
-	if (ImGui::Button("Road"))
-	{
-		m_TileController->SetCurrButton(ButtonSet::Road);
-	}
-	if (ImGui::Button("Powerline"))
-	{
-		m_TileController->SetCurrButton(ButtonSet::Powerlink);
-	}
-	if (ImGui::Button("Zone"))
-	{
-		m_TileController->SetCurrButton(ButtonSet::Zone);
-	}
-	if (ImGui::Button("PowerPlace"))
-	{
-		m_TileController->SetCurrButton(ButtonSet::Powerplant);
-	}
-	if (ImGui::Button("Destroy"))
-	{
-		m_TileController->SetCurrButton(ButtonSet::Destroy);
-	}
+	//if (ImGui::Button("Road"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Road);
+	//}
+	//if (ImGui::Button("Powerline"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Powerlink);
+	//}
+	//if (ImGui::Button("Zone"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Zone_C);
+	//}
+	//if (ImGui::Button("PowerPlace"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Powerplant);
+	//}
+	//if (ImGui::Button("Destroy"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Destroy);
+	//}
 	if (ImGui::Button("Save"))
 	{
 		m_GameSystem->SaveTileDepthFile();

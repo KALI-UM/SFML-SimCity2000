@@ -5,7 +5,7 @@ namespace sf
 	class Sound;
 }
 
-class SoundData;
+struct SoundData;
 class MusicObject;
 class SoundPlayer :
 	public GameObject

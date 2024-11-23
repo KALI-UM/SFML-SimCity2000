@@ -21,7 +21,7 @@ bool TileGrid::Initialize()
 		rowPoints.push_back({ m_CellSize.x * m_CellCount.x,	i * m_CellSize.y });
 
 	}
-	for (int i = 0; i < m_CellCount.y; i++)
+	for (int i = 0; i < (int)m_CellCount.y; i++)
 	{
 		colPoints.push_back({ i * m_CellSize.x,		0 });
 		colPoints.push_back({ i * m_CellSize.x ,	m_CellSize.y * m_CellCount.y });

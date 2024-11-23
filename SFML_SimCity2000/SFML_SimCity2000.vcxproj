@@ -153,6 +153,7 @@
     <ClCompile Include="Background_Lobby.cpp" />
     <ClCompile Include="Building.cpp" />
     <ClCompile Include="BuildingGenerator.cpp" />
+    <ClCompile Include="DAtlasSprite.cpp" />
     <ClCompile Include="DGameObject.cpp" />
     <ClCompile Include="Framework\DataTable.cpp" />
     <ClCompile Include="Framework\DataTableManager.cpp" />
@@ -168,7 +169,8 @@
     <ClCompile Include="Drawable\DText.cpp" />
     <ClCompile Include="Drawable\DThickLine.cpp" />
     <ClCompile Include="Drawable\sfLine.cpp" />
-    <ClCompile Include="Drawable\DTile.cpp" />
+    <ClCompile Include="sfAtlasSprite.cpp" />
+    <ClCompile Include="Tile\DTile.cpp" />
     <ClCompile Include="Framework\Collider.cpp" />
     <ClCompile Include="Framework\Framework.cpp" />
     <ClCompile Include="Framework\GameManager.cpp" />
@@ -199,6 +201,7 @@
     <ClCompile Include="Framework\SoundManager.cpp" />
     <ClCompile Include="GameObject\SimCityCursor.cpp" />
     <ClCompile Include="Scene_SimCityMain.cpp" />
+    <ClCompile Include="SimCityButtonBar.cpp" />
     <ClCompile Include="SimCityGameSystem.cpp" />
     <ClCompile Include="TileAttTable.cpp" />
     <ClCompile Include="TileViewChild.cpp" />
@@ -214,6 +217,7 @@
     <ClInclude Include="Background_Lobby.h" />
     <ClInclude Include="Building.h" />
     <ClInclude Include="BuildingGenerator.h" />
+    <ClInclude Include="DAtlasSprite.h" />
     <ClInclude Include="DGameObject.h" />
     <ClInclude Include="Framework\DataTable.h" />
     <ClInclude Include="Framework\DataTableManager.h" />
@@ -230,7 +234,8 @@
     <ClInclude Include="Drawable\DThickLine.h" />
     <ClInclude Include="Drawable\sfLine.h" />
     <ClInclude Include="Drawable_headers.h" />
-    <ClInclude Include="Drawable\DTile.h" />
+    <ClInclude Include="sfAtlasSprite.h" />
+    <ClInclude Include="Tile\DTile.h" />
     <ClInclude Include="Framework\Collider.h" />
     <ClInclude Include="Framework\Framework.h" />
     <ClInclude Include="Framework\GameManager.h" />
@@ -265,6 +270,7 @@
     <ClInclude Include="Framework\SoundManager.h" />
     <ClInclude Include="GameObject\SimCityCursor.h" />
     <ClInclude Include="Scene_SimCityMain.h" />
+    <ClInclude Include="SimCityButtonBar.h" />
     <ClInclude Include="SimCityGameSystem.h" />
     <ClInclude Include="TileAttTable.h" />
     <ClInclude Include="TileViewChild.h" />

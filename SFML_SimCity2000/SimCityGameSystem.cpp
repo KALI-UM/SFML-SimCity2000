@@ -25,7 +25,7 @@ bool SimCityGameSystem::Initialize()
 	{
 		m_BuildingGenerator.push_back(BuildingGenerator((ZoneType)zone));
 		m_BuildingGenerator[zone].SetGetBuildPosFunc(std::bind(&SimCityGameSystem::GetBuildPossiblePos, this, (ZoneType)zone, std::placeholders::_1));
-		m_BuildingGenerator[zone].SetBuildFunc(std::bind(&SimCityGameSystem::BuildNoneBuilding, this, (ZoneType)zone, std::placeholders::_1, std::placeholders::_2));
+		m_BuildingGenerator[zone].SetBuildFunc(std::bind(&SimCityGameSystem::BuildAutoBuilding, this, std::placeholders::_1, std::placeholders::_2));
 		m_BuildingGenerator[zone].Initialize();
 	}
 
@@ -34,7 +34,6 @@ bool SimCityGameSystem::Initialize()
 	m_BuildingMap = std::vector<std::vector<Building*>>(mcv_Model->m_CellCount.y, std::vector<Building*>(mcv_Model->m_CellCount.x, nullptr));
 	m_ZoneInfos = std::vector<std::vector<ZoneType>>(mcv_Model->m_CellCount.y, std::vector<ZoneType>(mcv_Model->m_CellCount.x, ZoneType::None));
 
-	m_ElecGroup.resize(1);
 
 	LoadTileDepthFile();
 	return false;
@@ -42,10 +41,19 @@ bool SimCityGameSystem::Initialize()
 
 void SimCityGameSystem::Reset()
 {
+
 }
 
 void SimCityGameSystem::Update(float dt)
 {
+	while (!m_WantsToAddBuildings.empty())
+	{
+		auto building = m_WantsToAddBuildings.front();
+		m_WantsToAddBuildings.pop();
+		m_Buildings.push_back(building);
+		SCENE_MGR->GetCurrentScene()->AddGameObject(2, building);
+	}
+
 	if (m_CurrStatus == GameStatus::Pause)
 		return;
 
@@ -73,7 +81,7 @@ void SimCityGameSystem::LoadTerrainDepth()
 	int row = doc.GetRowCount();
 	int col = doc.GetColumnCount();
 
-	std::list<CellIndex> zones;
+	std::list<CellIndex> zones[3];
 	for (int j = 0; j < row; j++)
 	{
 		for (int i = 0; i < col; i++)
@@ -85,7 +93,14 @@ void SimCityGameSystem::LoadTerrainDepth()
 			{
 				if (TileType::Zone == Tile::GetTypeToEnum(strings[0]))
 				{
-					zones.push_back({ i,j });
+					ZoneType zone = Tile::GetNameToZone(strings[2]);
+					if (zone == ZoneType::Residential)
+						zones[0].push_back({ i,j });
+					else if (zone == ZoneType::Commercial)
+						zones[1].push_back({ i,j });
+					else if (zone == ZoneType::Industrial)
+						zones[2].push_back({ i,j });
+
 				}
 				else
 				{
@@ -95,7 +110,10 @@ void SimCityGameSystem::LoadTerrainDepth()
 			}
 		}
 	}
-	BuildZone(zones);
+
+	SetZone(zones[0], ZoneType::Residential);
+	SetZone(zones[1], ZoneType::Commercial);
+	SetZone(zones[2], ZoneType::Industrial);
 }
 
 void SimCityGameSystem::LoadOnGroundDepth()
@@ -116,7 +134,7 @@ void SimCityGameSystem::LoadOnGroundDepth()
 			std::string celldata = doc.GetCell<std::string>(i, j);
 			std::vector<std::string> strings;
 			SetStringToVectorElements(celldata, strings);
-			if (!strings.empty())
+			if (!strings.empty() && strings[0] != "")
 			{
 				auto currType = Tile::GetTypeToEnum(strings[0]);
 				if (TileType::Road == currType)
@@ -143,41 +161,26 @@ void SimCityGameSystem::LoadOnGroundDepth()
 					{
 						temp.push_back(currIndex + sf::Vector2i(i, j));
 					}
-					if (strings[1] == "power_plant")
+
+					if (strings[1] == "")
 					{
-						SetCurrTileSet(ButtonSet::Powerplant);
-						BuildBuilding(temp);
+						BuildAutoBuilding(temp, DATATABLE_TILERES->GetTileRes(strings[0], strings[1], strings[2]));
 					}
-					else if (strings[1] == "")
+					else if (strings[1] == m_TileSet.find(ButtonName::PowerPlant)->second.subtype)
 					{
-						//BuildNoneBuilding()
+						BuildBuilding(temp, BuildingType::PowerPlant);
 					}
 				}
 				else
 				{
-					if (strings[0] == "")
-					{
-						/*if (strings[3] == "" && strings[4] == "")
-							continue;*/
-						//CellIndex owner = { std::stoi(strings[3]), std::stoi(strings[4]) };
-					}
-					else
-					{
-						BuildRawThing({ i,j }, DATATABLE_TILERES->GetTileRes(strings[0], strings[1], strings[2]));
-					}
+					BuildRawThing({ i,j }, DATATABLE_TILERES->GetTileRes(strings[0], strings[1], strings[2]));
 				}
 			}
 		}
 	}
 
 	BuildRoad(roads);
-	const auto& roadset = m_TileSet.find(ButtonSet::Road)->second;
-	mcv_Model->SetTiles(roads,
-		roadset.type, roadset.subtype, roadset.name, roadset.lotSize != sf::Vector2u(1, 1));
-	BuildPowerlink(powerlines, -1);
-	const auto& powerlineset = m_TileSet.find(ButtonSet::Powerlink)->second;
-	mcv_Model->SetTiles(powerlines,
-		powerlineset.type, powerlineset.subtype, powerlineset.name, powerlineset.lotSize != sf::Vector2u(1, 1));
+	BuildPowerline(powerlines, -1);
 }
 
 void SimCityGameSystem::SaveTileDepthFile()
@@ -225,7 +228,7 @@ void SimCityGameSystem::SaveOnGroundDepth()
 	doc.Save("datatables/tileInfo_depth2.csv");
 }
 
-void SimCityGameSystem::SetCurrTileSet(ButtonSet set)
+void SimCityGameSystem::SetCurrTileSet(ButtonName set)
 {
 	m_CurrTileSet = set;
 }
@@ -237,9 +240,10 @@ void SimCityGameSystem::BuildRawThing(const CellIndex& tileIndex, const TileResD
 	mcv_Model->SetTiles(temp, Tile::GetTypeToEnum(data.type), data.subtype, data.name);
 }
 
-void SimCityGameSystem::BuildSomething(std::list<CellIndex>& tiles)
+void SimCityGameSystem::BuildSomething(std::list<CellIndex>& tiles, const ButtonName& set)
 {
-	TileType type = GetCurrTileSet().type;
+	auto& tileset = m_TileSet.find(set)->second;
+	TileType type = tileset.type;
 
 	if (type == TileType::Zone)
 	{
@@ -250,24 +254,17 @@ void SimCityGameSystem::BuildSomething(std::list<CellIndex>& tiles)
 	{
 		if (type == TileType::Building)
 		{
-			BuildBuilding(tiles);
+			BuildBuilding(tiles, BuildingType::PowerPlant);
 		}
 		else if (type == TileType::Powerline)
 		{
-			BuildPowerlink(tiles);
+			BuildPowerline(tiles);
 		}
 		else if (type == TileType::Road)
 		{
 			BuildRoad(tiles);
 		}
-
-		for (auto& currIndex : tiles)
-		{
-			m_ZoneInfos[currIndex.y][currIndex.x] = ZoneType::None;
-		}
 	}
-
-	mcv_Model->SetTiles(tiles, GetCurrTileSet().type, GetCurrTileSet().subtype, GetCurrTileSet().name, GetCurrTileSet().lotSize != sf::Vector2u(1, 1));
 }
 
 void SimCityGameSystem::BuildZone(std::list<CellIndex>& tiles)
@@ -281,50 +278,70 @@ void SimCityGameSystem::BuildZone(std::list<CellIndex>& tiles)
 			|| (currTileInfo.type == TileType::Building && currTileInfo.subtype == "trees")
 			|| currTileInfo.type == TileType::Powerline)
 		{
-			m_ZoneInfos[currIndex.y][currIndex.x] = ZoneType::Residential;
 			possibleTiles.push_back(currIndex);
 		}
 	}
-	mcv_Model->SetTiles(possibleTiles, TileType::Zone, "", Tile::GetZoneToName(ZoneType::Residential));
+
+	ZoneType zone;
+	if (GetCurrButtonSet() != ButtonName::ZoneResidential&&
+		GetCurrButtonSet() != ButtonName::ZoneCommercial &&
+		GetCurrButtonSet() != ButtonName::ZoneIndustrial)
+	{
+		zone = ZoneType::None;
+	}
+	else
+	{
+		zone = Tile::GetNameToZone(GetCurrTileSet().name);
+	}
+	SetZone(possibleTiles, zone);
 }
 
-void SimCityGameSystem::BuildBuilding(std::list<CellIndex>& tiles)
+void SimCityGameSystem::BuildBuilding(std::list<CellIndex>& tiles, const BuildingType& type)
 {
 	Building* building = nullptr;
-
-	switch (m_CurrTileSet)
+	auto it = m_TileSet.find(ButtonName::PowerPlant)->second;
+	switch (type)
 	{
-	case ButtonSet::Powerplant:
+	case BuildingType::PowerPlant:
+	{
 		building = BuildPowerPlant(tiles);
-		break;
-	default:
-		break;
+		it = m_TileSet.find(ButtonName::PowerPlant)->second;
 	}
+	break;
+	}
+
 	if (!building)return;
 
 	building->INITIALIZE();
 	building->RESET();
-	SCENE_MGR->GetCurrentScene()->AddGameObject(2, building);
+	m_WantsToAddBuildings.push(building);
 	building->BuildBuilding(tiles);
+
 	for (auto& currIndex : tiles)
 	{
 		m_BuildingMap[currIndex.y][currIndex.x] = building;
 	}
+
+
+
 	BuildPowerlink(tiles, building->GetBuildingInfo().buildingType == BuildingType::PowerPlant ? building->GetBuildingInfo().buildingId : -1);
+	SetZone(tiles, ZoneType::None);
+	mcv_Model->SetTiles(tiles, it.type, it.subtype, it.name, it.lotSize != sf::Vector2u(1, 1));
 }
 
-void SimCityGameSystem::BuildNoneBuilding(ZoneType zone, std::list<CellIndex>& tiles, const TileResData& info)
+void SimCityGameSystem::BuildAutoBuilding(std::list<CellIndex>& tiles, const TileResData& info)
 {
 	Building* building = new NormalBuilding();
 	building->INITIALIZE();
 	building->RESET();
-	SCENE_MGR->GetCurrentScene()->AddGameObject(3, building);
+	m_WantsToAddBuildings.push(building);
 	building->BuildBuilding(tiles);
 	for (auto& currIndex : tiles)
 	{
 		m_BuildingMap[currIndex.y][currIndex.x] = building;
 	}
 	BuildPowerlink(tiles, -1);
+	SetZone(tiles, ZoneType::None);
 	mcv_Model->SetTiles(tiles, Tile::GetTypeToEnum(info.type), info.subtype, info.name, info.lotSize != sf::Vector2u(1, 1));
 }
 
@@ -333,6 +350,13 @@ PowerPlantBuilding* SimCityGameSystem::BuildPowerPlant(std::list<CellIndex>& til
 	PowerPlantBuilding* building = new PowerPlantBuilding();
 	m_PowerPlantBuildings.push_back(building);
 	return building;
+}
+
+void SimCityGameSystem::BuildPowerline(std::list<CellIndex>& tiles, int powerplantId)
+{
+	auto& tileset = m_TileSet.find(ButtonName::PowerLine)->second;
+	mcv_Model->SetTiles(tiles, tileset.type, tileset.subtype, tileset.name, tileset.lotSize != sf::Vector2u(1, 1));
+	BuildPowerlink(tiles);
 }
 
 void SimCityGameSystem::BuildPowerlink(std::list<CellIndex>& tiles, int powerplantId)
@@ -413,6 +437,11 @@ void SimCityGameSystem::BuildRoad(std::list<CellIndex>& tiles)
 			}
 		}
 	}
+
+	SetZone(tiles, ZoneType::None);
+
+	auto& tileset = m_TileSet.find(ButtonName::Road)->second;
+	mcv_Model->SetTiles(tiles, tileset.type, tileset.subtype, tileset.name, tileset.lotSize != sf::Vector2u(1, 1));
 }
 
 CellIndex SimCityGameSystem::GetBuildPossiblePos(ZoneType zone, std::list<CellIndex>& tiles) const
@@ -587,6 +616,32 @@ void SimCityGameSystem::DestroyRoad(const CellIndex& tileIndex)
 	UpdateRoadlink();
 }
 
+void SimCityGameSystem::SetZone(std::list<CellIndex> tiles, const ZoneType& zone)
+{
+	for (auto& currIndex : tiles)
+	{
+		m_ZoneInfos[currIndex.y][currIndex.x] = zone;
+	}
+
+	if (zone == ZoneType::None)
+	{
+		mcv_Model->SetTiles(tiles, TileType::Terrain, "terrain", "land");
+	}
+	else if (zone == ZoneType::Commercial)
+	{
+		ButtonName t;
+		if (zone == ZoneType::Residential)
+			t = ButtonName::ZoneResidential;
+		else if (zone == ZoneType::Commercial)
+			t = ButtonName::ZoneCommercial;
+		else if (zone == ZoneType::Industrial)
+			t = ButtonName::ZoneIndustrial;
+
+		auto& tileset = m_TileSet.find(t)->second;
+		mcv_Model->SetTiles(tiles, tileset.type, tileset.subtype, tileset.name);
+	}
+}
+
 void SimCityGameSystem::UpdatePowerlink(std::list<CellIndex>& tiles, int powerplantId)
 {
 	std::list<CellIndex> elecUpdate;
@@ -692,22 +747,22 @@ void SimCityGameSystem::UpdateRoadlink()
 	}
 }
 
-int SimCityGameSystem::Find(int groupId)
-{
-	if (m_ElecGroup[groupId] == groupId)return groupId;
-	else m_ElecGroup[groupId] = Find(m_ElecGroup[groupId]);
-}
-
-void SimCityGameSystem::Union(int groupId1, int groupId2)
-{
-	groupId1 = Find(groupId1);
-	groupId2 = Find(groupId2);
-
-	if (groupId1 > groupId2)
-		std::swap(groupId1, groupId2);
-
-	m_ElecGroup[groupId2] = groupId1;
-}
+//int SimCityGameSystem::Find(int groupId)
+//{
+//	if (m_ElecGroup[groupId] == groupId)return groupId;
+//	else m_ElecGroup[groupId] = Find(m_ElecGroup[groupId]);
+//}
+//
+//void SimCityGameSystem::Union(int groupId1, int groupId2)
+//{
+//	groupId1 = Find(groupId1);
+//	groupId2 = Find(groupId2);
+//
+//	if (groupId1 > groupId2)
+//		std::swap(groupId1, groupId2);
+//
+//	m_ElecGroup[groupId2] = groupId1;
+//}
 
 void SimCityGameSystem::SetTileSet()
 {
@@ -716,42 +771,56 @@ void SimCityGameSystem::SetTileSet()
 	road.subtype = "road";
 	road.name = "road_1";
 	road.lotSize = DATATABLE_TILERES->GetTileRes(road.type, road.subtype, road.name).lotSize;
-	m_TileSet.insert({ ButtonSet::Road, road });
+	m_TileSet.insert({ ButtonName::Road, road });
 
 	TileInfo rail;
 	rail.type = TileType::Rail;
 	rail.subtype = "rail";
 	rail.name = "rail_1";
 	rail.lotSize = DATATABLE_TILERES->GetTileRes(rail.type, rail.subtype, rail.name).lotSize;
-	m_TileSet.insert({ ButtonSet::Rail, rail });
+	m_TileSet.insert({ ButtonName::Rail, rail });
 
 	TileInfo powerline;
 	powerline.type = TileType::Powerline;
 	powerline.subtype = "powerline";
 	powerline.name = "powerline_1";
 	powerline.lotSize = DATATABLE_TILERES->GetTileRes(powerline.type, powerline.subtype, powerline.name).lotSize;
-	m_TileSet.insert({ ButtonSet::Powerlink, powerline });
+	m_TileSet.insert({ ButtonName::PowerLine, powerline });
 
 	TileInfo powerplant;
 	powerplant.type = TileType::Building;
 	powerplant.subtype = "power_plant";
 	powerplant.name = "coal";
 	powerplant.lotSize = DATATABLE_TILERES->GetTileRes(powerplant.type, powerplant.subtype, powerplant.name).lotSize;
-	m_TileSet.insert({ ButtonSet::Powerplant, powerplant });
+	m_TileSet.insert({ ButtonName::PowerPlant, powerplant });
 
-	TileInfo zone;
-	zone.type = TileType::Zone;
-	zone.subtype = "";
-	zone.name = "zone_1";
-	zone.lotSize = DATATABLE_TILERES->GetTileRes(zone.type, zone.subtype, zone.name).lotSize;
-	m_TileSet.insert({ ButtonSet::Zone, zone });
+	TileInfo residential;
+	residential.type = TileType::Zone;
+	residential.subtype = "";
+	residential.name = "zone_1";
+	residential.lotSize = DATATABLE_TILERES->GetTileRes(residential.type, residential.subtype, residential.name).lotSize;
+	m_TileSet.insert({ ButtonName::ZoneResidential, residential });
+
+	TileInfo commercial;
+	commercial.type = TileType::Zone;
+	commercial.subtype = "";
+	commercial.name = "zone_3";
+	commercial.lotSize = DATATABLE_TILERES->GetTileRes(commercial.type, commercial.subtype, commercial.name).lotSize;
+	m_TileSet.insert({ ButtonName::ZoneCommercial, commercial });
+
+	TileInfo industrial;
+	industrial.type = TileType::Zone;
+	industrial.subtype = "";
+	industrial.name = "zone_5";
+	industrial.lotSize = DATATABLE_TILERES->GetTileRes(industrial.type, industrial.subtype, industrial.name).lotSize;
+	m_TileSet.insert({ ButtonName::ZoneIndustrial, industrial });
 
 	TileInfo destroy;
 	destroy.type = TileType::Building;
 	destroy.subtype = "rubble";
 	destroy.name = "rubble_1";
 	destroy.lotSize = DATATABLE_TILERES->GetTileRes(destroy.type, destroy.subtype, destroy.name).lotSize;
-	m_TileSet.insert({ ButtonSet::Destroy, destroy });
+	m_TileSet.insert({ ButtonName::Destroy, destroy });
 
 }
 

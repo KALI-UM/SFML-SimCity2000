@@ -55,7 +55,7 @@ void SceneBase::RESET()
 
 void SceneBase::ENTER()
 {
-	ImGuiManager::SetShowDemo(true);
+	ImGuiManager::SetShowDemo(false);
 	GAME_MGR->ResizeViews(m_ViewCnt);
 	for (int i = 0; i < m_ViewCnt; i++)
 	{
@@ -298,8 +298,8 @@ void SceneBase::RegisterGameObject()
 	{
 		int layerIndex = m_WantsToAdd.front().first;
 		GameObject* target = m_WantsToAdd.front().second;
-		GetGameObjectsLayerIter(layerIndex).push_back(target);
 		m_WantsToAdd.pop();
+		GetGameObjectsLayerIter(layerIndex).push_back(target);
 	}
 }
 

@@ -17,19 +17,54 @@ struct CityInfo
 	int tax;				//세금
 };
 
-enum class ButtonSet
+//enum class TileSet
+//{
+//	Road,
+//	Rail,
+//	Powerlink,
+//	Powerplant,
+//	Zone_R,
+//	Zone_C,
+//	Zone_I,
+//	Destroy,
+//	None,
+//};
+
+enum class ButtonName
 {
+	Destroy,
+	Tree,
+	Alram,
+	Elec,
+	Water,
+	Religion,
 	Road,
 	Rail,
-	Powerlink,
-	Powerplant,
-	Zone,
-	Destroy,
+	Port,
+	ZoneResidential,
+	ZoneCommercial,
+	ZoneIndustrial,
+	Education,
+	PoliceStation,
+	Park,
+	ZoomIn,
+	ZoomOut,
+	Move,
+	NotUse18,
+	NotUse19,
+	NotUse20,
+	NotUse21,
+	NotUse22,
+	NotUse23,
+	NotUse24,
+	NotUse25,
+	PowerLine,
+	PowerPlant,
 };
 
 namespace std {
-	template <> struct hash<ButtonSet> {
-		size_t operator() (const ButtonSet& t) const { return size_t(t); }
+	template <> struct hash<ButtonName> {
+		size_t operator() (const ButtonName& t) const { return size_t(t); }
 	};
 }
 
@@ -65,20 +100,22 @@ protected:
 	void SaveTerrainDepth();
 	void SaveOnGroundDepth();
 
-	std::unordered_map<ButtonSet, TileInfo> m_TileSet;
-	ButtonSet m_CurrTileSet = ButtonSet::Road;
+	std::unordered_map<ButtonName, TileInfo> m_TileSet;
+	ButtonName m_CurrTileSet;
 	void SetTileSet();
 public:
-	void SetCurrTileSet(ButtonSet set);
-	const ButtonSet& GetCurrButtonSet() const { return m_CurrTileSet; }
+	void SetCurrTileSet(ButtonName set);
+	const ButtonName& GetCurrButtonSet() const { return m_CurrTileSet; }
 	const TileInfo& GetCurrTileSet()const { return m_TileSet.find(m_CurrTileSet)->second; }
 
 	void BuildRawThing(const CellIndex& tileIndex, const TileResData& data);
-	void BuildSomething(std::list<CellIndex>& tiles);
+	void BuildSomething(std::list<CellIndex>& tiles, const ButtonName& set);
 	void BuildZone(std::list<CellIndex>& tiles);
-	void BuildBuilding(std::list<CellIndex>& tiles);
-	void BuildNoneBuilding(ZoneType zone, std::list<CellIndex>& tiles, const TileResData& info);
+	void BuildBuilding(std::list<CellIndex>& tiles, const BuildingType& type);
+	void BuildAutoBuilding(std::list<CellIndex>& tiles, const TileResData& info);
 	PowerPlantBuilding* BuildPowerPlant(std::list<CellIndex>& tiles);
+
+	void BuildPowerline(std::list<CellIndex>& tiles, int powerplantId = -1);
 	void BuildPowerlink(std::list<CellIndex>& tiles, int powerplantId = -1);
 	void BuildRoad(std::list<CellIndex>& tiles);
 
@@ -90,6 +127,8 @@ public:
 	void DestroyBuilding(const CellIndex& tileIndex);
 	void DestroyPowerlink(const CellIndex& tileIndex);
 	void DestroyRoad(const CellIndex& tileIndex);
+
+	void SetZone(std::list<CellIndex> tiles, const ZoneType& zone);
 
 protected:
 	void UpdatePowerlink(std::list<CellIndex>& tiles, int powerplantId = -1);
@@ -104,8 +143,9 @@ protected:
 
 	std::vector<BuildingGenerator>		m_BuildingGenerator;
 
-
+	std::list<Building*>				m_Buildings;
 	std::list<PowerPlantBuilding*>		m_PowerPlantBuildings;
+	std::queue<Building*>				m_WantsToAddBuildings;
 
 	std::vector<std::vector<Building*>>		m_BuildingMap;
 	std::vector<std::vector<int>>			m_ElecSupply;
@@ -113,14 +153,12 @@ protected:
 	std::vector<std::vector<ZoneType>>		m_ZoneInfos;
 
 
-	std::vector<std::vector<int>>		m_ElecGroupId;
-
 
 private:
-	int Find(int groupId);
-	void Union(int groupId1, int groupId2);
-	//임시
-	std::vector<int> m_ElecGroup;
+	//int Find(int groupId);
+	//void Union(int groupId1, int groupId2);
+	////임시
+	//std::vector<int> m_ElecGroup;
 
 	static void SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec);
 };

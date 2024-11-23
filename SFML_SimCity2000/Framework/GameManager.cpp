@@ -11,10 +11,8 @@ bool GameManager::Initialize(sf::RenderWindow* window)
 {
 	m_MainWindow = window;
 	bool success = true;
-	//m_MainWindow->setMouseCursorVisible(false);
 	success &= DATATABLE_MGR->Initialize();
 	success &= SCENE_MGR->Initialize();
-
 	Scene_SimCityInGame* lobby = new Scene_SimCityInGame();
 	SCENE_MGR->PushScene(lobby);
 	SCENE_MGR->SetCurrentScene(lobby->GetName());

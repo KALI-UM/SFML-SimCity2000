@@ -88,6 +88,11 @@ void DSprite::SetTexture(const std::string& filepath, bool resetRect)
 	SetTexture(ResourceManager<sf::Texture>::GetInstance()->GetByFilepath(filepath),resetRect);
 }
 
+void DSprite::SetTextureRect(const sf::IntRect& rect)
+{
+	m_Sprite.setTextureRect(rect);
+}
+
 void DSprite::SetOrigin(OriginType type, const sf::Vector2f& detail)
 {
 	setOrigin(((GetTextureSize().x / 2) * ((int)type % 3)) + detail.x,

@@ -52,5 +52,6 @@ protected:
 	void SetConnectionPowerline(const CellIndex& tileIndex, const TileDepth& depth);
 	std::string GetConnectedTileName(std::string& name, int connection);
 
+	int i = 0;
 };
 

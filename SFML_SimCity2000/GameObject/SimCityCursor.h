@@ -1,29 +1,23 @@
 #pragma once
 #include "MouseCursor.h"
 
-enum class CursorMode
-{
-	None,
-	Move,
-	WaitForClick,
-	NowDrag,
-};
-
+enum class ButtonName;
 class SimCityCursor :
 	public MouseCursor
 {
 public:
-	SimCityCursor(const std::string& texId = "ui/push.png", int viewIndex = 0);
+	SimCityCursor(const std::string& texId = "ui/cursor.png", int viewIndex = 0);
 	~SimCityCursor();
 
 	bool Initialize() override;
 	void Reset()override;
 	void Update(float dt)override;
 
-	void SetCursorMode(CursorMode mode);
+	void SetCursorMode(ButtonName mode);
+	ButtonName GetCursorMode()const { return m_CurrentMode; }
 
 protected:
-	CursorMode m_CurrentMode;
-	std::string m_ModeTextureId[3];
+	ButtonName m_CurrentMode;
+	sf::IntRect m_ModeTextureRect[25];
 };
 

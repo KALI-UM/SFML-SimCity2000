@@ -11,6 +11,7 @@ public:
 	bool Initialize() override;
 	void Reset()override;
 	void Update(float dt)override;
+	void Release()override;
 
 	void SetMouseDownFunc(sf::Mouse::Button btt, const std::function<void()>& func);
 	void SetMouseUpFunc(sf::Mouse::Button btt, const std::function<void()>& func);

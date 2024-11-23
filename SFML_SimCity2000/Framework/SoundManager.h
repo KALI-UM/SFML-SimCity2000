@@ -63,7 +63,7 @@ protected:
 
 	float m_GlobalVolume = 100.f;
 	float m_SfxVolume = 100.f;
-	float m_BgmVolume = 100.f;
+	float m_BgmVolume = 50.f;
 
 };
 
