@@ -95,9 +95,25 @@ const TileResData& TileResTable::GetTileRes(const TileType& type, const SUBTYPE&
 	return GetTileRes(Tile::GetTypeToString(type), subtype, name);
 }
 
+const TileResData& TileResTable::GetTileRes(const ID& id)
+{
+	if (id > m_TileResDataById.size() || id < 0)return m_Empty;
+	return m_TileResDataById[id];
+}
+
 void TileResTable::SetTileInfo(TileInfo& info, const TileType& type, const SUBTYPE& subtype, const NAME& name)
 {
 	auto tileres = GetTileRes(type, subtype, name);
+	info.lotSize = tileres.lotSize;
+	info.filepath = GetTileFilePath(tileres);
+}
+
+void TileResTable::SetTileInfo(TileInfo& info, const ID& id)
+{
+	auto tileres = GetTileRes(id);
+	info.type = Tile::GetTypeToEnum(tileres.type);
+	info.subtype = tileres.subtype;
+	info.name = tileres.name;
 	info.lotSize = tileres.lotSize;
 	info.filepath = GetTileFilePath(tileres);
 }

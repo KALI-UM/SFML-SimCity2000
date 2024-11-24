@@ -38,6 +38,31 @@ DrawableObject::~DrawableObject()
 	delete m_DebugInfo;
 }
 
+void DrawableObject::SetPriorityType(DrawPriorityType type, float value)
+{
+	m_PriorityType = type;
+	m_PriorityValue = value;
+}
+
+float DrawableObject::GetPriorityValue() const
+{
+	switch (m_PriorityType)
+	{
+	case DrawPriorityType::X:
+		return getPosition().x;
+		break;
+	case DrawPriorityType::Y:
+		return getPosition().y;
+		break;
+	case DrawPriorityType::Custom:
+		return m_PriorityValue;
+		break;
+	default:
+		return 0;
+		break;
+	}
+}
+
 DebugInfo* DrawableObject::GetDebugDraw()
 {
 	if (m_DebugInfo)

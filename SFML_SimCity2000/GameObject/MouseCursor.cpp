@@ -18,6 +18,7 @@ bool MouseCursor::Initialize()
 	m_WhenFunc.resize((int)sf::Mouse::ButtonCount);
 
 	m_CursorSprite = new DSprite(m_TextureId);
+	m_CursorSprite->SetPriorityType(DrawPriorityType::Custom, 100);
 	SetDrawable(m_CursorSprite);
 	return true;
 }

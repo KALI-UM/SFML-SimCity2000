@@ -12,6 +12,7 @@ const sf::Color ColorPalette::Cyan		= sf::Color::Cyan;
 const sf::Color ColorPalette::Transparent = sf::Color::Transparent;
 
 const sf::Color ColorPalette::Gray		= sf::Color(128, 128,128);
+const sf::Color ColorPalette::DarkGray		= sf::Color(64, 64,64);
 const sf::Color ColorPalette::DarkRed	= sf::Color(139, 0, 0);
 const sf::Color ColorPalette::Salmon	= sf::Color(250, 128, 114);
 const sf::Color ColorPalette::OrangeRed = sf::Color(255, 69, 0);

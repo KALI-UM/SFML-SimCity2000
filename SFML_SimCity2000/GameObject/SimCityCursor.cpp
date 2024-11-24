@@ -24,8 +24,8 @@ bool SimCityCursor::Initialize()
 		}
 	}
 
-	m_ModeTextureRect[(int)ButtonName::ZoomOut] = sf::IntRect(3 * 32, 2 * 32, 32, 32);
-	m_ModeTextureRect[(int)ButtonName::Move] = sf::IntRect(1 * 32, 3 * 32, 32, 32);
+	m_ModeTextureRect[(int)Action::ZoomOut] = sf::IntRect(3 * 32, 2 * 32, 32, 32);
+	m_ModeTextureRect[(int)Action::Move] = sf::IntRect(1 * 32, 3 * 32, 32, 32);
 	result &= MouseCursor::Initialize();
 	return result;
 }
@@ -34,7 +34,7 @@ void SimCityCursor::Reset()
 {
 	MouseCursor::Reset();
 	m_CursorSprite->setScale({ 2,2 });
-	SetCursorMode(ButtonName::Move);
+	SetCursorMode(Action::Move);
 }
 
 void SimCityCursor::Update(float dt)
@@ -42,7 +42,7 @@ void SimCityCursor::Update(float dt)
 	MouseCursor::Update(dt);
 }
 
-void SimCityCursor::SetCursorMode(ButtonName mode)
+void SimCityCursor::SetCursorMode(Action mode)
 {
 	if (m_CurrentMode == mode)return;
 	m_CurrentMode = mode;

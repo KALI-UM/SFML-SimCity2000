@@ -1,7 +1,6 @@
 #pragma once
 #include "Building.h"
 
-
 class PowerPlantBuilding :
 	public Building
 {

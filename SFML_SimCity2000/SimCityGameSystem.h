@@ -30,13 +30,13 @@ struct CityInfo
 //	None,
 //};
 
-enum class ButtonName
+enum class Action
 {
-	Destroy,
-	Tree,
-	Alram,
-	Elec,
-	Water,
+	Bulldozer,
+	Landscape,
+	Dispatch,
+	PowerSupply,
+	WaterSupply,
 	Religion,
 	Road,
 	Rail,
@@ -45,8 +45,8 @@ enum class ButtonName
 	ZoneCommercial,
 	ZoneIndustrial,
 	Education,
-	PoliceStation,
-	Park,
+	PublicService,
+	Recreation,
 	ZoomIn,
 	ZoomOut,
 	Move,
@@ -58,18 +58,46 @@ enum class ButtonName
 	NotUse23,
 	NotUse24,
 	NotUse25,
+
+	//서브버튼
+	DestroyNormal,
+	DestroyZone,
+	Trees,
+	Water,
 	PowerLine,
 	PowerPlant,
+	GradeSchool,
+	College,
+	Library,
+	PoliceStation,
+	FireStation,
+	Hospital,
+	Park,
+	LargePark,
+	Zoo,
+	Stadium,
 };
 
 namespace std {
-	template <> struct hash<ButtonName> {
-		size_t operator() (const ButtonName& t) const { return size_t(t); }
+	template <> struct hash<Action> {
+		size_t operator() (const Action& t) const { return size_t(t); }
 	};
 }
 
+struct ActionSet
+{
+	Action		action;
+	std::string name;
+	int			cost;
+	TileInfo	info;
+	std::vector<std::pair<Action, std::string>> sub;
+};
+
 class Building;
 class PowerPlantBuilding;
+class EducationBuilding;
+class PublicServiceBuilding;
+class RecreationBuilding;
 
 class TileModel;
 class BuildingGenerator;
@@ -100,20 +128,25 @@ protected:
 	void SaveTerrainDepth();
 	void SaveOnGroundDepth();
 
-	std::unordered_map<ButtonName, TileInfo> m_TileSet;
-	ButtonName m_CurrTileSet;
+	std::unordered_map<Action, ActionSet> m_TileSet;
+	Action m_CurrAction;
 	void SetTileSet();
 public:
-	void SetCurrTileSet(ButtonName set);
-	const ButtonName& GetCurrButtonSet() const { return m_CurrTileSet; }
-	const TileInfo& GetCurrTileSet()const { return m_TileSet.find(m_CurrTileSet)->second; }
+	void SetCurrTileSet(Action set);
+	const Action& GetCurrAction() const { return m_CurrAction; }
+	const ActionSet& GetActionSet(Action action) const { return m_TileSet.find(action)->second; }
+	const TileInfo& GetCurrTileSet()const { return m_TileSet.find(m_CurrAction)->second.info; }
 
 	void BuildRawThing(const CellIndex& tileIndex, const TileResData& data);
-	void BuildSomething(std::list<CellIndex>& tiles, const ButtonName& set);
+	void BuildSomething(std::list<CellIndex>& tiles, const Action& set);
 	void BuildZone(std::list<CellIndex>& tiles);
-	void BuildBuilding(std::list<CellIndex>& tiles, const BuildingType& type);
+	void BuildBuilding(std::list<CellIndex>& tiles, const Action& set);
 	void BuildAutoBuilding(std::list<CellIndex>& tiles, const TileResData& info);
-	PowerPlantBuilding* BuildPowerPlant(std::list<CellIndex>& tiles);
+
+	PowerPlantBuilding* BuildPowerPlant();
+	EducationBuilding* BuildEducationBuilding();
+	PublicServiceBuilding* BuildPublicServiceBuilding();
+	RecreationBuilding* BuildRecreationBuilding();
 
 	void BuildPowerline(std::list<CellIndex>& tiles, int powerplantId = -1);
 	void BuildPowerlink(std::list<CellIndex>& tiles, int powerplantId = -1);

@@ -155,6 +155,7 @@
     <ClCompile Include="BuildingGenerator.cpp" />
     <ClCompile Include="DAtlasSprite.cpp" />
     <ClCompile Include="DGameObject.cpp" />
+    <ClCompile Include="EducationBuilding.cpp" />
     <ClCompile Include="Framework\DataTable.cpp" />
     <ClCompile Include="Framework\DataTableManager.cpp" />
     <ClCompile Include="Drawable\ColorPalette.cpp" />
@@ -169,7 +170,11 @@
     <ClCompile Include="Drawable\DText.cpp" />
     <ClCompile Include="Drawable\DThickLine.cpp" />
     <ClCompile Include="Drawable\sfLine.cpp" />
+    <ClCompile Include="PublicServiceBuilding.cpp" />
+    <ClCompile Include="RecreationBuilding.cpp" />
     <ClCompile Include="sfAtlasSprite.cpp" />
+    <ClCompile Include="SimCityMenuBar.cpp" />
+    <ClCompile Include="SimCitySubButton.cpp" />
     <ClCompile Include="Tile\DTile.cpp" />
     <ClCompile Include="Framework\Collider.cpp" />
     <ClCompile Include="Framework\Framework.cpp" />
@@ -219,6 +224,7 @@
     <ClInclude Include="BuildingGenerator.h" />
     <ClInclude Include="DAtlasSprite.h" />
     <ClInclude Include="DGameObject.h" />
+    <ClInclude Include="EducationBuilding.h" />
     <ClInclude Include="Framework\DataTable.h" />
     <ClInclude Include="Framework\DataTableManager.h" />
     <ClInclude Include="Drawable\ColorPalette.h" />
@@ -234,7 +240,11 @@
     <ClInclude Include="Drawable\DThickLine.h" />
     <ClInclude Include="Drawable\sfLine.h" />
     <ClInclude Include="Drawable_headers.h" />
+    <ClInclude Include="PublicServiceBuilding.h" />
+    <ClInclude Include="RecreationBuilding.h" />
     <ClInclude Include="sfAtlasSprite.h" />
+    <ClInclude Include="SimCityMenuBar.h" />
+    <ClInclude Include="SimCitySubButton.h" />
     <ClInclude Include="Tile\DTile.h" />
     <ClInclude Include="Framework\Collider.h" />
     <ClInclude Include="Framework\Framework.h" />

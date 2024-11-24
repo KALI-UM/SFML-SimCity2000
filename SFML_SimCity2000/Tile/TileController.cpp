@@ -26,9 +26,13 @@ bool TileController::Initialize()
 void TileController::Reset()
 {
 	m_ButtonBar->SetButtonFunc(std::bind(&TileController::SetCurrButton, this, std::placeholders::_1));
+	for (int i = 0; i < 18; i++)
+	{
+		m_ButtonBar->SetSubButton((Action)i, m_GameSystem->GetActionSet(Action(i)).sub);
+	}
 	m_ButtonBar->SetCursor(m_Cursor);
 
-	SetCurrButton(ButtonName::Move);
+	SetCurrButton(Action::Move);
 }
 
 void TileController::Update(float dt)
@@ -38,20 +42,35 @@ void TileController::Update(float dt)
 	if (m_MousePrevTile != m_MouseOverlaidTile)
 		m_PrevTile = m_MousePrevTile;
 
-	switch (m_CurrStatus)
+	if (!m_ButtonBar->GetHasFocus())
 	{
-	case ControlStatus::None:
-		UpdateNone(dt);
-		break;
-	case ControlStatus::Place:
-		UpdatePlace(dt);
-		break;
-	case ControlStatus::Destroy:
-		UpdateDestroy(dt);
-		break;
-	case ControlStatus::Drag:
-		UpdateDrag(dt);
-		break;
+		switch (m_CurrStatus)
+		{
+		case ControlStatus::None:
+			UpdateNone(dt);
+			break;
+		case ControlStatus::Place:
+			UpdatePlace(dt);
+			break;
+		case ControlStatus::Destroy:
+			UpdateDestroy(dt);
+			break;
+		case ControlStatus::Drag:
+			UpdateDrag(dt);
+			break;
+		}
+	}
+
+	//sf::Vector2f moveoffset = { INPUT_MGR->GetAxisRaw(Axis::Horizontal) * dt * 100, -INPUT_MGR->GetAxisRaw(Axis::Vertical) * dt * 100 };
+	//GAME_MGR->MoveView(m_ViewIndex, moveoffset);
+
+	if (INPUT_MGR->GetKeyDown(sf::Keyboard::LBracket))
+	{
+		SetCurrButton(Action::ZoomOut);
+	}
+	else if (INPUT_MGR->GetKeyDown(sf::Keyboard::RBracket))
+	{
+		SetCurrButton(Action::ZoomIn);
 	}
 }
 
@@ -69,7 +88,13 @@ void TileController::SetCusor(SimCityCursor* cursor)
 
 void TileController::UpdateNone(float dt)
 {
-
+	if (m_GameSystem->GetCurrAction() == Action::Move)
+	{
+		if (INPUT_MGR->GetMouseDown(sf::Mouse::Left))
+		{
+			GAME_MGR->SetViewCenter(m_ViewIndex, INPUT_MGR->GetMouseViewPos(m_ViewIndex));
+		}
+	}
 }
 
 void TileController::UpdatePlace(float dt)
@@ -104,7 +129,6 @@ void TileController::UpdateDestroy(float dt)
 			if (!m_SelectingTiles.empty())
 			{
 				m_GameSystem->DestroySomething(m_SelectingTiles.front());
-				SOUND_MGR->PlaySfx("sound/SFX/Bulldozer-WithLoop.wav");
 			}
 		}
 	}
@@ -116,7 +140,7 @@ void TileController::UpdateDrag(float dt)
 {
 	if (INPUT_MGR->GetMouseUp(sf::Mouse::Left))
 	{
-		m_GameSystem->BuildSomething(m_SelectingTiles, m_GameSystem->GetCurrButtonSet());
+		m_GameSystem->BuildSomething(m_SelectingTiles, m_GameSystem->GetCurrAction());
 		m_SelectingTiles.clear();
 		m_CurrStatus = ControlStatus::Place;
 		return;
@@ -126,64 +150,104 @@ void TileController::UpdateDrag(float dt)
 	{
 		if (mcv_Model->IsValidTileIndex(m_DragStartTile) && mcv_Model->IsValidTileIndex(m_MouseOverlaidTile))
 		{
-			auto& currbttset = m_GameSystem->GetCurrButtonSet();
-			if (currbttset == ButtonName::Road || currbttset == ButtonName::Rail || currbttset == ButtonName::PowerLine)
+			auto& currbttset = m_GameSystem->GetCurrAction();
+			if (currbttset == Action::Road || currbttset == Action::Rail || currbttset == Action::PowerLine)
+			{
 				SetLineIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile);
+			}
 
-			else if (currbttset == ButtonName::ZoneResidential|| currbttset == ButtonName::ZoneCommercial || currbttset == ButtonName::ZoneIndustrial)
+			else if (currbttset == Action::ZoneResidential || currbttset == Action::ZoneCommercial || currbttset == Action::ZoneIndustrial)
+			{
 				SetRangeIntersectedTiles(m_DragStartTile, m_MouseOverlaidTile, false);
+			}
 		}
 	}
 }
 
-void TileController::SetCurrButton(ButtonName btt)
+void TileController::SetCurrButton(Action btt)
 {
 	switch (btt)
 	{
-	case ButtonName::Destroy:
+	case Action::Bulldozer:
+		SetCurrButton(Action::DestroyNormal);
+		return;
+		break;
+	case Action::Landscape:
+	case Action::Dispatch:
+		m_CurrStatus = ControlStatus::None;
+		break;
+	case Action::PowerSupply:
+		SetCurrButton(Action::PowerLine);
+		return;
+		break;
+	case Action::WaterSupply:
+	case Action::Religion:
+		m_CurrStatus = ControlStatus::None;
+		break;
+	case Action::Road:
+	case Action::Rail:
+		m_CurrStatus = ControlStatus::Place;
+		break;
+	case Action::Port:
+	case Action::ZoneResidential:
+	case Action::ZoneCommercial:
+	case Action::ZoneIndustrial:
+		m_CurrStatus = ControlStatus::Place;
+		break;
+	case Action::Education:
+		SetCurrButton(Action::GradeSchool);
+		return;
+	case Action::PublicService:
+		SetCurrButton(Action::PoliceStation);
+		return;
+		return;
+	case Action::Recreation:
+		SetCurrButton(Action::Park);
+		return;
+		break;
+	case Action::ZoomIn:
+		GAME_MGR->SetViewZoom(m_ViewIndex, 0.5f);
+		m_CurrStatus = ControlStatus::None;
+		return;
+		break;
+	case Action::ZoomOut:
+		GAME_MGR->SetViewZoom(m_ViewIndex, 2.0f);
+		m_CurrStatus = ControlStatus::None;
+		return;
+		break;
+	case Action::Move:
+		m_CurrStatus = ControlStatus::None;
+		break;
+	case Action::NotUse18:
+	case Action::NotUse19:
+	case Action::NotUse20:
+	case Action::NotUse21:
+	case Action::NotUse22:
+	case Action::NotUse23:
+	case Action::NotUse24:
+	case Action::NotUse25:
+		m_CurrStatus = ControlStatus::None;
+		break;
+	case Action::DestroyNormal:
+	case Action::DestroyZone:
 		m_CurrStatus = ControlStatus::Destroy;
 		break;
-	case ButtonName::Tree:
-	case ButtonName::Alram:
+	case Action::Trees:
+	case Action::Water:
 		m_CurrStatus = ControlStatus::None;
 		break;
-	case ButtonName::Elec:
-		m_CurrStatus = ControlStatus::None;
-		break;
-	case ButtonName::Water:
-	case ButtonName::Religion:
-		m_CurrStatus = ControlStatus::None;
-		break;
-	case ButtonName::Road:
-	case ButtonName::Rail:
-		m_CurrStatus = ControlStatus::Place;
-		break;
-	case ButtonName::Port:
-	case ButtonName::ZoneResidential:
-	case ButtonName::ZoneCommercial:
-	case ButtonName::ZoneIndustrial:
-		m_CurrStatus = ControlStatus::Place;
-		break;
-	case ButtonName::Education:
-	case ButtonName::PoliceStation:
-	case ButtonName::Park:
-		m_CurrStatus = ControlStatus::None;
-		break;
-	case ButtonName::ZoomIn:
-	case ButtonName::ZoomOut:
-	case ButtonName::Move:
-	case ButtonName::NotUse18:
-	case ButtonName::NotUse19:
-	case ButtonName::NotUse20:
-	case ButtonName::NotUse21:
-	case ButtonName::NotUse22:
-	case ButtonName::NotUse23:
-	case ButtonName::NotUse24:
-	case ButtonName::NotUse25:
-		m_CurrStatus = ControlStatus::None;
-		break;
-	case ButtonName::PowerLine:
-	case ButtonName::PowerPlant:
+	case Action::PowerLine:
+	case Action::PowerPlant:
+	case Action::GradeSchool:
+	case Action::College:
+	case Action::Library:
+	case Action::PoliceStation:
+	case Action::FireStation:
+	case Action::Hospital:
+	case Action::Park:
+	case Action::LargePark:
+	case Action::Zoo:
+	case Action::Stadium:
 		m_CurrStatus = ControlStatus::Place;
 		break;
 	}

@@ -69,20 +69,7 @@ void Scene_SimCityInGame::Enter()
 
 void Scene_SimCityInGame::Update(float dt)
 {
-	sf::Vector2f moveoffset = { INPUT_MGR->GetAxisRaw(Axis::Horizontal) * dt * 100, -INPUT_MGR->GetAxisRaw(Axis::Vertical) * dt * 100 };
-	GAME_MGR->MoveView(0, moveoffset);
 
-
-
-	if (INPUT_MGR->GetKeyDown(sf::Keyboard::LBracket))
-	{
-		GAME_MGR->SetViewZoom(0, 0.5f);
-
-	}
-	else if (INPUT_MGR->GetKeyDown(sf::Keyboard::RBracket))
-	{
-		GAME_MGR->SetViewZoom(0, 2.0f);
-	}
 }
 
 void Scene_SimCityInGame::ShowSceneImgui()

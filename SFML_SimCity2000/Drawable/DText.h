@@ -15,6 +15,7 @@ public:
 
 	void SetFont(sf::Font* font);
 	void SetString(const std::string& text);
+	void SetString(const std::wstring& text);
 
 	sf::Color GetColor() const;									//GetFillColor客 悼老
 	virtual void SetColor(const sf::Color& color);				//SetFillColor客 悼老

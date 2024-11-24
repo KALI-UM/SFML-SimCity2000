@@ -236,5 +236,5 @@ const GameMode& GameManager::GetGameMode() const
 
 bool PriorityComp::operator()(DrawableObject*& lhs, DrawableObject*& rhs)
 {
-	return DrawableObject::YCompare(lhs, rhs);
+	return DrawableObject::PriorityCompare(lhs, rhs);
 }

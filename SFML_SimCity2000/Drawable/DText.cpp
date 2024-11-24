@@ -87,6 +87,11 @@ void DText::SetString(const std::string& text)
 	m_Text.setString(text);
 }
 
+void DText::SetString(const std::wstring& text)
+{
+	m_Text.setString(text);
+}
+
 sf::Color DText::GetColor() const
 {
 	return m_Text.getFillColor();

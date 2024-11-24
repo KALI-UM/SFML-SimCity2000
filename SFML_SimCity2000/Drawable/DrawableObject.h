@@ -16,6 +16,13 @@ enum class OriginType
 	Custom
 };
 
+enum class DrawPriorityType
+{
+	X,
+	Y,
+	Custom,
+};
+
 class DebugInfo;
 class DrawableObject : public Transform
 {
@@ -27,16 +34,12 @@ protected:
 public:
 	virtual ~DrawableObject();
 
-	static bool YCompare(DrawableObject*& lhs, DrawableObject*& rhs)
+	void SetPriorityType(DrawPriorityType type, float value = 0);
+	float GetPriorityValue() const;
+	static bool PriorityCompare(DrawableObject*& lhs, DrawableObject*& rhs)
 	{
-		return  lhs->getPosition().y > rhs->getPosition().y;
+		return  lhs->GetPriorityValue() > rhs->GetPriorityValue();
 	}
-
-	static bool XCompare(DrawableObject*& lhs, DrawableObject*& rhs)
-	{
-		return lhs->getPosition().x > rhs->getPosition().x;
-	}
-
 
 	bool GetIsValid()const { return m_IsValid; }
 
@@ -75,6 +78,11 @@ protected:
 	std::string				m_Name;
 	sf::Drawable* m_Drawable;
 	sf::Transformable* m_Transform;
+
+	DrawPriorityType	m_PriorityType = DrawPriorityType::Y;
+	float				m_PriorityValue;
+private:
+
 
 	DebugInfo* m_DebugInfo;
 };

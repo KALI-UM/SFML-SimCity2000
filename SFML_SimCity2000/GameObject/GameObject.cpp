@@ -37,7 +37,7 @@ bool GameObject::INITIALIZE()
 	bool result = Initialize();
 	for (auto& child : m_ChildrenObjs)
 	{
-		result&=child->INITIALIZE();
+		result &= child->INITIALIZE();
 	}
 	return result;
 }
@@ -58,7 +58,10 @@ void GameObject::UPDATE(float dt)
 
 	for (auto& child : m_ChildrenObjs)
 	{
-		child->UPDATE(dt);
+		if (child->GetIsValid())
+		{
+			child->UPDATE(dt);
+		}
 	}
 }
 
@@ -169,7 +172,7 @@ void GameObject::Release()
 
 bool GameObject::GetIsVisible() const
 {
-	return m_IsVisible && GetIsValid()&&GetDrawbleCount()!=0;
+	return m_IsVisible && GetIsValid() && GetDrawbleCount() != 0;
 }
 
 bool GameObject::GetIsVisible(size_t index) const

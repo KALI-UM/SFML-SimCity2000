@@ -1,0 +1,43 @@
+﻿action,name,id,cost,sub
+Bulldozer,Bulldozer,,,"DestroyNormal,DestroyZone"
+Landscape,Landscape,,,"Trees,Water"
+Dispatch ,Dispatch ,,,
+PowerSupply,PowerSupply,,,"PowerLine,PowerPlant"
+WaterSupply,WaterSupply,,,
+Religion,Religion,,,
+Road,Road,30,10,
+Rail,Rail,44,25,
+Port,Port,,,
+ZoneResidential,Residential,291,10,
+ZoneCommercial,Commercial,293,10,
+ZoneIndustrial,Industrial,295,10,
+Education,Education,,,"GradeSchool,College,Library"
+PublicService,Public Service,,,"PoliceStation,FireStation,Hospital"
+Recreation,Recreation,,,"Park,LargePark,Zoo,Stadium"
+ZoomIn,Zoom In,,,
+ZoomOut,Zoom Out,,,
+Move,Move,,,
+NotUse18,NotUse18,,,
+NotUse19,NotUse19,,,
+NotUse20,NotUse20,,,
+NotUse21,NotUse21,,,
+NotUse22,NotUse22,,,
+NotUse23,NotUse23,,,
+NotUse24,NotUse24,,,
+NotUse25,NotUse25,,,
+DestroyNormal,Destroy Normal,1,1,
+DestroyZone,Destroy Zone,0,0,
+Trees,Trees,6,3,
+Water,Water,283,100,
+PowerLine,Power Line,14,5,
+PowerPlant,Power Plant,207,4000,
+GradeSchool,Grade School,214,250,
+College,College,217,1000,
+Library,Library,245,500,
+PoliceStation,Police Station,210,500,
+FireStation,Fire Station,211,500,
+Hospital,Hospital,209,500,
+Park,Park,13,20,
+LargePark,Large Park,213,150,
+Zoo,Zoo,218,3000,
+Stadium,Stadium,215,5000,

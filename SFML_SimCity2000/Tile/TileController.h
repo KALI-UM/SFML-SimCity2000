@@ -4,7 +4,7 @@
 class SimCityGameSystem;
 class TileModel;
 class TileView;
-enum class ButtonName;
+enum class Action;
 class SimCityButtonBar;
 class SimCityCursor;
 enum class ControlStatus
@@ -49,8 +49,7 @@ public:
 	void UpdateDestroy(float dt);
 	void UpdateDrag(float dt);
 
-
-	void SetCurrButton(ButtonName btt);
+	void SetCurrButton(Action btt);
 
 	void Set1x1Tile(const CellIndex& tileIndex, bool checkPossible = true);
 	void SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex, bool checkPossible = true);

@@ -1,7 +1,7 @@
 #pragma once
 #include "MouseCursor.h"
 
-enum class ButtonName;
+enum class Action;
 class SimCityCursor :
 	public MouseCursor
 {
@@ -13,11 +13,11 @@ public:
 	void Reset()override;
 	void Update(float dt)override;
 
-	void SetCursorMode(ButtonName mode);
-	ButtonName GetCursorMode()const { return m_CurrentMode; }
+	void SetCursorMode(Action mode);
+	Action GetCursorMode()const { return m_CurrentMode; }
 
 protected:
-	ButtonName m_CurrentMode;
+	Action m_CurrentMode;
 	sf::IntRect m_ModeTextureRect[25];
 };
 
