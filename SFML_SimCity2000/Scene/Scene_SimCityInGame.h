@@ -2,6 +2,7 @@
 
 class SimCityGameSystem;
 class SimCityCursor;
+class SimCityMenuBar;
 class SimCityButtonBar;
 class TileGrid;
 class Tile;
@@ -14,7 +15,6 @@ struct InGameInfo
 	int rotation;		//0,1,2,3,
 	int currSelect;		//-1 none
 };
-
 
 class Scene_SimCityInGame :
     public SceneBase
@@ -38,6 +38,7 @@ protected:
 
 	SimCityGameSystem*	m_GameSystem;
 	SimCityCursor*		m_Cursor;
+	SimCityMenuBar*		m_MenuBar;
 	SimCityButtonBar*	m_ButtonBar;
 	TileGrid*			m_TileGrid;
 	Tile*				m_Tile;

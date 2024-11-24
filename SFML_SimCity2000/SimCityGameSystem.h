@@ -77,10 +77,22 @@ enum class Action
 	Zoo,
 	Stadium,
 };
+enum class Menu
+{
+	File,
+	Speed,
+	Save,
+};
 
 namespace std {
 	template <> struct hash<Action> {
 		size_t operator() (const Action& t) const { return size_t(t); }
+	};
+}
+
+namespace std {
+	template <> struct hash<Menu> {
+		size_t operator() (const Menu& t) const { return size_t(t); }
 	};
 }
 
@@ -91,6 +103,14 @@ struct ActionSet
 	int			cost;
 	TileInfo	info;
 	std::vector<std::pair<Action, std::string>> sub;
+};
+
+struct MenuSet
+{
+	Menu		menu;
+	std::string name;
+	std::vector<std::pair<Menu, MenuSet&>> sub;
+	std::function<void()> func;
 };
 
 class Building;
@@ -129,13 +149,16 @@ protected:
 	void SaveOnGroundDepth();
 
 	std::unordered_map<Action, ActionSet> m_TileSet;
+	std::unordered_map<Menu, MenuSet> m_MenuSet;
 	Action m_CurrAction;
 	void SetTileSet();
+	void SetMenuSet();
 public:
 	void SetCurrTileSet(Action set);
 	const Action& GetCurrAction() const { return m_CurrAction; }
 	const ActionSet& GetActionSet(Action action) const { return m_TileSet.find(action)->second; }
 	const TileInfo& GetCurrTileSet()const { return m_TileSet.find(m_CurrAction)->second.info; }
+	const MenuSet& GetMenuSet(Menu menu) const { return m_MenuSet.find(menu)->second; }
 
 	void BuildRawThing(const CellIndex& tileIndex, const TileResData& data);
 	void BuildSomething(std::list<CellIndex>& tiles, const Action& set);

@@ -1,7 +1,9 @@
 #pragma once
 
-enum class Action;
+enum class Menu;
+struct MenuSet;
 class DAtlasSprite;
+class DText;
 class SimCitySubButton;
 class SimCityCursor;
 class SimCityMenuBar :
@@ -19,18 +21,23 @@ public:
 	void SetCursor(SimCityCursor* cursor) { m_Cursor = cursor; };
 	bool GetHasFocus()const { return m_HasFocus; }
 
-	void SetSubButton(const Action& action, const std::vector<std::pair<Action, std::string>>& sub);
+	void SetMenuString(const Menu& menu, const std::string& name);
+	void SetSubButton(const Menu& menu, const std::vector<std::pair<Menu, MenuSet&>>& sub);
 protected:
 	std::string m_BarTexId;
-
 	DAtlasSprite* m_Bar;
-	int m_ViewIndex = 0;
+	std::string m_FontId;
+	std::vector<DText*> m_Buttons;
 
-	std::vector <SimCitySubButton*> m_SubButtons;
+	int m_ViewIndex = 0;
+	int m_ButtonCount =2;
+	int m_CurrButtonIndex = 0;
+
+	std::vector<SimCitySubButton*>	m_SubButtons;
 	std::queue<SimCitySubButton*>	m_WantsToAddSubButtons;
 
 private:
-	SimCityCursor* m_Cursor;
+	SimCityCursor*	m_Cursor;
 	bool			m_HasFocus = false;
 };
 

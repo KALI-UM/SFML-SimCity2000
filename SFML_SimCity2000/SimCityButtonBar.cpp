@@ -22,7 +22,7 @@ bool SimCityButtonBar::Initialize()
 	SetDrawable(m_Bar);
 
 	m_ButtonTexId = "ui/button.png";
-	m_Buttons.resize(20);
+	m_Buttons.resize(m_ButtonCount);
 	for (int i = 0; i < m_ButtonCount; i++)
 	{
 		DSprite* btt = new DSprite(m_ButtonTexId);
@@ -32,7 +32,6 @@ bool SimCityButtonBar::Initialize()
 		btt->SetPriorityType(DrawPriorityType::Custom, 2);
 		SetDrawable(btt);
 	}
-
 
 	m_ButtonWork.resize(m_ButtonCount);
 	m_ButtonWork[(int)Action::Bulldozer] = true;
@@ -110,16 +109,10 @@ void SimCityButtonBar::Reset()
 void SimCityButtonBar::Update(float dt)
 {
 	sf::Vector2f currMousePos = INPUT_MGR->GetMouseViewPos(m_ViewIndex);
-
 	m_HasFocus = false;
 	if (m_Bar->GetGlobalBounds().contains(currMousePos))
 	{
 		m_HasFocus = true;
-		m_Cursor->SetCursorMode(Action::NotUse22);
-	}
-	else if (m_Cursor->GetCursorMode() != (Action)m_CurrButtonIndex)
-	{
-		m_Cursor->SetCursorMode((Action)m_CurrButtonIndex);
 	}
 
 	for (int i = 0; i < m_ButtonCount; i++)
@@ -128,12 +121,10 @@ void SimCityButtonBar::Update(float dt)
 		{
 			if (m_Buttons[i]->GetGlobalBounds().contains(currMousePos) && INPUT_MGR->GetMouseDown(sf::Mouse::Left))
 			{
-				m_Buttons[m_CurrButtonIndex]->SetColor(ColorPalette::White);
-
 				SOUND_MGR->PlaySfx("sound/SFX/Click.wav");
+				m_Buttons[m_CurrButtonIndex]->SetColor(ColorPalette::White);
 				m_CurrButtonIndex = i;
 				m_Buttons[m_CurrButtonIndex]->SetColor(ColorPalette::Gray);
-				m_Cursor->SetCursorMode((Action)m_CurrButtonIndex);
 				m_ButtonFunc((Action)m_CurrButtonIndex);
 
 				if (m_SubButtons[i])

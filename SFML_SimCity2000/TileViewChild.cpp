@@ -85,8 +85,7 @@ void TileViewChild::SetTileTransform(const sf::Transform& trans)
 
 bool TileViewChild::SortTile(const DrawableObject* dobj1, const DrawableObject* dobj2) const
 {
-	return dobj1->getPosition().y < dobj2->getPosition().y ?
-		true : dobj1->getPosition().y == dobj2->getPosition().y ?
-		dobj1->getPosition().x > dobj2->getPosition().x : false;
+	return dobj1->getPosition().y < dobj2->getPosition().y ||
+		(dobj1->getPosition().y == dobj2->getPosition().y && dobj1->getPosition().x < dobj2->getPosition().x);
 }
 

@@ -67,7 +67,6 @@ void SimCitySubButton::Update(float dt)
 		}
 	}
 
-
 	if (INPUT_MGR->GetMouseUp(sf::Mouse::Left) || INPUT_MGR->GetMouseDown(sf::Mouse::Left))
 	{
 		if (currIndex != -1)

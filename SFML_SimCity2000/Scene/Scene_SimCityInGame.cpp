@@ -2,6 +2,7 @@
 #include "Scene_SimCityInGame.h"
 #include "SimCityGameSystem.h"
 #include "SimCityCursor.h"
+#include "SimCityMenuBar.h"
 #include "SimCityButtonBar.h"
 #include "TileGrid.h"
 #include "Tile.h"
@@ -43,8 +44,9 @@ bool Scene_SimCityInGame::Initialize()
 	m_TileController = AddGameObject(m_UILayerIndex, new TileController(m_GameSystem, m_TileModel, m_TileView, 0));
 
 	m_Cursor = AddGameObject(m_UILayerIndex, new SimCityCursor("ui/cursor.png", m_UIViewIndex));
+	m_MenuBar = AddGameObject(m_UILayerIndex, new SimCityMenuBar(m_UIViewIndex));
 	m_ButtonBar = AddGameObject(m_UILayerIndex, new SimCityButtonBar(m_UIViewIndex));
-
+	m_TileController->SetMenuBar(m_MenuBar);
 	m_TileController->SetButtonBar(m_ButtonBar);
 	m_TileController->SetCusor(m_Cursor);
 	return true;

@@ -23,6 +23,7 @@ SimCityGameSystem::~SimCityGameSystem()
 bool SimCityGameSystem::Initialize()
 {
 	SetTileSet();
+	SetMenuSet();
 
 	for (int zone = 0; zone < (int)ZoneType::None; zone++)
 	{
@@ -169,11 +170,14 @@ void SimCityGameSystem::LoadOnGroundDepth()
 					{
 						BuildAutoBuilding(temp, DATATABLE_TILERES->GetTileRes(strings[0], strings[1], strings[2]));
 					}
-					else if (strings[1] == m_TileSet.find(Action::PowerPlant)->second.info.subtype)
+					else
 					{
 						for (int i = (int)Action::PowerPlant; i <= (int)Action::Stadium; i++)
 						{
-							BuildBuilding(temp, (Action)i);
+							if (strings[1] == m_TileSet.find((Action)i)->second.info.subtype)
+							{
+								BuildBuilding(temp, (Action)i);
+							}
 						}
 					}
 				}
@@ -898,7 +902,6 @@ void SimCityGameSystem::SetTileSet()
 				action.sub.push_back({ subaction, doc.GetCell<std::string>("name", (int)subaction) });
 			}
 		}
-
 		m_TileSet.insert({ action.action, action });
 	}
 
@@ -958,6 +961,41 @@ void SimCityGameSystem::SetTileSet()
 	destroy.lotSize = DATATABLE_TILERES->GetTileRes(destroy.type, destroy.subtype, destroy.name).lotSize;
 	m_TileSet.insert({ Action::Destroy, destroy });*/
 
+}
+
+void SimCityGameSystem::SetMenuSet()
+{
+	rapidcsv::Document doc("datatables/menuset.csv", rapidcsv::LabelParams(0, 0));
+	int row = doc.GetRowCount();
+
+	for (int j = 0; j < row; j++)
+	{
+		MenuSet menu;
+		menu.menu = (Menu)j;
+		menu.name = doc.GetCell<std::string>("name", j);
+		m_MenuSet.insert({ menu.menu, menu });
+	}
+
+	for (int j = 0; j < row; j++)
+	{
+		MenuSet& menu = m_MenuSet.find((Menu)j)->second;
+		std::vector<std::string> strings = doc.GetRow<std::string>(j);
+		if (strings[1] != "")
+		{
+			std::vector<std::string> sub;
+			SetStringToVectorElements(strings[1], sub);
+			if (!sub.empty())
+			{
+				for (auto& subname : sub)
+				{
+					Menu subaction = (Menu)doc.GetRowIdx(subname);
+					menu.sub.push_back({ subaction, m_MenuSet.find(subaction)->second });
+				}
+			}
+		}
+	}
+
+	m_MenuSet.find(Menu::Save)->second.func = std::bind(&SimCityGameSystem::SaveTileDepthFile, this);
 }
 
 void SimCityGameSystem::SetStringToVectorElements(const std::string& str, std::vector<std::string>& vec)

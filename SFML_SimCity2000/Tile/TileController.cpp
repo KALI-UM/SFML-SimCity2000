@@ -5,6 +5,7 @@
 #include "TileView.h"
 #include "TileResTable.h"
 #include "SimCityButtonBar.h"
+#include "SimCityMenuBar.h"
 #include "SimCityCursor.h"
 
 TileController::TileController(SimCityGameSystem* sys, TileModel* model, TileView* view, int viewIndex)
@@ -30,7 +31,18 @@ void TileController::Reset()
 	{
 		m_ButtonBar->SetSubButton((Action)i, m_GameSystem->GetActionSet(Action(i)).sub);
 	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		m_MenuBar->SetMenuString((Menu)i, m_GameSystem->GetMenuSet((Menu)i).name);
+		m_MenuBar->SetSubButton((Menu)i, m_GameSystem->GetMenuSet(Menu(i)).sub);
+	}
+
 	m_ButtonBar->SetCursor(m_Cursor);
+	m_MenuBar->SetCursor(m_Cursor);
+
+	m_ButtonBar->setPosition(0, 30);
+	m_MenuBar->setPosition(0, 0);
 
 	SetCurrButton(Action::Move);
 }
@@ -42,8 +54,10 @@ void TileController::Update(float dt)
 	if (m_MousePrevTile != m_MouseOverlaidTile)
 		m_PrevTile = m_MousePrevTile;
 
-	if (!m_ButtonBar->GetHasFocus())
+	if (!m_ButtonBar->GetHasFocus()&&!m_MenuBar->GetHasFocus())
 	{
+		SetCurrCusor(m_GameSystem->GetCurrAction());
+
 		switch (m_CurrStatus)
 		{
 		case ControlStatus::None:
@@ -60,6 +74,10 @@ void TileController::Update(float dt)
 			break;
 		}
 	}
+	else
+	{
+		m_Cursor->SetCursorMode(Action::NotUse22);
+	}
 
 	//sf::Vector2f moveoffset = { INPUT_MGR->GetAxisRaw(Axis::Horizontal) * dt * 100, -INPUT_MGR->GetAxisRaw(Axis::Vertical) * dt * 100 };
 	//GAME_MGR->MoveView(m_ViewIndex, moveoffset);
@@ -72,6 +90,12 @@ void TileController::Update(float dt)
 	{
 		SetCurrButton(Action::ZoomIn);
 	}
+}
+
+void TileController::SetMenuBar(SimCityMenuBar* bar)
+{
+	m_MenuBar = bar;
+	SetChildObj(bar, false);
 }
 
 void TileController::SetButtonBar(SimCityButtonBar* bar)
@@ -185,6 +209,8 @@ void TileController::SetCurrButton(Action btt)
 		m_CurrStatus = ControlStatus::None;
 		break;
 	case Action::Road:
+		m_CurrStatus = ControlStatus::Place;
+		break;
 	case Action::Rail:
 		m_CurrStatus = ControlStatus::Place;
 		break;
@@ -252,7 +278,54 @@ void TileController::SetCurrButton(Action btt)
 		break;
 	}
 
+	SetCurrCusor(btt);
 	m_GameSystem->SetCurrTileSet(btt);
+}
+
+void TileController::SetCurrCusor(Action btt)
+{
+	switch (btt)
+	{
+	case Action::Bulldozer:
+	case Action::DestroyNormal:
+	case Action::DestroyZone:
+		m_Cursor->SetCursorMode(Action::Bulldozer);
+		break;
+	case Action::Landscape:
+	case Action::Trees:
+	case Action::Water:
+		m_Cursor->SetCursorMode(Action::Landscape);
+		break;
+	case Action::Dispatch:
+		break;
+	case Action::PowerSupply:
+	case Action::PowerLine:
+	case Action::PowerPlant:
+		m_Cursor->SetCursorMode(Action::PowerSupply);
+		break;
+	case Action::Education:
+	case Action::GradeSchool:
+	case Action::College:
+	case Action::Library:
+		m_Cursor->SetCursorMode(Action::Education);
+		break;
+	case Action::PublicService:
+	case Action::PoliceStation:
+	case Action::FireStation:
+	case Action::Hospital:
+		m_Cursor->SetCursorMode(Action::PublicService);
+		break;
+	case Action::Recreation:
+	case Action::Park:
+	case Action::LargePark:
+	case Action::Zoo:
+	case Action::Stadium:
+		m_Cursor->SetCursorMode(Action::Recreation);
+		break;
+	default:
+		m_Cursor->SetCursorMode(btt);
+		break;
+	}
 }
 
 void TileController::Set1x1Tile(const CellIndex& tileIndex, bool checkPossible)

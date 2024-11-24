@@ -21,10 +21,9 @@ void Framework::Initialize(int width, int height, const std::string& name)
 	LONG style = GetWindowLong(hwnd, GWL_STYLE);
 	style |= WS_OVERLAPPEDWINDOW;
 	SetWindowLong(hwnd, GWL_STYLE, style);
-
-	HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
-	SetMenu(hwnd, hMenu);
-	DrawMenuBar(hwnd);
+	//HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
+	//SetMenu(hwnd, hMenu);
+	//DrawMenuBar(hwnd);
 	SetWindowTheme(hwnd, L" ", L" ");
 
 	
