@@ -35,7 +35,6 @@ bool TileViewChild::Initialize()
 			m_TileDrawable[j][i] = tileSprite;
 		}
 	}
-
 	
 	return true;
 }

@@ -38,7 +38,6 @@ bool SimCityGameSystem::Initialize()
 	m_BuildingMap = std::vector<std::vector<Building*>>(mcv_Model->m_CellCount.y, std::vector<Building*>(mcv_Model->m_CellCount.x, nullptr));
 	m_ZoneInfos = std::vector<std::vector<ZoneType>>(mcv_Model->m_CellCount.y, std::vector<ZoneType>(mcv_Model->m_CellCount.x, ZoneType::None));
 
-
 	LoadTileDepthFile();
 	return false;
 }
@@ -144,14 +143,20 @@ void SimCityGameSystem::LoadOnGroundDepth()
 				if (TileType::Road == currType)
 				{
 					roads.push_back({ i,j });
-				}
-				else if (TileType::Powerline == currType)
-				{
-					powerlines.push_back({ i,j });
+					if (strings[1] == "rail")
+						rails.push_back({ i,j });
+					else if (strings[1] == "powerline")
+						powerlines.push_back({ i,j });
 				}
 				else if (TileType::Rail == currType)
 				{
 					rails.push_back({ i,j });
+					if (strings[1] == "powerline")
+						powerlines.push_back({ i,j });
+				}
+				else if (TileType::Powerline == currType)
+				{
+					powerlines.push_back({ i,j });
 				}
 				else if (TileType::Highway == currType)
 				{
@@ -174,7 +179,8 @@ void SimCityGameSystem::LoadOnGroundDepth()
 					{
 						for (int i = (int)Action::PowerPlant; i <= (int)Action::Stadium; i++)
 						{
-							if (strings[1] == m_TileSet.find((Action)i)->second.info.subtype)
+							auto& tileset = m_TileSet.find((Action)i)->second.info;
+							if (strings[1] == tileset.subtype && strings[2] == tileset.name)
 							{
 								BuildBuilding(temp, (Action)i);
 							}
