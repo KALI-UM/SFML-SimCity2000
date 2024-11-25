@@ -2,6 +2,8 @@
 #include "Scene_SimCityInGame.h"
 #include "SimCityGameSystem.h"
 #include "SimCityCursor.h"
+#include "SimCityMenuBar.h"
+#include "SimCityButtonBar.h"
 #include "TileGrid.h"
 #include "Tile.h"
 #include "TileModel.h"
@@ -10,7 +12,7 @@
 #include "TileViewChild.h"
 
 Scene_SimCityInGame::Scene_SimCityInGame()
-	:SceneBase("InGame", 4, 4)
+	:SceneBase("InGame", 3, 2)
 {
 }
 
@@ -21,10 +23,9 @@ Scene_SimCityInGame::~Scene_SimCityInGame()
 bool Scene_SimCityInGame::Initialize()
 {
 	SetLayerViewIndex(0, 0);
-	SetLayerViewIndex(1, 1);
-	SetLayerViewIndex(2, 2);
-
-	m_Cursor = AddGameObject(2, new SimCityCursor("background/1013.png", 2));
+	SetLayerViewIndex(1, 0);
+	SetLayerViewIndex(2, 0);
+	SetViewNeedPriority(0, false);
 
 	//m_Tile = AddGameObject(0, new Tile());
 	//m_Tile->SetCellSize({ 45,45 });
@@ -38,15 +39,22 @@ bool Scene_SimCityInGame::Initialize()
 	m_TileView->SetDepthView(TileDepth::Terrain, AddGameObject(0, new TileViewChild(m_TileView)));
 	m_TileView->SetDepthView(TileDepth::OnGround, AddGameObject(1, new TileViewChild(m_TileView)));
 	m_TileView->SetDepthView(TileDepth::Effect, AddGameObject(2, new TileViewChild(m_TileView)));
-	m_GameSystem = AddGameObject(3, new SimCityGameSystem(m_TileModel));
-	m_TileController = AddGameObject(0, new TileController(m_GameSystem, m_TileModel, m_TileView, 0));
+	m_GameSystem = AddGameObject(m_UILayerIndex, new SimCityGameSystem(m_TileModel));
+	m_TileController = AddGameObject(m_UILayerIndex, new TileController(m_GameSystem, m_TileModel, m_TileView, 0));
 
+	m_Cursor = AddGameObject(m_UILayerIndex, new SimCityCursor("ui/cursor.png", m_UIViewIndex));
+	m_MenuBar = AddGameObject(m_UILayerIndex, new SimCityMenuBar(m_UIViewIndex));
+	m_ButtonBar = AddGameObject(m_UILayerIndex, new SimCityButtonBar(m_UIViewIndex));
+	m_TileController->SetMenuBar(m_MenuBar);
+	m_TileController->SetButtonBar(m_ButtonBar);
+	m_TileController->SetCusor(m_Cursor);
 	return true;
 }
 
 void Scene_SimCityInGame::Enter()
 {
-	SOUND_MGR->PlayBgm("sound/BGM/bgm.mp3", true, true, 30, 10);
+
+	SOUND_MGR->PlayBgm("sound/BGM/bgm.mp3", true, true, 30, 10, true);
 	GAME_MGR->SetViewSize(0, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
 	GAME_MGR->SetViewSize(1, { 0,0,(float)GAME_MGR->GetWindow()->getSize().x, (float)GAME_MGR->GetWindow()->getSize().y });
 
@@ -57,21 +65,12 @@ void Scene_SimCityInGame::Enter()
 	//m_Tile->SetTileTransform({ 0,0 }, tileTransform);
 	m_TileGrid->SetTileTransform({ 0,0 }, tileTransform);
 	m_TileView->SetTileTransform({ 0,0 }, tileTransform);
+
 }
 
 void Scene_SimCityInGame::Update(float dt)
 {
 
-	sf::Vector2f moveoffset = { INPUT_MGR->GetAxisRaw(Axis::Horizontal) * dt * 100, -INPUT_MGR->GetAxisRaw(Axis::Vertical) * dt * 100 };
-	GAME_MGR->MoveView(0, moveoffset);
-	GAME_MGR->MoveView(1, moveoffset);
-	GAME_MGR->MoveView(2, moveoffset);
-
-
-	if (INPUT_MGR->GetKey(sf::Keyboard::Num1))
-	{
-
-	}
 }
 
 void Scene_SimCityInGame::ShowSceneImgui()
@@ -87,27 +86,30 @@ void Scene_SimCityInGame::ShowSceneImgui()
 
 	/*ImGui::Image()*/
 
-	if (ImGui::Button("Road"))
+	//if (ImGui::Button("Road"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Road);
+	//}
+	//if (ImGui::Button("Powerline"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Powerlink);
+	//}
+	//if (ImGui::Button("Zone"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Zone_C);
+	//}
+	//if (ImGui::Button("PowerPlace"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Powerplant);
+	//}
+	//if (ImGui::Button("Destroy"))
+	//{
+	//	m_TileController->SetCurrButton(TileSet::Destroy);
+	//}
+	if (ImGui::Button("Save"))
 	{
-		m_TileController->SetCurrButton(ButtonSet::Road);
+		m_GameSystem->SaveTileDepthFile();
 	}
-	if (ImGui::Button("Powerline"))
-	{
-		m_TileController->SetCurrButton(ButtonSet::Powerlink);
-	}
-	if (ImGui::Button("Zone"))
-	{
-		m_TileController->SetCurrButton(ButtonSet::Zone);
-	}
-	if (ImGui::Button("PowerPlace"))
-	{
-		m_TileController->SetCurrButton(ButtonSet::Powerplant);
-	}
-	if (ImGui::Button("Destroy"))
-	{
-		m_TileController->SetCurrButton(ButtonSet::Destroy);
-	}
-
 	//if(ImGui::ImageButton())
 	ImGui::End();
 }

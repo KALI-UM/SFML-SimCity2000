@@ -122,6 +122,7 @@ void Transform::move(const sf::Vector2f& pos)
 
 void Transform::setPosition()
 {
+	//m_T->setPosition(getParentPosition() + sf::Vector2f(m_LocalPosition.x * getParentScale().x, m_LocalPosition.y * getParentScale().y));
 	m_T->setPosition(getParentPosition() + m_LocalPosition);
 	for (auto& child : m_Children)
 	{

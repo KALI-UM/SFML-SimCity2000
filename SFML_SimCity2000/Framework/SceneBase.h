@@ -32,8 +32,16 @@ public:
 	void RemoveGameObject(GameObjectInfo gobj);
 	void RemoveGameObject(int layerIndex, GameObject* gobj);
 
+	struct ViewInfo
+	{
+		int viewIndex;
+		bool needPriority;
+	};
 
 	const unsigned int				m_ViewCnt;
+	std::vector<ViewInfo>			m_ViewInfo;
+	const unsigned int				m_UILayerIndex;
+	const unsigned int				m_UIViewIndex;
 protected:
 	virtual bool Initialize();
 	virtual void Reset();
@@ -58,6 +66,7 @@ public:
 
 protected:
 	void SetLayerViewIndex(int layerIndex, int viewIndex);
+	void SetViewNeedPriority(int viewIndex, bool needPriority);
 
 private:
 	const std::string							m_Name;
@@ -67,6 +76,7 @@ private:
 		std::vector<GameObject*>				gameObjects;
 	};
 
+
 	std::list<LayerInfo>						m_GameObjects;
 	std::queue<GameObjectInfo>					m_WantsToAdd;
 	std::queue<GameObjectInfo>					m_WantsToRemove;
@@ -75,6 +85,7 @@ private:
 	std::vector<std::list<LayerInfo>::iterator> m_LayerIndex;
 
 	void PushToDrawQue();
+
 	void RegisterGameObject();
 	void RemoveGameObject();
 

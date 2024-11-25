@@ -3,16 +3,26 @@
 #include "SoundPlayer.h"
 
 SceneBase::SceneBase(const std::string& name, unsigned int layercnt, int viewcnt)
-	:m_ViewCnt(viewcnt), m_Name(name)
+	:m_ViewCnt(viewcnt+1), m_Name(name), m_UILayerIndex(layercnt), m_UIViewIndex(viewcnt)
 {
-	m_GameObjects.resize(layercnt);
-	m_LayerIndex.resize(layercnt);
-	int viewIndex = 0;
+	m_GameObjects.resize(layercnt+1);
+	m_LayerIndex.resize(layercnt+1);
+	m_ViewInfo.resize(m_ViewCnt);
+	for (int i = 0; i < m_ViewCnt; i++)
+	{
+		m_ViewInfo[i].viewIndex = i;
+		m_ViewInfo[i].needPriority = true;
+	}
+
+	int layerIndex = 0;
 	for (auto it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
 	{
-		m_LayerIndex[viewIndex] = it;
-		viewIndex++;
+		m_LayerIndex[layerIndex] = it;
+		layerIndex++;
 	}
+
+	//UI레이어는 UI뷰로 설정
+	m_LayerIndex[m_UILayerIndex]->viewIndex = m_UIViewIndex;
 }
 
 SceneBase::~SceneBase()
@@ -45,8 +55,13 @@ void SceneBase::RESET()
 
 void SceneBase::ENTER()
 {
-	ImGuiManager::SetShowDemo(true);
+	ImGuiManager::SetShowDemo(false);
 	GAME_MGR->ResizeViews(m_ViewCnt);
+	for (int i = 0; i < m_ViewCnt; i++)
+	{
+		GAME_MGR->SetViewNeedPriority(i, m_ViewInfo[i].needPriority);
+	}
+
 	Enter();
 }
 
@@ -195,6 +210,11 @@ void SceneBase::SetLayerViewIndex(int layerIndex, int viewIndex)
 	m_LayerIndex[layerIndex]->viewIndex = viewIndex;
 }
 
+void SceneBase::SetViewNeedPriority(int viewIndex, bool needPriority)
+{
+	m_ViewInfo[viewIndex].needPriority = needPriority;
+}
+
 void SceneBase::RemoveGameObject(GameObjectInfo gobj)
 {
 	m_WantsToRemove.push(gobj);
@@ -216,9 +236,10 @@ void SceneBase::PushToDrawQue()
 	{
 		for (auto& gobj : GetGameObjectsLayerIter(layerIndex))
 		{
+			int viewIndex = m_LayerIndex[layerIndex]->viewIndex;
+			bool needPriority = m_ViewInfo[viewIndex].needPriority;
 			if (gobj->GetIsVisible())
 			{
-				int viewIndex = m_LayerIndex[layerIndex]->viewIndex;
 				//if (gobj->GetIsDrawSelf())
 				//{
 				//	//게임오브젝트 내의 DrawableObject를 직접 드로우한다
@@ -227,19 +248,41 @@ void SceneBase::PushToDrawQue()
 				//}
 				//else
 				//{
-					//게임오브젝트 내의 DrawableObject를 드로우큐에 넣는다
-				for (int i = 0; i < gobj->GetDrawbleCount(); i++)
+
+				if (needPriority)
 				{
-					if (gobj->GetIsVisible(i))
+					//게임오브젝트 내의 DrawableObject를 드로우큐에 넣는다
+					for (int i = 0; i < gobj->GetDrawbleCount(); i++)
 					{
-						DrawableObject* dobj = gobj->GetDrawableObj(i);
-						if (GAME_MGR->GetViewRect(viewIndex).intersects(dobj->GetGlobalBounds()))
+						if (gobj->GetIsVisible(i))
 						{
-							GAME_MGR->PushDrawableObject(viewIndex, dobj);
+							DrawableObject* dobj = gobj->GetDrawableObj(i);
+							if (GAME_MGR->GetViewRect(viewIndex).intersects(dobj->GetGlobalBounds()))
+							{
+								GAME_MGR->PushDrawableObject_PQ(viewIndex, dobj);
 #ifdef _DEBUG
-							if (dobj->GetDebugDraw())
-								GAME_MGR->PushDebugDrawObject(viewIndex, dobj->GetDebugDraw());
+								if (dobj->GetDebugDraw())
+									GAME_MGR->PushDebugDrawObject(viewIndex, dobj->GetDebugDraw());
 #endif // _DEBUG
+							}
+						}
+					}
+				}
+				else
+				{
+					for (int i = 0; i < gobj->GetDrawbleCount(); i++)
+					{
+						if (gobj->GetIsVisible(i))
+						{
+							DrawableObject* dobj = gobj->GetDrawableObj(i);
+							if (GAME_MGR->GetViewRect(viewIndex).intersects(dobj->GetGlobalBounds()))
+							{
+								GAME_MGR->PushDrawableObject_Q(viewIndex, dobj);
+#ifdef _DEBUG
+								if (dobj->GetDebugDraw())
+									GAME_MGR->PushDebugDrawObject(viewIndex, dobj->GetDebugDraw());
+#endif // _DEBUG
+							}
 						}
 					}
 				}
@@ -255,8 +298,8 @@ void SceneBase::RegisterGameObject()
 	{
 		int layerIndex = m_WantsToAdd.front().first;
 		GameObject* target = m_WantsToAdd.front().second;
-		GetGameObjectsLayerIter(layerIndex).push_back(target);
 		m_WantsToAdd.pop();
+		GetGameObjectsLayerIter(layerIndex).push_back(target);
 	}
 }
 

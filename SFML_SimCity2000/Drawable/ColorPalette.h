@@ -14,6 +14,7 @@ public:
 	static const sf::Color Transparent;
 
 	static const sf::Color Gray;
+	static const sf::Color DarkGray;
 	static const sf::Color DarkRed;
 	static const sf::Color Salmon;
 	static const sf::Color OrangeRed;

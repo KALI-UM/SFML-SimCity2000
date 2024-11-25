@@ -18,6 +18,7 @@ public:
 
 	void SetTexture(sf::Texture* tex, bool resetRect = false);
 	void SetTexture(const std::string& filepath, bool resetRect = false);
+	void SetTextureRect(const sf::IntRect& rect);
 	void SetOrigin(OriginType type, const sf::Vector2f& detail = sf::Vector2f(0, 0));
 	sf::Vector2u GetTextureSize() const;
 	sf::Color GetColor() const;

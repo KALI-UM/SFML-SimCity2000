@@ -74,7 +74,7 @@ public:
     template <typename U>
     Vector2<U> To() const
     {
-        return Vector2<U>(x, y);
+        return Vector2<U>((U)x, (U)y);
     }
 
     ////////////////////////////////////////////////////////////

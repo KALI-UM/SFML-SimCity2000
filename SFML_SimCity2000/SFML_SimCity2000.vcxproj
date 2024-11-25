@@ -123,8 +123,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.6.1\lib;$(SolutionDir)ImGui\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-audio-d.lib;ImGui.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.6.1\lib;$(SolutionDir)ImGui\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-audio-d.lib;ImGui-d.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,7 +145,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.6.1\lib;$(SolutionDir)ImGui\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.6.1\lib;$(SolutionDir)ImGui\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics.lib;sfml-system.lib;sfml-window.lib;sfml-audio.lib;ImGui.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -153,6 +153,9 @@
     <ClCompile Include="Background_Lobby.cpp" />
     <ClCompile Include="Building.cpp" />
     <ClCompile Include="BuildingGenerator.cpp" />
+    <ClCompile Include="DAtlasSprite.cpp" />
+    <ClCompile Include="DGameObject.cpp" />
+    <ClCompile Include="EducationBuilding.cpp" />
     <ClCompile Include="Framework\DataTable.cpp" />
     <ClCompile Include="Framework\DataTableManager.cpp" />
     <ClCompile Include="Drawable\ColorPalette.cpp" />
@@ -167,7 +170,12 @@
     <ClCompile Include="Drawable\DText.cpp" />
     <ClCompile Include="Drawable\DThickLine.cpp" />
     <ClCompile Include="Drawable\sfLine.cpp" />
-    <ClCompile Include="Drawable\DTile.cpp" />
+    <ClCompile Include="PublicServiceBuilding.cpp" />
+    <ClCompile Include="RecreationBuilding.cpp" />
+    <ClCompile Include="sfAtlasSprite.cpp" />
+    <ClCompile Include="SimCityMenuBar.cpp" />
+    <ClCompile Include="SimCitySubButton.cpp" />
+    <ClCompile Include="Tile\DTile.cpp" />
     <ClCompile Include="Framework\Collider.cpp" />
     <ClCompile Include="Framework\Framework.cpp" />
     <ClCompile Include="Framework\GameManager.cpp" />
@@ -198,6 +206,7 @@
     <ClCompile Include="Framework\SoundManager.cpp" />
     <ClCompile Include="GameObject\SimCityCursor.cpp" />
     <ClCompile Include="Scene_SimCityMain.cpp" />
+    <ClCompile Include="SimCityButtonBar.cpp" />
     <ClCompile Include="SimCityGameSystem.cpp" />
     <ClCompile Include="TileAttTable.cpp" />
     <ClCompile Include="TileViewChild.cpp" />
@@ -213,6 +222,9 @@
     <ClInclude Include="Background_Lobby.h" />
     <ClInclude Include="Building.h" />
     <ClInclude Include="BuildingGenerator.h" />
+    <ClInclude Include="DAtlasSprite.h" />
+    <ClInclude Include="DGameObject.h" />
+    <ClInclude Include="EducationBuilding.h" />
     <ClInclude Include="Framework\DataTable.h" />
     <ClInclude Include="Framework\DataTableManager.h" />
     <ClInclude Include="Drawable\ColorPalette.h" />
@@ -228,7 +240,12 @@
     <ClInclude Include="Drawable\DThickLine.h" />
     <ClInclude Include="Drawable\sfLine.h" />
     <ClInclude Include="Drawable_headers.h" />
-    <ClInclude Include="Drawable\DTile.h" />
+    <ClInclude Include="PublicServiceBuilding.h" />
+    <ClInclude Include="RecreationBuilding.h" />
+    <ClInclude Include="sfAtlasSprite.h" />
+    <ClInclude Include="SimCityMenuBar.h" />
+    <ClInclude Include="SimCitySubButton.h" />
+    <ClInclude Include="Tile\DTile.h" />
     <ClInclude Include="Framework\Collider.h" />
     <ClInclude Include="Framework\Framework.h" />
     <ClInclude Include="Framework\GameManager.h" />
@@ -263,6 +280,7 @@
     <ClInclude Include="Framework\SoundManager.h" />
     <ClInclude Include="GameObject\SimCityCursor.h" />
     <ClInclude Include="Scene_SimCityMain.h" />
+    <ClInclude Include="SimCityButtonBar.h" />
     <ClInclude Include="SimCityGameSystem.h" />
     <ClInclude Include="TileAttTable.h" />
     <ClInclude Include="TileViewChild.h" />

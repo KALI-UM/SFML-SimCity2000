@@ -5,6 +5,9 @@ enum class BuildingType
 {
 	None,
 	PowerPlant,
+	Education,
+	PublicService,
+	Recreation,
 };
 
 struct BuildingInfo

@@ -75,19 +75,20 @@ struct TileInfo
 	CellIndex index;
 
 	TileType type = TileType::None;
-	ZoneType zone = ZoneType::None;
-	bool	isHighZone = false;
 	SUBTYPE subtype;
 	std::string name;
 	std::string filepath;
 	sf::Vector2u lotSize = {1,1};
 	int connection=-1;
 	TileType prevtype = TileType::None;
+	CellIndex ower;
 };
 
 class Tile
 {
 public:
+	static void Initialize();
+
 	static std::string GetTypeToString(TileType type);
 	static TileType GetTypeToEnum(const std::string& type);
 
@@ -97,4 +98,7 @@ public:
 	static ZoneType GetNameToZone(const NAME& name);
 
 	static const CellIndex d[8];
+
+	static void SetLotSet();
+	static std::vector<std::list<CellIndex>> lotSet;
 };

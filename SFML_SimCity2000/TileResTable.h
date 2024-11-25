@@ -28,7 +28,9 @@ public:
 	std::string GetTileFilePath(const TileType& type, const SUBTYPE& subtype, const NAME& name);
 	const TileResData& GetTileRes(const TYPE& type, const SUBTYPE& subtype, const NAME& name) const;
 	const TileResData& GetTileRes(const TileType& type, const SUBTYPE& subtype, const NAME& name) const;
+	const TileResData& GetTileRes(const ID& id);
 	void SetTileInfo(TileInfo& info, const TileType& type, const SUBTYPE& subtype, const NAME& name);
+	void SetTileInfo(TileInfo& info, const ID& id);
 
 	const TileResData& GetTileRes(const ZONE& zone, const sf::Vector2u& lotSize, int index) const;
 	const TileResData& GetTileRes(const ZoneType& zone, const sf::Vector2u& lotSize, int index) const;

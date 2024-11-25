@@ -37,7 +37,7 @@ public:
 	DrawableObject* GetDrawableObj(size_t index = 0) const;
 	DrawableObject* GetDrawableObj(const std::string& name) const;
 	void SetDrawable(DrawableObject* dobj, bool isChild = true);
-	int GetDrawbleCount()const { return (int)m_Drawable.size(); }
+	int GetDrawbleCount()const { return (int)m_Drawables.size(); }
 
 	//bool GetIsDrawSelf() const { return m_IsDrawSelf; }
 	//void SetIsDrawSelf(bool drawSelf) { m_IsDrawSelf = drawSelf; }
@@ -56,7 +56,7 @@ protected:
 	virtual void ImGuiUpdate();
 	virtual void Release();
 
-	std::vector<DrawableObject*> m_Drawable;
+	std::vector<DrawableObject*> m_Drawables;
 	GameObject* m_ParentObj=nullptr;
 	std::list<GameObject*>		m_ChildrenObjs;
 private:

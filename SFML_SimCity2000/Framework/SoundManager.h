@@ -24,7 +24,7 @@ class SoundManager :
 protected:
 	bool m_IsSoundDeviceValid = true;					//사운드 장치가 유효한지 확인할 수있는 방법이 없다...ㅜ
 protected:
-	SoundManager()=default;
+	SoundManager() = default;
 	virtual ~SoundManager() = default;
 
 	SoundManager(const SoundManager& other) = delete;
@@ -39,8 +39,8 @@ public:
 	float GetGlobalVolume() const { return m_GlobalVolume; }
 
 
-	void PlayBgm(std::string id, bool loop = true, bool fadeIn = false, float fadeTime = 0, float startvolume = 0);
-	void PlayBgm(sf::SoundBuffer& buffer, bool loop = true, bool fadeIn = false, float fadeTime = 0, float startvolume = 0);
+	void PlayBgm(std::string id, bool loop = true, bool fadeIn = false, float fadeTime = 0, float startvolume = 0, bool startRandomPos = false);
+	void PlayBgm(sf::SoundBuffer& buffer, bool loop = true, bool fadeIn = false, float fadeTime = 0, float startvolume = 0, bool startRandomPos = false);
 	void StopBgm(bool fadeOut = false, float fadeTime = 0, float endvolume = 0);
 
 	void PlaySfx(std::string id, bool loop = false);
@@ -61,9 +61,9 @@ protected:
 	std::list<sf::Sound*> m_PlayingSfx;
 	std::list<sf::Sound*> m_WaitingSfx;
 
-	float m_GlobalVolume =	100.f;
-	float m_SfxVolume =		100.f;
-	float m_BgmVolume =		100.f;
+	float m_GlobalVolume = 100.f;
+	float m_SfxVolume = 100.f;
+	float m_BgmVolume = 50.f;
 
 };
 

@@ -46,12 +46,14 @@ public:
 	const sf::FloatRect& GetViewRect(int index);
 
 	void ResizeViews(unsigned int cnt);
+	void SetViewNeedPriority(int index, bool need);
 	int GetViewCount()const;
 
 	sf::Vector2f GetScreenToViewPos(int index, const sf::Vector2i& screenPos);
 	sf::Vector2i GetViewToScreenPos(int index, const sf::Vector2f& viewPos);
 
 	void SetViewSize(int index, const sf::FloatRect& rect);
+	void SetViewZoom(int index, float zoom);
 	void SetViewportSize(int index, const sf::FloatRect& rect);
 	void SetViewCenter(int index, const sf::Vector2f& pos);
 	void MoveView(int index, const sf::Vector2f& offset);
@@ -59,7 +61,8 @@ public:
 	void RotateView(int index, float rot);
 	void UpdateViewRect();
 
-	void PushDrawableObject(int viewindex, DrawableObject* dobj);
+	void PushDrawableObject_PQ(int viewindex, DrawableObject* dobj);
+	void PushDrawableObject_Q(int viewindex, DrawableObject* dobj);
 	void PushDebugDrawObject(int viewindex, DebugInfo* dobj);
 
 	const GameMode& GetGameMode()const;
@@ -75,7 +78,9 @@ private:
 	{
 		sf::View							view;
 		sf::FloatRect						viewRect;
-		std::priority_queue<DrawableObject*, std::vector<DrawableObject*>, PriorityComp> drawQue;
+		bool								needPriority;
+		std::priority_queue<DrawableObject*, std::vector<DrawableObject*>, PriorityComp> drawQue_PQ;
+		std::queue<DrawableObject*> drawQue_Q;
 	};
 	std::vector<ViewDrawInfo>				m_Views;
 

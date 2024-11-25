@@ -21,8 +21,5 @@ protected:
 	std::function<sf::Vector2i(std::list<CellIndex>&)> m_GetCanBuildPosFunc;
 	std::function<void(std::list<CellIndex>&, const TileResData&)> m_GenerateBuildingFunc;
 
-private:
-	static void SetLotSet();
-	static std::vector<std::list<CellIndex>> m_lotSet;
 };
 

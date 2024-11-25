@@ -9,15 +9,21 @@
 void Framework::Initialize(int width, int height, const std::string& name)
 {
 	m_MainWindow.create(sf::VideoMode(width, height), name, sf::Style::None);
+
+	//sf::Cursor cursor;
+	//// 만약 사용자 정의 커서가 있다면 해제
+	//cursor.loadFromSystem(sf::Cursor::Arrow);
+	//m_MainWindow.setMouseCursor(cursor); // 커서를 시스템 기본으로 설정 후, 숨기기 시도
+	//m_MainWindow.setMouseCursorVisible(false);
+
 	HWND hwnd = m_MainWindow.getSystemHandle();
 
 	LONG style = GetWindowLong(hwnd, GWL_STYLE);
 	style |= WS_OVERLAPPEDWINDOW;
 	SetWindowLong(hwnd, GWL_STYLE, style);
-
-	HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
-	SetMenu(hwnd, hMenu);
-	DrawMenuBar(hwnd);
+	//HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
+	//SetMenu(hwnd, hMenu);
+	//DrawMenuBar(hwnd);
 	SetWindowTheme(hwnd, L" ", L" ");
 
 	
@@ -27,7 +33,7 @@ void Framework::Initialize(int width, int height, const std::string& name)
 	SOUND_MGR->Initialize();
 	INPUT_MGR->Initialize();
 	GAME_MGR->Initialize(&m_MainWindow);
-	ImGuiManager::Init(&m_MainWindow);
+	//ImGuiManager::Init(&m_MainWindow);
 
 	SOUND_MGR->SetGlobalVolume(80);
 }
@@ -52,9 +58,18 @@ void Framework::Do()
 		{
 			if (event.type == sf::Event::Closed)
 				m_MainWindow.close();
-			ImGuiManager::PollEvent(event);
+			//ImGuiManager::PollEvent(event);
 			INPUT_MGR->UpdateEvent(event);
 			GAME_MGR->UpdateEvent(event);
+
+			//if (event.type == sf::Event::GainedFocus) {
+			//	// 포커스 얻음
+			//	m_MainWindow.setMouseCursorVisible(false);
+			//}
+			//else if (event.type == sf::Event::LostFocus) {
+			//	// 포커스 잃음
+			//	m_MainWindow.setMouseCursorVisible(true); // 필요시 켤 수 있음
+			//}
 		}
 
 		// 업데이트
@@ -78,9 +93,9 @@ void Framework::Do()
 		GAME_MGR->Render();
 
 		{ // ImGui Layer
-			ImGuiManager::Begin(dt);
+	/*		ImGuiManager::Begin(dt);
 			GAME_MGR->ImGuiUpdate();
-			ImGuiManager::End();
+			ImGuiManager::End();*/
 		}
 
 		m_MainWindow.display();

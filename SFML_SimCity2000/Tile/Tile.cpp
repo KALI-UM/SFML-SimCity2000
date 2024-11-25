@@ -2,6 +2,12 @@
 #include "Tile.h"
 
 const CellIndex Tile::d[8] = { {-1,0}, {1,0}, {0,-1},{0,1} ,{ -1,-1 },{1,-1},{-1,1},{1,1} };
+std::vector<std::list<CellIndex>> Tile::lotSet;
+
+void Tile::Initialize()
+{
+	SetLotSet();
+}
 
 std::string Tile::GetTypeToString(TileType type)
 {
@@ -163,6 +169,25 @@ ZoneType Tile::GetNameToZone(const NAME& name)
 		return ZoneType::Seaport;
 
 	return ZoneType::None;
+}
+
+void Tile::SetLotSet()
+{
+	if (lotSet.empty())
+	{
+		lotSet.resize(5);
+
+		for (int lot = 1; lot <= 4; lot++)
+		{
+			for (int j = 0; j > -lot; j--)
+			{
+				for (int i = 0; i < lot; i++)
+				{
+					lotSet[lot].push_back({ i,j });
+				}
+			}
+		}
+	}
 }
 
 

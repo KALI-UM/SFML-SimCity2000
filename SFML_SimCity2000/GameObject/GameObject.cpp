@@ -19,11 +19,11 @@ GameObject::GameObject(const GameObject& other)
 }
 
 GameObject::GameObject(GameObject&& other)noexcept
-	:m_Id(other.m_Id), m_IsValid(other.m_IsValid), m_Drawable(other.m_Drawable), m_IsMovable(other.m_IsMovable)
+	:m_Id(other.m_Id), m_IsValid(other.m_IsValid), m_Drawables(other.m_Drawables), m_IsMovable(other.m_IsMovable)
 {
 	//¹Ì¿Ï
 	Transform::Init(other, nullptr);
-	other.m_Drawable.clear();
+	other.m_Drawables.clear();
 	other.SetIsValid(false);
 }
 
@@ -37,7 +37,7 @@ bool GameObject::INITIALIZE()
 	bool result = Initialize();
 	for (auto& child : m_ChildrenObjs)
 	{
-		result&=child->INITIALIZE();
+		result &= child->INITIALIZE();
 	}
 	return result;
 }
@@ -51,14 +51,17 @@ void GameObject::UPDATE(float dt)
 {
 	Update(dt);
 
-	for (auto& drawable : m_Drawable)
+	for (auto& drawable : m_Drawables)
 	{
 		drawable->Update(dt);
 	}
 
 	for (auto& child : m_ChildrenObjs)
 	{
-		child->UPDATE(dt);
+		if (child->GetIsValid())
+		{
+			child->UPDATE(dt);
+		}
 	}
 }
 
@@ -106,7 +109,7 @@ void GameObject::IMGUIUPDATE()
 {
 	ImGuiUpdate();
 
-	for (auto& drawable : m_Drawable)
+	for (auto& drawable : m_Drawables)
 	{
 		drawable->ImGuiUpdate();
 	}
@@ -116,7 +119,7 @@ void GameObject::RELEASE()
 {
 	Release();
 
-	for (auto& drawable : m_Drawable)
+	for (auto& drawable : m_Drawables)
 	{
 		delete drawable;
 	}
@@ -169,7 +172,7 @@ void GameObject::Release()
 
 bool GameObject::GetIsVisible() const
 {
-	return m_IsVisible && GetIsValid()&&GetDrawbleCount()!=0;
+	return m_IsVisible && GetIsValid() && GetDrawbleCount() != 0;
 }
 
 bool GameObject::GetIsVisible(size_t index) const
@@ -213,13 +216,13 @@ void GameObject::RemoveChildObj(GameObject* child)
 
 DrawableObject* GameObject::GetDrawableObj(size_t index)const
 {
-	if (index >= m_Drawable.size())return nullptr;
-	return m_Drawable[index];
+	if (index >= m_Drawables.size())return nullptr;
+	return m_Drawables[index];
 }
 
 DrawableObject* GameObject::GetDrawableObj(const std::string& name) const
 {
-	for (auto& drawable : m_Drawable)
+	for (auto& drawable : m_Drawables)
 	{
 		if (drawable->GetName() == name)
 			return drawable;
@@ -231,6 +234,6 @@ void GameObject::SetDrawable(DrawableObject* dobj, bool isChild)
 {
 	if (isChild)
 		this->Transform::SetChild(dobj);
-	m_Drawable.push_back(dobj);
+	m_Drawables.push_back(dobj);
 }
 

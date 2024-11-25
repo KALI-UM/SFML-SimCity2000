@@ -4,7 +4,10 @@
 class SimCityGameSystem;
 class TileModel;
 class TileView;
-
+enum class Action;
+class SimCityMenuBar;
+class SimCityButtonBar;
+class SimCityCursor;
 enum class ControlStatus
 {
 	None,
@@ -13,7 +16,7 @@ enum class ControlStatus
 	Drag,
 };
 
-enum class ButtonSet;
+enum class TileSet;
 class TileController
 	:public GameObject
 {
@@ -32,6 +35,10 @@ public:
 	//void LateUpdate(float dt) override;
 	//void FixeUpdate(float dt) override;
 	//void Release() override;
+	void SetMenuBar(SimCityMenuBar* bar);
+	void SetButtonBar(SimCityButtonBar* bar);
+	void SetCusor(SimCityCursor* cursor);
+
 
 	CellIndex GetMouseOverlaidTileIndex() const { return m_MouseOverlaidTile; }
 	CellIndex GetDragStartTileIndex() const { return m_DragStartTile; }
@@ -44,8 +51,8 @@ public:
 	void UpdateDestroy(float dt);
 	void UpdateDrag(float dt);
 
-
-	void SetCurrButton(ButtonSet btt);
+	void SetCurrButton(Action btt);
+	void SetCurrCusor(Action btt);
 
 	void Set1x1Tile(const CellIndex& tileIndex, bool checkPossible = true);
 	void SetLineIntersectedTiles(const CellIndex& startIndex, const CellIndex& endIndex, bool checkPossible = true);
@@ -62,7 +69,9 @@ protected:
 	CellIndex		m_PrevTile;
 	std::list<CellIndex> m_SelectingTiles;
 
-
+	SimCityMenuBar*		m_MenuBar;
+	SimCityButtonBar*	m_ButtonBar;
+	SimCityCursor*		m_Cursor;
 
 };
 
