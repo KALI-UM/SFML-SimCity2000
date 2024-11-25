@@ -38,7 +38,7 @@ public:
 	void SetTexture(const std::string& filepath, TileShapeType type = TileShapeType::Convex, const sf::Vector2u& lot = {1,1});
 	sf::Vector2u GetTextureSize()const;
 	void SetOrigin(OriginType type, const sf::Vector2f& detail);
-
+	void SetTilePriorityValue(float offset=0);
 
 	sf::FloatRect GetGlobalBounds()const;
 	sf::FloatRect GetLocalBounds()const;

@@ -152,10 +152,12 @@ void TileView::UpdateTileSprite()
 	{
 		TileDepth& currdepth = m_SpriteUpdateQueue.front().first;
 		sf::Vector2i& currIndex = m_SpriteUpdateQueue.front().second;
+		m_DepthViews[(int)currdepth]->NeedPriorityUpdate();
 		auto& currTile = m_DepthViews[(int)currdepth]->m_TileDrawable[currIndex.y][currIndex.x];
 		auto& currTileInfo = mcv_Model->GetTileInfo(currdepth, currIndex);
 		currTile->SetTexture(currTileInfo.filepath, mcv_Model->GetTileShapeType(currdepth, currIndex), currTileInfo.lotSize);
 		currTile->SetOrigin(OriginType::BC, m_TileOffset);
+		currTile->SetTilePriorityValue();
 		m_SpriteUpdateQueue.pop();
 	}
 }

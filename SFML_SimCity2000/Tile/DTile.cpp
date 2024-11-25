@@ -122,6 +122,7 @@ void DTile::SetShapeLot(const TileShapeType& shape, const sf::Vector2u& lot)
 	//if (m_ShapeType == shape && m_Tile.m_LotSize == lot)return;
 	m_ShapeType = shape;
 	m_Tile.m_LotSize = lot;
+	SetPriorityType(DrawPriorityType::Custom);
 
 	auto lot_float = m_Tile.m_LotSize.To<float>();
 	lot_float.y = (float)GetTextureSize().y / m_Unit;
@@ -200,6 +201,11 @@ void DTile::SetOrigin(OriginType type, const sf::Vector2f& detail)
 			((GetTextureSize().y / 2) * ((int)type / 3)) + detail.y);
 	else
 		DrawableObject::SetOrigin(type, detail);
+}
+
+void DTile::SetTilePriorityValue(float offset)
+{
+	m_PriorityValue = Transform::getPosition().y - (m_Tile.m_LotSize.x * m_Unit * 0.25f) * Transform::getScale().y + offset;
 }
 
 sf::FloatRect DTile::GetGlobalBounds() const

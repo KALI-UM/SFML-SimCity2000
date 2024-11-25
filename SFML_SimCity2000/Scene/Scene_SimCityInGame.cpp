@@ -27,7 +27,6 @@ bool Scene_SimCityInGame::Initialize()
 	SetLayerViewIndex(2, 0);
 	SetViewNeedPriority(0, false);
 
-
 	//m_Tile = AddGameObject(0, new Tile());
 	//m_Tile->SetCellSize({ 45,45 });
 	m_TileGrid = AddGameObject(1, new TileGrid());

@@ -23,7 +23,8 @@ bool SimCityCursor::Initialize()
 			m_ModeTextureRect[j * 5 + i] = sf::IntRect(i * 32, j * 32, 32, 32);
 		}
 	}
-
+	m_ModeTextureRect[(int)Action::PublicService] = sf::IntRect(4 * 32, 2 * 32, 32, 32);
+	m_ModeTextureRect[(int)Action::Recreation] = sf::IntRect(0 * 32, 3 * 32, 32, 32);
 	m_ModeTextureRect[(int)Action::ZoomOut] = sf::IntRect(3 * 32, 2 * 32, 32, 32);
 	m_ModeTextureRect[(int)Action::Move] = sf::IntRect(1 * 32, 3 * 32, 32, 32);
 	result &= MouseCursor::Initialize();

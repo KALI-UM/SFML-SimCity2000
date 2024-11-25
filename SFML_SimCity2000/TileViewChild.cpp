@@ -28,7 +28,6 @@ bool TileViewChild::Initialize()
 			auto& tileInfo = mcv_View->GetModel()->GetTileInfo(m_Depth, { i,j });
 			DTile* tileSprite = new DTile(tileInfo.filepath);
 			tileSprite->SetShapeLot(mcv_View->GetModel()->GetTileShapeType(m_Depth, { i,j }), tileInfo.lotSize);
-			tileSprite->SetDebugDraw(false);
 			tileSprite->SetOrigin(OriginType::BC, mcv_View->m_TileOffset);
 			tileSprite->setLocalPosition({ (i)*cellSize.x, (j + 1) * cellSize.y });
 			SetDrawable(tileSprite);
@@ -52,7 +51,6 @@ void TileViewChild::Reset()
 			const auto& tileInfo = mcv_View->GetModel()->GetTileInfo(m_Depth, { i,j });
 			tileSprite->SetShapeLot(mcv_View->GetModel()->GetTileShapeType(m_Depth, { i,j }), tileInfo.lotSize);
 			tileSprite->SetDebugDraw(false);
-			tileSprite->setLocalPosition({ (i)*cellSize.x, (j + 1) * cellSize.y });
 			tileSprite->SetOrigin(OriginType::BC, mcv_View->m_TileOffset);
 		}
 	}
@@ -60,6 +58,16 @@ void TileViewChild::Reset()
 
 void TileViewChild::LateUpdate(float dt)
 {
+}
+
+void TileViewChild::PreRender()
+{
+	if (m_NeedPriorityUpdate)
+	{
+		//타일은 매 프레임마다 순위경쟁을 하지 않고 벡터에서 순서가 정해진다.
+		std::sort(m_Drawables.begin(), m_Drawables.end(),
+			[&](const DrawableObject* d1, const DrawableObject* d2) { return TileViewChild::SortTile(d1, d2); });
+	}
 }
 
 void TileViewChild::PostRender()
@@ -76,15 +84,10 @@ void TileViewChild::SetTileTransform(const sf::Transform& trans)
 	{
 		tile->setLocalPosition(trans.transformPoint(tile->getLocalPosition()));
 	}
-
-	//타일은 매 프레임마다 순위경쟁을 하지 않고 벡터에서 순서가 정해진다.
-	std::sort(m_Drawables.begin(), m_Drawables.end(),
-		[&](const DrawableObject* d1, const DrawableObject* d2) { return TileViewChild::SortTile(d1, d2); });
 }
 
 bool TileViewChild::SortTile(const DrawableObject* dobj1, const DrawableObject* dobj2) const
 {
-	return dobj1->getPosition().y < dobj2->getPosition().y ||
-		(dobj1->getPosition().y == dobj2->getPosition().y && dobj1->getPosition().x < dobj2->getPosition().x);
+	return dobj1->GetPriorityValue() < dobj2->GetPriorityValue();
 }
 
