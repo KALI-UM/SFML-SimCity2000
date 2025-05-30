@@ -1,0 +1,781 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Background_Lobby" Collapsed="true">
+    <Position X="29.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQgABEAAABABQAAAAAAAAIAAAAAAAAAAAAAAAARAAA=</HashCode>
+      <FileName>Background_Lobby.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Building" Collapsed="true">
+    <Position X="45.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAEBAQAAAABAAAAgAIIAABABAAAAAAAAAAACAEAAA=</HashCode>
+      <FileName>Building.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BuildingGenerator" Collapsed="true">
+    <Position X="74.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQgAAgQIAAABQAAAEAAQAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BuildingGenerator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DAtlasSprite" Collapsed="true">
+    <Position X="16" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAABAAAAAAAgAICACIAQAwACAAAACCIAgAEAAAAEA=</HashCode>
+      <FileName>DAtlasSprite.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DGameObject" Collapsed="true">
+    <Position X="18.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DGameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EducationBuilding" Collapsed="true">
+    <Position X="49.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAIAIAAAABAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>EducationBuilding.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataTable" Collapsed="true">
+    <Position X="9.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEgAAAAAAAAAAAgAAAAAAACACAAAAAABgAABAAAAA=</HashCode>
+      <FileName>Framework\DataTable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataTableManager" Collapsed="true">
+    <Position X="14.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQBAAAAAAAAAAAAAAABAABAgABgAAAA=</HashCode>
+      <FileName>Framework\DataTableManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ColorPalette" Collapsed="true">
+    <Position X="76.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AiAGAEREAAgAAhAAABEABBAABAAAAAQAAAAEADABAAA=</HashCode>
+      <FileName>Drawable\ColorPalette.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DAnimation" Collapsed="true">
+    <Position X="7" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DA1AEBAAAQEAAgAICACAAQAwAChAggCAIEgAAAAAAAA=</HashCode>
+      <FileName>Drawable\DAnimation.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DCircle" Collapsed="true">
+    <Position X="20.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAEAAAAgAACEAAAAAAAgAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Drawable\DCircle.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DebugInfo" Collapsed="true">
+    <Position X="80" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEACAAAAAAAAIgAAAAQABCEAAAgEQAgAQIAAA=</HashCode>
+      <FileName>Drawable\DebugInfo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DLine" Collapsed="true">
+    <Position X="13.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAIAAAAggAAgAACACAAQAQAAAAAACQAAgAAAAAIAA=</HashCode>
+      <FileName>Drawable\DLine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DrawableObject" Collapsed="true">
+    <Position X="17" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>GAQDAgAIAAgIAkEICAGIAVAQAAAQAiKAIAgAQAAABQA=</HashCode>
+      <FileName>Drawable\DrawableObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DRectangle" Collapsed="true">
+    <Position X="22.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAECAAAAAAAAgAACQAIAAAAACBAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Drawable\DRectangle.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DShape" Collapsed="true">
+    <Position X="21.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAABAAAAACAAQQQACAAEACAIAgAAAAAAAA=</HashCode>
+      <FileName>Drawable\DShape.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DSprite" Collapsed="true">
+    <Position X="27.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAQAAAAAAAgggICACAAQAwACAAAACAIAgAAAAAAAA=</HashCode>
+      <FileName>Drawable\DSprite.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DText" Collapsed="true">
+    <Position X="9.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DAAACAAAAAAABgQACECAAQCQAAAAAACAAAgAAAAAAAA=</HashCode>
+      <FileName>Drawable\DText.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DThickLine" Collapsed="true">
+    <Position X="11.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAABAgAABgBCCACAARAQEACAAACAAAgASAAAAAA=</HashCode>
+      <FileName>Drawable\DThickLine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="sfLine" Collapsed="true">
+    <Position X="0.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACBAAIAAAAAAIAAAAAAAABAAAAACAAgAgIAAA=</HashCode>
+      <FileName>Drawable\sfLine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PublicServiceBuilding" Collapsed="true">
+    <Position X="40.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAQAAAAAIAAAAAAAAAAAAAAAABAAEAAA=</HashCode>
+      <FileName>PublicServiceBuilding.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RecreationBuilding" Collapsed="true">
+    <Position X="45.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAIACAAAAAAAAAAAAAAAAAEAAg=</HashCode>
+      <FileName>RecreationBuilding.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="sfAtlasSprite" Collapsed="true">
+    <Position X="2.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQACBqAICggAAAIAAAAAAAAAAAAwiAAAggoIAAA=</HashCode>
+      <FileName>sfAtlasSprite.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimCityMenuBar" Collapsed="true">
+    <Position X="58.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JAQGAAAAAEAAFQAAAEAAAEAEAAAAAAAAAAFCABBQABI=</HashCode>
+      <FileName>SimCityMenuBar.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimCitySubButton" Collapsed="true">
+    <Position X="61" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQGACSAAEAIBQAAAAAIAEABAAAAAAEAAAEAABBAEAA=</HashCode>
+      <FileName>SimCitySubButton.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="sfTile" Collapsed="true">
+    <Position X="5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAGBAAIAgAAAAIAAAAAAAAAAAQgIAAAgAgIAAA=</HashCode>
+      <FileName>Tile\DTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DTile" Collapsed="true">
+    <Position X="25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAIACAAAAAgAIKACAAQCQAGAAIACAIIgAAAAAAAA=</HashCode>
+      <FileName>Tile\DTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Collider" Collapsed="true">
+    <Position X="4.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEgAAQEAkiAgRAAEAgAABQAIAIAgIA8QAgAAASAAAI=</HashCode>
+      <FileName>Framework\Collider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Framework" Collapsed="true">
+    <Position X="0.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ARAAEAAALAAAAQABASAAAAAACKQAAAAAAAQiABAYAAA=</HashCode>
+      <FileName>Framework\Framework.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameManager" Collapsed="true">
+    <Position X="7.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gBQAAgACAgFKBUAEAEAIIAKCACEAAACAABAJgBDIEAA=</HashCode>
+      <FileName>Framework\GameManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ImGuiManager" Collapsed="true">
+    <Position X="74.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAJAABIAAAAAgAAAAABCAQhAAAAAEAAACAACEBAAAAA=</HashCode>
+      <FileName>Framework\ImGuiManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InputManager" Collapsed="true">
+    <Position X="9.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAVBAgAAAAghAUAAIIAQABRCIAgAAAAAAAAAACRAAAQ=</HashCode>
+      <FileName>Framework\InputManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObjectPool&lt;T&gt;" Collapsed="true">
+    <Position X="78.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASAAAAAABAABUAAAAIAAAAAAAAAAAAAIAFAUAACgAA=</HashCode>
+      <FileName>Framework\ObjectPool.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObjectPoolable" Collapsed="true">
+    <Position X="52.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Framework\ObjectPoolable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResourceManager&lt;T&gt;" Collapsed="true">
+    <Position X="3" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAgAGAACAEAAAAAAAAAgAAAIABA=</HashCode>
+      <FileName>Framework\ResourceManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneBase" Collapsed="true">
+    <Position X="5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAVgUBAEDgBIBUIkAACAKAQGQAAEgkAAIAAAABiCBAQ=</HashCode>
+      <FileName>Framework\SceneBase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneManager" Collapsed="true">
+    <Position X="5.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAgAIBwEgABAAIEAAQAoAAEAAQAAAABACAgA=</HashCode>
+      <FileName>Framework\SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Singleton&lt;T&gt;" Collapsed="true">
+    <Position X="7.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACCAAAAABAAAAAEIAAAgAAAAAAA=</HashCode>
+      <FileName>Framework\Singleton.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Transform" Collapsed="true">
+    <Position X="37.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAIIAAAAgAjEKAAAAwARACTQIgIAICCGCCABAAAAA=</HashCode>
+      <FileName>Framework\Transform.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Utils" Collapsed="true">
+    <Position X="74.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAg4ABABABAgAQAAAAAAACAAAAAAAAAAgsAAAACABIA=</HashCode>
+      <FileName>Framework\Utils.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Button" Collapsed="true">
+    <Position X="63.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQIAiAAgAAAhQSEAAgAABCAAAAAAAAAQAAAAAkCAAI=</HashCode>
+      <FileName>GameObject\Button.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DustEffect" Collapsed="true">
+    <Position X="49.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAABQAAAAABAAAAAAAAIgAAAAEAAAAAAEA=</HashCode>
+      <FileName>GameObject\DustEffect.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EffectObject" Collapsed="true">
+    <Position X="49.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAQCAAAQACgAhQAAAAAAAQAAACAAAgAAAhEAAAAAAEA=</HashCode>
+      <FileName>GameObject\EffectObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameObject" Collapsed="true">
+    <Position X="49.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABUBEAAEIQAIBwggAQAAIgCORAACgkyYEABAABoyAAA=</HashCode>
+      <FileName>GameObject\GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MouseCursor" Collapsed="true">
+    <Position X="31.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAYgkAABQAAAABIAGAAAAAKAAAAAAAAABAAgAA=</HashCode>
+      <FileName>GameObject\MouseCursor.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpriteObject" Collapsed="true">
+    <Position X="36.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAQAAAAAAAAAgAAgACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameObject\SpriteObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameStart" Collapsed="true">
+    <Position X="38.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAACBQAAAAAAACAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameStart.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NormalBuilding" Collapsed="true">
+    <Position X="43" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAQAAAAAIAAAAAAAAAAAAAAAAIAAEAAA=</HashCode>
+      <FileName>NormalBuilding.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerPlantBuilding" Collapsed="true">
+    <Position X="47.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAIACAAAACAEAAAAAAAEAAEAAA=</HashCode>
+      <FileName>PowerPlantBuilding.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene_SimCityInGame" Collapsed="true">
+    <Position X="0.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQECBAgAABAAQAAAAQAAQCIQAAEAAAEAAAAACAQAAA=</HashCode>
+      <FileName>Scene\Scene_SimCityInGame.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoundManager" Collapsed="true">
+    <Position X="12" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAgAAxAAgYAIQABAAAAFACAIAAAACAAgAJIAAEA=</HashCode>
+      <FileName>Framework\SoundManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimCityCursor" Collapsed="true">
+    <Position X="31.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAFQAAAAiAAAgAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>GameObject\SimCityCursor.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene_SimCityMain" Collapsed="true">
+    <Position X="7.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAQAAAAAABQAAAIAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Scene_SimCityMain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimCityButtonBar" Collapsed="true">
+    <Position X="34" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JAQGAAAAgAAABQAAAAAIAEAkAAIAAAEAAAECABBQIBI=</HashCode>
+      <FileName>SimCityButtonBar.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimCityGameSystem" Collapsed="true">
+    <Position X="65.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCTyBAQIAAAAVQDAAiwokAARDAAMCAARQBAQAmLyIgI=</HashCode>
+      <FileName>SimCityGameSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileAttTable" Collapsed="true">
+    <Position X="10.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAgAEIAAAAAAACAIAAAgAABAABAAAAAAAAABAAAAA=</HashCode>
+      <FileName>TileAttTable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileViewChild" Collapsed="true">
+    <Position X="72.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAABQAAAAAAYAAAAAAggkAABAAAAlACIAA=</HashCode>
+      <FileName>TileViewChild.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tile" Collapsed="true">
+    <Position X="81.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAQAAEBAAACAAAAAAAEANAAAAAAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileController" Collapsed="true">
+    <Position X="52" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAyAggAyAAgChQAAAAAAgUGBKAAKAAIEAEAAAiAQSCI=</HashCode>
+      <FileName>Tile\TileController.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileGrid" Collapsed="true">
+    <Position X="54.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAIASAAAFQAAAAAAAAABAAAAAAAAAABAAgAAAEA=</HashCode>
+      <FileName>Tile\TileGrid.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileModel" Collapsed="true">
+    <Position X="56.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EBQgAAMAAAQABQEBEEAASAAAAEoAAgBAJABBAFEAABA=</HashCode>
+      <FileName>Tile\TileModel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileResTable" Collapsed="true">
+    <Position X="8.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAggAAAAAAABAgAAACIAAQFAAAAAAEAAACABAAAAA=</HashCode>
+      <FileName>TileResTable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileView" Collapsed="true">
+    <Position X="67.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAQAAIAACACABwAQMAAAIECAiAAAQAAgCACCAhECAgQ=</HashCode>
+      <FileName>Tile\TileView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene_Loading" Collapsed="true">
+    <Position X="2.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAgQAABQAAAAAEAAIAAAAAAAAAAAIAABAAAAA=</HashCode>
+      <FileName>Scene\Scene_Loading.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene_Lobby" Collapsed="true">
+    <Position X="5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQEAAAACAAABQAAAAAAACIAAgAECAAAAAAAABAQAAA=</HashCode>
+      <FileName>Scene\Scene_Lobby.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene_Test" Collapsed="true">
+    <Position X="9.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAgAAAAAAQAAAABAAAAAQAAEAAAAAAAAAAAwAAA=</HashCode>
+      <FileName>Scene\Scene_Test.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="sf::RenderWindow" Collapsed="true">
+    <Position X="80" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>hAAAAAAAAIBAAAgAAAAAAASAAAAAEAAgAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\1998k\source\git\SFML-SimCity2000\SFML-2.6.1\include\SFML\Graphics\RenderWindow.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="sf::Transformable" Collapsed="true">
+    <Position X="2.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIIAIADgCgGCAAAAQACgDDAAgAAACAAAAAAEAAAA=</HashCode>
+      <FileName>C:\Users\1998k\source\git\SFML-SimCity2000\SFML-2.6.1\include\SFML\Graphics\Transformable.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="rapidcsv::no_converter" Collapsed="true">
+    <Position X="76.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\rapidcsv.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="rapidcsv::Converter&lt;T&gt;" Collapsed="true">
+    <Position X="78.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAIAAAAAAAAAAAAAAAAQAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Framework\rapidcsv.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="rapidcsv::Document" Collapsed="true">
+    <Position X="81.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEQHwKACEAAAgAQEECAcBCJBAIAAAAJKg0BCgADSIRE=</HashCode>
+      <FileName>Framework\rapidcsv.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="BuildingInfo" Collapsed="true">
+    <Position X="78.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAhAAIAAAIAAIAAAUAAAAAQACAAAAAAA=</HashCode>
+      <FileName>Building.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PriorityComp" Collapsed="true">
+    <Position X="78.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\GameManager.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="AxisInfo" Collapsed="true">
+    <Position X="76.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIIAAAAAIAAAAAAAAQAAAABAgAAAAAAAAA=</HashCode>
+      <FileName>Framework\InputManager.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="InGameInfo" Collapsed="true">
+    <Position X="80" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Scene\Scene_SimCityInGame.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SoundData" Collapsed="true">
+    <Position X="81.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAIAAAAAAAAAAABCAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Framework\SoundManager.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="CityInfo" Collapsed="true">
+    <Position X="80" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAgAAAAAAgAAAAAAAAAEAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>SimCityGameSystem.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ActionSet" Collapsed="true">
+    <Position X="74.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAUAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>SimCityGameSystem.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MenuSet" Collapsed="true">
+    <Position X="76.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAgAAAAEAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>SimCityGameSystem.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="TileResData" Collapsed="true">
+    <Position X="76.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAEAABAAAAAAAQAAAAAAAAQAAAFAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="TileTypeAttribute" Collapsed="true">
+    <Position X="78.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAACAAAAAAAAAAAAAAAABAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="TileInfo" Collapsed="true">
+    <Position X="74.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAgAQAAAABAAAAAAAFAAAAAAAAAAAFAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="rapidcsv::ConverterParams" Collapsed="true">
+    <Position X="81.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQCAAAAABAAAAAAAAAAQAAAAAAAACAA=</HashCode>
+      <FileName>Framework\rapidcsv.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="rapidcsv::LabelParams" Collapsed="true">
+    <Position X="81.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAEAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\rapidcsv.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="rapidcsv::SeparatorParams" Collapsed="true">
+    <Position X="80" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAQAIBgAAAgAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Framework\rapidcsv.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="rapidcsv::LineReaderParams" Collapsed="true">
+    <Position X="74.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAgAAAAAAQAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Framework\rapidcsv.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="std::hash&lt;Action&gt;" Collapsed="true">
+    <Position X="74.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SimCityGameSystem.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="std::hash&lt;Menu&gt;" Collapsed="true">
+    <Position X="76.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SimCityGameSystem.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="std::hash&lt;std::pair&lt;T1, T2&gt;&gt;" Collapsed="true">
+    <Position X="78.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TileResTable.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="CellIndex" Collapsed="true">
+    <Position X="74.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="TYPE" Collapsed="true">
+    <Position X="81.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="SUBTYPE" Collapsed="true">
+    <Position X="80" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="NAME" Collapsed="true">
+    <Position X="78.25" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="ZONE" Collapsed="true">
+    <Position X="74.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="ID" Collapsed="true">
+    <Position X="76.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Enum Name="BuildingType" Collapsed="true">
+    <Position X="78.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAgAAAAIAAAgAAEAAAA=</HashCode>
+      <FileName>Building.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DataType" Collapsed="true">
+    <Position X="74.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAgAAAAAAAAAAAAAAQAAAACAEAAAA=</HashCode>
+      <FileName>Drawable\DrawableObject.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="OriginType" Collapsed="true">
+    <Position X="76.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQ4AAAAAAIMAAAAAAAAABBgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Drawable\DrawableObject.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DrawPriorityType" Collapsed="true">
+    <Position X="76.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Drawable\DrawableObject.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CollisionDetectionMode" Collapsed="true">
+    <Position X="80" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAASA=</HashCode>
+      <FileName>Framework\Collider.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GameMode" Collapsed="true">
+    <Position X="80" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAQAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\GameManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Axis" Collapsed="true">
+    <Position X="76.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\InputManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ExpandOption" Collapsed="true">
+    <Position X="78.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAIAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\ObjectPool.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GameStatus" Collapsed="true">
+    <Position X="81.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>SimCityGameSystem.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Action" Collapsed="true">
+    <Position X="74.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>hIgAAKYggIWAAARAKACQgAAADC4gAAKIIDEgAQAAAkI=</HashCode>
+      <FileName>SimCityGameSystem.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Menu" Collapsed="true">
+    <Position X="74.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAABAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SimCityGameSystem.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TileShapeType" Collapsed="true">
+    <Position X="80" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAggAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TileType" Collapsed="true">
+    <Position X="81.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BIAAABAAAACIAAAAIBAAAAgAAAAAAAAAAEAAAAEAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ZoneType" Collapsed="true">
+    <Position X="74.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAQAAAAAAAIAAAAAAQAAAAAAAAAAAAAAAAkAACA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TileDepth" Collapsed="true">
+    <Position X="78.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAEAAAAAAAAgAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Tile\Tile.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ControlStatus" Collapsed="true">
+    <Position X="81.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAAAAABAAAAAAEAAAAEAAAA=</HashCode>
+      <FileName>Tile\TileController.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

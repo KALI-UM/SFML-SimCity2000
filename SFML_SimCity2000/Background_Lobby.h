@@ -17,9 +17,7 @@ public:
 	void FadeOutBackGround(float duration);
 
 private:
-	DSprite* m_Logo;
-	DSprite* m_Background[2];
-	DSprite* m_LobbyCharacter;
+	DSprite* m_Background;
 
 	float m_FadeOutDuration;
 	float m_FadeOutSpeed=-1;

@@ -1,0 +1,10 @@
+type,depth,connectable,canbesub
+terrain,1,N,
+building,2,N,
+zone,1,N,
+road,2,Y,"rail,powerline"
+rail,2,Y,powerline
+powerline,2,Y,
+highway,2,Y,
+underground,0,Y,
+other,3,N,

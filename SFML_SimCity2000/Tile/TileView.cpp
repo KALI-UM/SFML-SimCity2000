@@ -5,11 +5,11 @@
 #include "DTile.h"
 
 TileView::TileView(TileModel* model)
-	:mcv_Model(model)
+	:mvc_Model(model)
 {
-	mcv_Model->SetTileUpdateFunc(std::bind(&TileView::PushToSpriteUpdateQue, this, std::placeholders::_1, std::placeholders::_2));
-	mcv_Model->SetTempEffectTileUpdateFunc(std::bind(&TileView::PushToTempEffectUpdateQue, this, std::placeholders::_1));
-	m_DepthViews.resize(mcv_Model->m_MaxDepth);
+	mvc_Model->SetTileUpdateFunc(std::bind(&TileView::PushToSpriteUpdateQue, this, std::placeholders::_1, std::placeholders::_2));
+	mvc_Model->SetTempEffectTileUpdateFunc(std::bind(&TileView::PushToTempEffectUpdateQue, this, std::placeholders::_1));
+	m_DepthViews.resize(mvc_Model->m_MaxDepth);
 }
 
 TileView::~TileView()
@@ -18,7 +18,7 @@ TileView::~TileView()
 
 bool TileView::Initialize()
 {
-	if (!mcv_Model)return false;
+	if (!mvc_Model)return false;
 
 	return true;
 }
@@ -65,30 +65,32 @@ void TileView::SetDepthView(const TileDepth& depth, TileViewChild* child)
 	child->m_Depth = depth;
 }
 
+//좌표를 타일 좌표계로 변환
 sf::Vector2f TileView::GetTileCoordinatedPos(const sf::Vector2f& pos) const
 {
 	return m_TileTransform.getInverse().transformPoint(pos);
 }
 
+//타일 좌표계로 변환된 Position을 타일 크기로 나눠 타일 인덱스를 구한다.
 CellIndex TileView::GetTileCoordinatedIndex(const sf::Vector2f& pos, bool isTilepos) const
 {
 	sf::Vector2f tilepos = isTilepos ? pos : GetTileCoordinatedPos(pos);
-	return sf::Vector2i(tilepos.x / mcv_Model->m_CellSize.x, tilepos.y / mcv_Model->m_CellSize.y);
+	return sf::Vector2i(tilepos.x / mvc_Model->m_CellSize.x, tilepos.y / mvc_Model->m_CellSize.y);
 }
 
 sf::Vector2f TileView::GetTileCoordinatedCenterPosByTileIndex(const CellIndex& tileIndex)
 {
-	return 1.5f * sf::Vector2f(mcv_Model->m_CellSize.x * tileIndex.x, mcv_Model->m_CellSize.y * tileIndex.y);
+	return 1.5f * sf::Vector2f(mvc_Model->m_CellSize.x * tileIndex.x, mvc_Model->m_CellSize.y * tileIndex.y);
 }
 
 int TileView::GetDrawableIndexByTileIndex(const CellIndex& tileIndex) const
 {
-	return tileIndex.x + tileIndex.y * mcv_Model->m_CellCount.x;
+	return tileIndex.x + tileIndex.y * mvc_Model->m_CellCount.x;
 }
 
 void TileView::ColorizeTile(const sf::Color& color, const CellIndex& tileIndex)
 {
-	if (!mcv_Model->IsValidTileIndex(tileIndex))
+	if (!mvc_Model->IsValidTileIndex(tileIndex))
 		return;
 
 	auto tile = m_DepthViews[(int)TileDepth::Terrain]->m_TileDrawable[tileIndex.y][tileIndex.x];
@@ -131,7 +133,7 @@ void TileView::ResetColorizedTile()
 void TileView::ResetTempEffectTile()
 {
 	if (!m_TempEffectTiles.empty())
-		mcv_Model->SetTiles(m_TempEffectTiles, TileType::Other, "", "");
+		mvc_Model->SetTiles(m_TempEffectTiles, TileType::Other, "", "");
 	m_TempEffectTiles.clear();
 }
 
@@ -154,8 +156,8 @@ void TileView::UpdateTileSprite()
 		sf::Vector2i& currIndex = m_SpriteUpdateQueue.front().second;
 		m_DepthViews[(int)currdepth]->NeedPriorityUpdate();
 		auto& currTile = m_DepthViews[(int)currdepth]->m_TileDrawable[currIndex.y][currIndex.x];
-		auto& currTileInfo = mcv_Model->GetTileInfo(currdepth, currIndex);
-		currTile->SetTexture(currTileInfo.filepath, mcv_Model->GetTileShapeType(currdepth, currIndex), currTileInfo.lotSize);
+		auto& currTileInfo = mvc_Model->GetTileInfo(currdepth, currIndex);
+		currTile->SetTexture(currTileInfo.filepath, mvc_Model->GetTileShapeType(currdepth, currIndex), currTileInfo.lotSize);
 		currTile->SetOrigin(OriginType::BC, m_TileOffset);
 		currTile->SetTilePriorityValue();
 		m_SpriteUpdateQueue.pop();

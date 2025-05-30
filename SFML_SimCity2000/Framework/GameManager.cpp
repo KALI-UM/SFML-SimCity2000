@@ -13,8 +13,10 @@ bool GameManager::Initialize(sf::RenderWindow* window)
 	bool success = true;
 	success &= DATATABLE_MGR->Initialize();
 	success &= SCENE_MGR->Initialize();
-	Scene_SimCityInGame* lobby = new Scene_SimCityInGame();
+	Scene_SimCityMain* lobby = new Scene_SimCityMain();
+	Scene_SimCityInGame* inGame = new Scene_SimCityInGame();
 	SCENE_MGR->PushScene(lobby);
+	SCENE_MGR->PushScene(inGame);
 	SCENE_MGR->SetCurrentScene(lobby->GetName());
 	lobby->RESET();
 	lobby->ENTER();
@@ -157,6 +159,12 @@ void GameManager::SetViewSize(int index, const sf::FloatRect& rect)
 	m_DebugViews[index].view.reset(rect);
 #endif // _DEBUG
 }
+
+const sf::Vector2f& GameManager::GetViewSize(int index) const
+{
+	return m_Views[index].view.getSize();
+}
+
 
 void GameManager::SetViewZoom(int index, float zoom)
 {

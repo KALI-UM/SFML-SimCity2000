@@ -8,10 +8,10 @@ class TileView :
 	public GameObject
 {
 protected:
-	TileModel* mcv_Model;
+	TileModel* mvc_Model;
 	std::vector<TileViewChild*> m_DepthViews;
 public:
-	const TileModel* const GetModel()const { return mcv_Model; }
+	const TileModel* const GetModel()const { return mvc_Model; }
 	const sf::Vector2f m_TileOffset = { -1,0 };
 public:
 	TileView(TileModel* model);
