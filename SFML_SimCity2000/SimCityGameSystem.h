@@ -174,6 +174,7 @@ public:
 	void BuildPowerline(std::list<CellIndex>& tiles, int powerplantId = -1);
 	void BuildPowerlink(std::list<CellIndex>& tiles, int powerplantId = -1);
 	void BuildRoad(std::list<CellIndex>& tiles);
+	void BuildTree(std::list<CellIndex>& tiles);
 
 	CellIndex GetBuildPossiblePos(ZoneType zone, std::list<CellIndex>& tiles) const;
 	bool CheckElecSupply(const CellIndex& tileIndex)const;

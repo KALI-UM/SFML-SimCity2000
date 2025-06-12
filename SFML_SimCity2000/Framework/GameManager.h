@@ -53,6 +53,8 @@ public:
 	sf::Vector2i GetViewToScreenPos(int index, const sf::Vector2f& viewPos);
 
 	void SetViewSize(int index, const sf::FloatRect& rect);
+	const sf::Vector2f& GetViewSize(int index) const;
+
 	void SetViewZoom(int index, float zoom);
 	void SetViewportSize(int index, const sf::FloatRect& rect);
 	void SetViewCenter(int index, const sf::Vector2f& pos);

@@ -80,7 +80,23 @@ void SimCityGameSystem::LoadTileDepthFile()
 
 void SimCityGameSystem::LoadTerrainDepth()
 {
-	rapidcsv::Document doc("datatables/tileInfo_depth1.csv", rapidcsv::LabelParams(-1, -1));
+	std::string filepath = "datatables/tileInfo_depth1.csv";
+
+	if (!std::filesystem::exists(filepath))
+	{
+		for (int j = 0; j < 128; j++)
+		{
+			for (int i = 0; i < 128; i++)
+			{
+				BuildRawThing({ i,j }, DATATABLE_TILERES->GetTileRes("terrain", "terrain", "land"));
+			}
+		}
+
+		return;
+	}
+
+	rapidcsv::Document doc(filepath, rapidcsv::LabelParams(-1, -1));
+
 	int row = doc.GetRowCount();
 	int col = doc.GetColumnCount();
 
@@ -121,10 +137,27 @@ void SimCityGameSystem::LoadTerrainDepth()
 
 void SimCityGameSystem::LoadOnGroundDepth()
 {
-	rapidcsv::Document doc("datatables/tileInfo_depth2.csv", rapidcsv::LabelParams(-1, -1));
+	std::string filepath = "datatables/tileInfo_depth2.csv";
+
+	if (!std::filesystem::exists(filepath))
+	{
+		std::list<CellIndex> treeTiles;
+		for (int tree = 0; tree < 100; tree++)
+		{
+			int i = Utils::RandomRange(0, 128 - 1);
+			int j = Utils::RandomRange(0, 128 - 1);
+			treeTiles.push_back({ i,j });
+		}
+		BuildTree(treeTiles);
+
+		return;
+	}
+
+	rapidcsv::Document doc(filepath, rapidcsv::LabelParams(-1, -1));
 	int row = doc.GetRowCount();
 	int col = doc.GetColumnCount();
 
+	std::list<CellIndex>trees;
 	std::list<CellIndex> roads;
 	std::list<CellIndex> powerlines;
 	std::list<CellIndex> rails;
@@ -164,6 +197,12 @@ void SimCityGameSystem::LoadOnGroundDepth()
 				}
 				else if (TileType::Building == currType)
 				{
+					if (strings[1] == "trees")
+					{
+						trees.push_back({ i,j });
+						break;
+					}
+
 					std::list<CellIndex> temp;
 					const TileResData& data = DATATABLE_TILERES->GetTileRes(strings[0], strings[1], strings[2]);
 					for (auto& currIndex : Tile::lotSet[data.lotSize.x])
@@ -195,6 +234,7 @@ void SimCityGameSystem::LoadOnGroundDepth()
 		}
 	}
 
+	BuildTree(trees);
 	BuildRoad(roads);
 	BuildPowerline(powerlines, -1);
 }
@@ -555,6 +595,11 @@ void SimCityGameSystem::BuildRoad(std::list<CellIndex>& tiles)
 
 }
 
+void SimCityGameSystem::BuildTree(std::list<CellIndex>& tiles)
+{
+	mcv_Model->SetTiles(tiles, TileType::Building, "trees", "tree_1");
+}
+
 CellIndex SimCityGameSystem::GetBuildPossiblePos(ZoneType zone, std::list<CellIndex>& tiles) const
 {
 	std::vector<CellIndex> possiblePos;
@@ -635,7 +680,7 @@ bool SimCityGameSystem::CheckRoadSupply(const CellIndex& tileIndex) const
 void SimCityGameSystem::DestroySomething(const CellIndex& tileIndex)
 {
 	auto& originTile = mcv_Model->GetTileInfo(TileDepth::OnGround, tileIndex);
-	if (originTile.type == TileType::Building && originTile.subtype != "rubble")
+	if (originTile.type == TileType::Building && originTile.subtype != "rubble"&&originTile.subtype!="trees")
 	{
 		DestroyBuilding(tileIndex);
 	}

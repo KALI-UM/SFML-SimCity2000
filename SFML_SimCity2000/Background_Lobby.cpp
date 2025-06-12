@@ -12,50 +12,30 @@ Background_Lobby::~Background_Lobby()
 
 bool Background_Lobby::Initialize()
 {
-	m_Logo = new DSprite("ui/logo.png");
-	m_Background[0] = new DSprite("background/001.png");
-	m_Background[1] = new DSprite("background/001.png");
-	m_LobbyCharacter = new DSprite("ui/character_01.png");
+	m_Background = new DSprite("background/SimCity_2000_screen.png");
+	m_Background->SetOriginCenter();
 
-	SetDrawable(m_Background[0]);
-	SetDrawable(m_Background[1]);
-	SetDrawable(m_LobbyCharacter);
-	SetDrawable(m_Logo);
+
+	SetDrawable(m_Background);
+
+
+
 	return false;
 }
 
 void Background_Lobby::Reset()
 {
-	m_Logo->SetOriginCenter();
-	m_Logo->setPosition(GAME_MGR->GetWindow()->getSize().x / 2, GAME_MGR->GetWindow()->getSize().y / 4);
-	m_LobbyCharacter->setScale(0.5f, 0.5f);
-	m_LobbyCharacter->SetOriginCenter();
-	m_LobbyCharacter->setPosition(GAME_MGR->GetWindow()->getSize().x / 2, GAME_MGR->GetWindow()->getSize().y / 2);
-	sf::Vector2f v1 = m_LobbyCharacter->getOrigin();
-	sf::Vector2f v2 = m_LobbyCharacter->getPosition();
 	m_FadeOutSpeed = -1;
 	m_CurrvColorValue = 150;
-	m_Background[0]->SetColor(m_CurrvColorValue, m_CurrvColorValue, m_CurrvColorValue);
-	m_Background[1]->SetColor(m_CurrvColorValue, m_CurrvColorValue, m_CurrvColorValue);
+	m_Background->SetColor(m_CurrvColorValue, m_CurrvColorValue, m_CurrvColorValue);
 }
 
 void Background_Lobby::Update(float dt)
 {
+	sf::Vector2f viewSize = GAME_MGR->GetViewSize(0);
+	sf::FloatRect viewRect = GAME_MGR->GetViewRect(0);
 
-	if (m_FadeOutSpeed > 0)
-	{
-		//std::cout << "global " << MOUSEPOS.x << "," << MOUSEPOS.y << std::endl;
-		//std::cout << "view " << MOUSEVIEWPOS.x << "," << MOUSEVIEWPOS.y << std::endl;
-
-		m_CurrvColorValue = m_CurrvColorValue + (dt * m_FadeOutSpeed);
-		m_Background[0]->SetColor(m_CurrvColorValue, m_CurrvColorValue, m_CurrvColorValue);
-		m_Background[1]->SetColor(m_CurrvColorValue, m_CurrvColorValue, m_CurrvColorValue);
-
-		if (m_CurrvColorValue >= 255)
-		{
-			SCENE_MGR->ChangeScene("Play1");
-		}
-	}
+	setPosition(sf::Vector2f(viewSize.x / 2, viewSize.y / 2));
 }
 
 void Background_Lobby::FadeOutBackGround(float duration)
