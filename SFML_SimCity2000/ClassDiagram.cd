@@ -232,7 +232,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="ObjectPoolable" Collapsed="true">
-    <Position X="52.75" Y="5" Width="1.5" />
+    <Position X="54" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAEA=</HashCode>
       <FileName>Framework\ObjectPoolable.h</FileName>
@@ -378,7 +378,7 @@
       <FileName>SimCityButtonBar.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SimCityGameSystem" Collapsed="true">
+  <Class Name="SimCityGameSystem">
     <Position X="65.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QCTyBAQIAAAAVQDAAiwokAARDAAMCAARQBAQAmLyIgI=</HashCode>
@@ -406,7 +406,7 @@
       <FileName>Tile\Tile.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TileController" Collapsed="true">
+  <Class Name="TileController">
     <Position X="52" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>gAyAggAyAAgChQAAAAAAgUGBKAAKAAIEAEAAAiAQSCI=</HashCode>
@@ -420,7 +420,7 @@
       <FileName>Tile\TileGrid.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TileModel" Collapsed="true">
+  <Class Name="TileModel">
     <Position X="56.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EBQgAAMAAAQABQEBEEAASAAAAEoAAgBAJABBAFEAABA=</HashCode>
@@ -434,7 +434,7 @@
       <FileName>TileResTable.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TileView" Collapsed="true">
+  <Class Name="TileView">
     <Position X="67.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>YAQAAIAACACABwAQMAAAIECAiAAAQAAgCACCAhECAgQ=</HashCode>
