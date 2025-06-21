@@ -30,5 +30,5 @@
 
 - **타일 시스템 설계**
   - **월드 좌표 → 타일 좌표 변환 시스템**
-  - 👉 [TileSystem.cpp](./SFML-SimCity2000/Tile/TileView.cpp)
+  - 👉 [TileView.cpp](./SFML_SimCity2000/Tile/TileView.cpp)
   - **브레젠험 직선 알고리즘** 적용
