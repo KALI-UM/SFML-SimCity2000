@@ -378,8 +378,8 @@
       <FileName>SimCityButtonBar.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SimCityGameSystem">
-    <Position X="65.5" Y="3.25" Width="1.5" />
+  <Class Name="SimCityGameSystem" Collapsed="true">
+    <Position X="60" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QCTyBAQIAAAAVQDAAiwokAARDAAMCAARQBAQAmLyIgI=</HashCode>
       <FileName>SimCityGameSystem.h</FileName>
@@ -407,7 +407,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="TileController">
-    <Position X="52" Y="3.25" Width="1.5" />
+    <Position X="57.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>gAyAggAyAAgChQAAAAAAgUGBKAAKAAIEAEAAAiAQSCI=</HashCode>
       <FileName>Tile\TileController.h</FileName>
@@ -421,7 +421,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="TileModel">
-    <Position X="56.5" Y="3.25" Width="1.5" />
+    <Position X="59.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EBQgAAMAAAQABQEBEEAASAAAAEoAAgBAJABBAFEAABA=</HashCode>
       <FileName>Tile\TileModel.h</FileName>
@@ -435,7 +435,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="TileView">
-    <Position X="67.75" Y="3.25" Width="1.5" />
+    <Position X="61.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>YAQAAIAACACABwAQMAAAIECAiAAAQAAgCACCAhECAgQ=</HashCode>
       <FileName>Tile\TileView.h</FileName>
