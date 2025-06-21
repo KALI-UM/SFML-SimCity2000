@@ -345,21 +345,13 @@ void TileController::SetLineIntersectedTiles(const CellIndex& startIndex, const 
 
 	sf::Vector2i slope = startIndex - endIndex;
 	sf::Vector2i currIndex = startIndex;
-	int x0 = startIndex.x;
-	int y0 = startIndex.y;
-	int x1 = endIndex.x;
-	int y1 = endIndex.y;
 
 	//Bresenham's Line Algorithm
-	//선의 기울기는 1과 0사이
-	//x를 증가시킬 때마다 y 
-
-	int dx = abs(slope.x);
-	int dy = abs(slope.y);
+	int dx = abs(slope.x);	//x변위
+	int dy = abs(slope.y);	//y변위
 	int sx = (startIndex.x < endIndex.x) ? 1 : -1;
 	int sy = (startIndex.y < endIndex.y) ? 1 : -1;
 
-	//slope err보정값
 	int err = dx - dy;
 
 	while (true)
