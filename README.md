@@ -25,10 +25,8 @@
 
 - **SFML 프레임워크 제작**
   - 게임 루프, 씬 시스템, 이벤트 처리 등의 구조를 직접 구현
-  - 부모-자식 관계에 따라 계층적으로 적용되는 **계층 트랜스폼** 구현
-  - **9슬라이스 스프라이트** 구현
+  - 부모-자식 관계에 따라 계층적으로 적용되는 **계층 트랜스폼** 구현 👉 [Transform.h](https://github.com/KALI-UM/SFML-SimCity2000/blob/master/SFML_SimCity2000/Framework/Transform.h)
 
 - **타일 시스템 설계**
-  - **월드 좌표 → 타일 좌표 변환 시스템**
-  - 👉 [TileView.cpp](./SFML_SimCity2000/Tile/TileView.cpp)
-  - **브레젠험 직선 알고리즘** 적용
+  - **월드 좌표 → 타일 좌표 변환**으로 현재 타일 검출 👉 [TileView.cpp](https://github.com/KALI-UM/SFML-SimCity2000/blob/master/SFML_SimCity2000/Tile/TileView.cpp#L69)
+  - **브레젠험 직선 알고리즘**으로 직선 도로 건설 👉 [TileController.cpp](https://github.com/KALI-UM/SFML-SimCity2000/blob/master/SFML_SimCity2000/Tile/TileController.cpp#L342)
